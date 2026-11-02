@@ -1,0 +1,264 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Arm shapes</title>
+<style>
+  html, body { margin: 0; background: #222; }
+  canvas { display: block; width: 100%; max-width: 1080px; height: auto; margin: 0 auto; }
+</style>
+</head>
+<body>
+<canvas id="c" width="2160" height="1600"></canvas>
+<script>
+// Pumpkin & Pip by the cat flap, drawn once as geometry and rendered in four styles:
+// flat cartoon | pixel art | paper cut-out | crayon. Open this file in a browser to see it (?t=1.2 sets the time).
+const T = +(new URLSearchParams(location.search).get('t') || 0.4);
+const TAU = Math.PI * 2;
+const lerp = (a, b, k) => a + (b - a) * k;
+let seed = 1; const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
+const hex = h => [1, 3, 5].map(i => parseInt(h.slice(i, i + 2), 16));
+const mix = (a, b, k) => '#' + hex(a).map((v, i) => Math.round(lerp(v, hex(b)[i], k)).toString(16).padStart(2, '0')).join('');
+const ell = (cx, cy, rx, ry, n = 32, rot = 0) => Array.from({ length: n }, (_, i) => { const a = rot + i / n * TAU; return [cx + Math.cos(a) * rx, cy + Math.sin(a) * ry]; });
+const arc = (cx, cy, rx, ry, a0, a1, n = 12) => Array.from({ length: n + 1 }, (_, i) => { const a = lerp(a0, a1, i / n); return [cx + Math.cos(a) * rx, cy + Math.sin(a) * ry]; });
+function ribbon(P, w0, w1) {
+  const L = [], R = [];
+  P.forEach((p, i) => { const a = P[Math.max(0, i - 1)], b = P[Math.min(P.length - 1, i + 1)], dx = b[0] - a[0], dy = b[1] - a[1], d = Math.hypot(dx, dy) || 1, w = lerp(w0, w1, i / (P.length - 1)) / 2;
+    L.push([p[0] - dy / d * w, p[1] + dx / d * w]); R.push([p[0] + dy / d * w, p[1] - dx / d * w]); });
+  return L.concat(R.reverse());
+}
+function smooth(P, n = 6) {   // Catmull-Rom through points
+  const out = [];
+  for (let i = 0; i < P.length - 1; i++) { const p0 = P[Math.max(0, i - 1)], p1 = P[i], p2 = P[i + 1], p3 = P[Math.min(P.length - 1, i + 2)];
+    for (let k = 0; k < n; k++) { const u = k / n, u2 = u * u, u3 = u2 * u; out.push([0, 1].map(d => .5 * (2 * p1[d] + (p2[d] - p0[d]) * u + (2 * p0[d] - 5 * p1[d] + 4 * p2[d] - p3[d]) * u2 + (3 * p1[d] - p0[d] - 3 * p2[d] + p3[d]) * u3))); } }
+  out.push(P[P.length - 1]); return out;
+}
+
+const C = { wall: '#F2D9B8', wall2: '#E9C99F', floor: '#B98A5E', floorDk: '#9C6F48', door: '#7FB3A8', doorDk: '#5E9086', flap: '#CFE6F0',
+  orange: '#F0973A', orangeDk: '#C0652A', cream: '#FBE7C8', stripe: '#B4572A', vest: '#C8363F', vestDk: '#8A222B', gold: '#EEC35A', nose: '#E8838C',
+  iris: '#B7CC48', ink: '#2B2233', white: '#FFF8EC', pink: '#F0A7B6', grey: '#A3A0B0', greyDk: '#757083', greyLt: '#DFDAE5', green: '#4FA060', greenDk: '#2F6E3E', cracker: '#E6B65F' };
+
+// ---------- the scene as a list of draw calls on a renderer R ----------
+// R.fill(pts, colour, {line, lw, shade}) and R.line(pts, colour, width). Coordinates in a 540 x 960 cell.
+function scene(R) {
+  // room
+  R.fill([[0, 0], [540, 0], [540, 700], [0, 700]], C.wall, { bg: true });
+  for (let i = 0; i < 6; i++) R.fill([[i * 100 + 20, 0], [i * 100 + 60, 0], [i * 100 + 60, 700], [i * 100 + 20, 700]], C.wall2, { bg: true, flat: true });
+  R.fill([[0, 690], [540, 690], [540, 960], [0, 960]], C.floor, { bg: true });
+  for (let i = 0; i < 5; i++) R.line([[0, 740 + i * 50], [540, 740 + i * 50]], C.floorDk, 3);
+  // door with the cat flap
+  R.fill([[290, 170], [520, 170], [520, 700], [290, 700]], C.door, { line: true, lw: 4 });
+  R.fill([[312, 195], [498, 195], [498, 420], [312, 420]], C.doorDk, { flat: true });
+  R.fill(ell(480, 450, 12, 12, 16), C.gold, { line: true, lw: 2 });
+  R.fill([[340, 560], [470, 560], [470, 690], [340, 690]], C.doorDk, { line: true, lw: 3 });
+  R.fill([[352, 572], [458, 572], [458, 682], [352, 682]], C.flap, { line: true, lw: 2 });
+  pumpkin(R, 175, 860, 21);
+  pip(R, 420, 880, 19);
+}
+
+function eye(R, x, y, rx, ry, iris, lid = 0) {
+  R.fill(ell(x, y, rx, ry, 24), C.white, { line: true, lw: 2.2 });
+  const ir = Math.min(rx, ry) * .75;
+  R.fill(ell(x + rx * .12, y + ry * .05, ir, ir * 1.05, 20), iris, { line: true, lw: 1.2 });
+  R.fill(ell(x + rx * .12, y + ry * .05, ir * .45, ir * .7, 16), C.ink, {});
+  R.fill(ell(x - ir * .25, y - ir * .35, ir * .26, ir * .3, 10), '#FFFFFF', {});
+  if (lid) { const yl = y - ry + 2 * ry * lid, a = Math.asin((yl - y) / ry); R.fill(arc(x, y, rx * 1.05, ry * 1.05, Math.PI - a, TAU + a), R.skin, {}); R.line([[x - rx * Math.cos(a), yl], [x + rx * Math.cos(a), yl]], C.ink, 2.4); }
+}
+
+function pumpkin(R, x, y, u) {
+  const P = pts => pts.map(([a, b]) => [x + a * u, y + b * u]);
+  R.skin = C.orange;
+  R.fill(ell(x, y + 4, 4.8 * u, .8 * u), 'rgba(60,30,20,.25)', { shadow: true });
+  const sw = Math.sin(T * 2) * .3;
+  R.fill(ribbon(smooth(P([[2.4, -2.2], [4.4, -2.6], [5.5 + sw, -4.3], [5.1 + sw, -6.1], [4.2 + sw * 1.5, -6.8]])), 1.3 * u, .75 * u), C.orange, { line: true, lw: 3, shade: true });
+  for (const s of [-1, 1]) R.fill(ell(x + s * 1.9 * u, y - .45 * u, 1.25 * u, .62 * u, 20), C.orange, { line: true, lw: 3 });
+  R.fill(ell(x, y - 3.9 * u, 4.3 * u, 3.7 * u, 40), C.orange, { line: true, lw: 3.5, shade: true });
+  R.fill(ell(x, y - 3.1 * u, 2.6 * u, 2.55 * u, 32), C.cream, {});
+  for (const s of [-1, 1]) for (let k = 0; k < 3; k++) { const sx = x + s * (4.05 - k * .05) * u, sy = y - 5.2 * u + k * 1.1 * u; R.line([[sx, sy], [sx - s * .8 * u, sy + .25 * u], [sx - s * 1.3 * u, sy + .15 * u]], C.stripe, 4); }
+  for (const s of [-1, 1]) {
+    R.fill(P([[s * .3, -7.25], [s * 3.4, -6.7], [s * 4.0, -4.9], [s * 2.9, -3.75], [s * .75, -4.15]]), C.vest, { line: true, lw: 3, shade: true });
+    arm(R, x, y, u, s, 1, C.orange, C.cream);
+  }
+  for (const by of [-6.3, -5.0]) R.fill(ell(x - .9 * u, y + by * u, .3 * u, .3 * u, 12), C.gold, { line: true, lw: 1.5 });
+  // head
+  const hx = x, hy = y - 8.5 * u;
+  for (const s of [-1, 1]) {
+    R.fill([[hx + (s * 1.95 - 1.1) * u, hy - 1.6 * u], [hx + (s * 1.95 + s * .65) * u, hy - 3.85 * u], [hx + (s * 1.95 + 1.1) * u, hy - 1.7 * u]], C.orange, { line: true, lw: 3 });
+    R.fill([[hx + (s * 1.95 - .55) * u, hy - 1.9 * u], [hx + (s * 1.95 + s * .5) * u, hy - 3.2 * u], [hx + (s * 1.95 + .55) * u, hy - 1.95 * u]], C.pink, {});
+  }
+  R.fill(ell(hx, hy, 3.35 * u, 2.85 * u, 40), C.orange, { line: true, lw: 3.5, shade: true });
+  for (const k of [-1, 0, 1]) R.line([[hx + k * .45 * u, hy - 2.75 * u], [hx + k * .5 * u, hy - 2.05 * u]], C.stripe, 4);
+  for (const s of [-1, 1]) R.fill(ell(hx + s * .62 * u, hy + .95 * u, .8 * u, .56 * u, 18), C.cream, {});
+  for (const s of [-1, 1]) R.fill(ell(hx + s * 2.05 * u, hy + .55 * u, .7 * u, .36 * u, 14), 'rgba(232,96,122,.45)', {});
+  eye(R, hx - 1.35 * u, hy - .35 * u, .8 * u, .9 * u, C.iris, .3);
+  eye(R, hx + 1.35 * u, hy - .35 * u, .8 * u, .9 * u, C.iris, .3);
+  for (const s of [-1, 1]) R.line([[hx + s * .7 * u, hy - 1.75 * u], [hx + s * 1.4 * u, hy - 1.95 * u], [hx + s * 2.1 * u, hy - 1.8 * u]], C.ink, 3.5);
+  R.fill([[hx - .34 * u, hy + .42 * u], [hx + .34 * u, hy + .42 * u], [hx, hy + .74 * u]], C.nose, { line: true, lw: 1.5 });
+  R.line([[hx, hy + .74 * u], [hx, hy + .98 * u]], C.ink, 2.5);
+  R.line([[hx - .8 * u, hy + .98 * u], [hx - .4 * u, hy + 1.22 * u], [hx, hy + .98 * u], [hx + .4 * u, hy + 1.22 * u], [hx + .8 * u, hy + .98 * u]], C.ink, 2.5);
+  for (const s of [-1, 1]) for (let k = -1; k <= 1; k++) R.line([[hx + s * 1.1 * u, hy + (.95 + k * .25) * u], [hx + s * 3.9 * u, hy + (.75 + k * .45) * u]], C.ink, 1.3);
+}
+
+function pip(R, x, y, u) {
+  const P = pts => pts.map(([a, b]) => [x + a * u, y + b * u]);
+  R.skin = C.grey;
+  R.fill(ell(x, y + 3, 2.4 * u, .5 * u), 'rgba(60,30,20,.25)', { shadow: true });
+  R.fill(ribbon(smooth(P([[-.9, -.6], [-2.2, -.3], [-3.4, -.8], [-3.9, -2.0], [-3.3, -2.8]])), .34 * u, .12 * u), C.pink, { line: true, lw: 2 });
+  for (const s of [-1, 1]) R.fill(ell(x + s * .75 * u, y - .2 * u, .55 * u, .25 * u, 14), C.pink, { line: true, lw: 2 });
+  R.fill(ell(x, y - 1.75 * u, 1.55 * u, 1.75 * u, 32), C.grey, { line: true, lw: 3, shade: true });
+  R.fill(ell(x, y - 1.35 * u, .95 * u, 1.05 * u, 24), C.greyLt, {});
+  arm(R, x, y, u, -1, .4, C.grey, C.greyLt);
+  // scarf
+  R.fill(ell(x, y - 3.25 * u, 1.35 * u, .42 * u, 20), C.green, { line: true, lw: 2.5, shade: true });
+  R.fill(ribbon(smooth(P([[-.55, -3.1], [-.75 - Math.sin(T * 5) * .1, -2.2], [-.65, -1.2]])), .55 * u, .5 * u), C.green, { line: true, lw: 2.5 });
+  // arm holding the cracker
+  const [px, py] = arm(R, x, y, u, 1, .4, C.grey, C.greyLt, true);
+  const cr = [[-.55, -.95], [.55, -.95], [.55, -.15], [.3, 0], [.35, .25], [-.55, .25]];
+  R.fill(cr.map(([a, b]) => [px + a * u, py + b * u - .2 * u]), C.cracker, { line: true, lw: 2 });
+  arm(R, x, y, u, 1, .4, C.grey, C.greyLt, false, true);
+  // head
+  const hx = x, hy = y - 4.55 * u;
+  for (const s of [-1, 1]) { R.fill(ell(hx + s * 1.45 * u, hy - 1.2 * u, 1.15 * u, 1.2 * u, 28, s * .25), C.grey, { line: true, lw: 3 }); R.fill(ell(hx + s * 1.5 * u, hy - 1.15 * u, .76 * u, .8 * u, 22), C.pink, {}); }
+  R.fill(ell(hx, hy, 1.5 * u, 1.3 * u, 32), C.grey, { line: true, lw: 3, shade: true });
+  R.fill(ell(hx, hy + .55 * u, .85 * u, .55 * u, 20), C.greyLt, {});
+  eye(R, hx - .58 * u, hy - .2 * u, .3 * u, .36 * u, '#3A3045', .1);
+  eye(R, hx + .58 * u, hy - .2 * u, .3 * u, .36 * u, '#3A3045', .1);
+  for (const s of [-1, 1]) R.line([[hx + s * .35 * u, hy - .75 * u], [hx + s * .62 * u, hy - .85 * u], [hx + s * .9 * u, hy - .78 * u]], C.ink, 2.4);
+  R.fill(ell(hx, hy + .3 * u, .2 * u, .16 * u, 12), C.nose, { line: true, lw: 1.2 });
+  R.line([[hx - .35 * u, hy + .6 * u], [hx - .15 * u, hy + .72 * u], [hx, hy + .58 * u], [hx + .15 * u, hy + .72 * u], [hx + .35 * u, hy + .6 * u]], C.ink, 2);
+  for (const s of [-1, 1]) for (let k = -1; k <= 1; k++) R.line([[hx + s * .4 * u, hy + (.5 + k * .1) * u], [hx + s * 1.9 * u, hy + (.4 + k * .25) * u]], C.ink, 1);
+}
+
+
+// ---------- arm shapes (ARM = 'A' | 'B' | 'C' | 'D'); k scales Pumpkin (1) to Pip (.4) ----------
+let ARM = 'A';
+// Draws one arm on side s; returns the paw centre. pawOnly: redraw only the paw (over a held prop).
+function arm(R, x, y, u, s, k, col, lt, holding = false, pawOnly = false) {
+  const big = k > .7, U = u * (big ? 1 : 1);
+  const at = (a, b) => [x + a * U, y + b * U];
+  const toes = (cx, cy, r, ang) => { for (const d of [-.35, .35]) { const a = ang + d; R.line([[cx + Math.cos(a) * r * .45, cy + Math.sin(a) * r * .45], [cx + Math.cos(a) * r * .95, cy + Math.sin(a) * r * .95]], mix(col, '#2B1B30', .45), big ? 2.4 : 1.6); } };
+  let paw;
+  if (big) {   // Pumpkin: shoulder at (±2.9, -6.2)
+    if (ARM === 'A') {   // stubby mitten nubs that stick out from the sides
+      const c = at(s * 4.15, -5.0); paw = c;
+      if (!pawOnly) R.fill(ell(c[0], c[1], 1.05 * U, .78 * U, 24, s * .55), col, { line: true, lw: 3, shade: true });
+      toes(c[0], c[1], .9 * U, s > 0 ? .55 : Math.PI - .55);
+    } else if (ARM === 'B') {   // bent at the elbow, paw resting on the belly
+      const P = smooth([at(s * 2.9, -6.2), at(s * 4.4, -4.9), at(s * 3.6, -3.75), at(s * 2.1, -3.9)], 6); paw = at(s * 1.95, -3.95);
+      if (!pawOnly) R.fill(ribbon(P, 1.25 * U, 1.05 * U), col, { line: true, lw: 3 });
+      R.fill(ell(paw[0], paw[1], .78 * U, .62 * U, 18), col, { line: true, lw: 2.5 });
+      toes(paw[0], paw[1], .7 * U, s > 0 ? Math.PI : 0);
+    } else if (ARM === 'C') {   // short tapered arms, both paws together on the belly (polite pose)
+      const P = smooth([at(s * 3.2, -6.0), at(s * 3.0, -4.6), at(s * 1.2, -4.3)], 6); paw = at(s * .75, -4.35);
+      if (!pawOnly) R.fill(ribbon(P, 1.3 * U, .9 * U), col, { line: true, lw: 3 });
+      R.fill(ell(paw[0], paw[1], .72 * U, .6 * U, 18), col, { line: true, lw: 2.5 });
+      toes(paw[0], paw[1], .65 * U, -Math.PI / 2);
+    } else {   // D: bean arms, narrow at the shoulder, round and heavy at the paw, hanging a little out
+      const sh = at(s * 3.2, -6.4), pc = at(s * 4.5, -3.6); paw = pc;
+      const dx = pc[0] - sh[0], dy = pc[1] - sh[1], L = Math.hypot(dx, dy), nx = -dy / L, ny = dx / L;
+      const bean = smooth([[sh[0] + nx * .35 * U, sh[1] + ny * .35 * U], [pc[0] + nx * .95 * U, pc[1] + ny * .95 * U - .3 * U], [pc[0] + dx / L * 1.0 * U, pc[1] + dy / L * 1.0 * U], [pc[0] - nx * .95 * U, pc[1] - ny * .95 * U - .3 * U], [sh[0] - nx * .35 * U, sh[1] - ny * .35 * U]], 6);
+      if (!pawOnly) R.fill(bean, col, { line: true, lw: 3, shade: true });
+      toes(pc[0] + dx / L * .2 * U, pc[1] + dy / L * .2 * U, .85 * U, Math.atan2(dy, dx));
+    }
+  } else {     // Pip: shoulder at (±1.1, -2.6)
+    const h = holding && s > 0;
+    if (ARM === 'A') { const c = h ? at(1.9, -2.9) : at(s * 1.75, -2.2); paw = c; if (!pawOnly) R.fill(ell(c[0], c[1], .5 * U, .36 * U, 18, h ? -.6 : s * .6), col, { line: true, lw: 2.2 }); }
+    else if (ARM === 'B') { const P = smooth(h ? [at(1.1, -2.6), at(1.9, -2.2), at(2.1, -3.0)] : [at(s * 1.1, -2.6), at(s * 1.9, -2.0), at(s * .9, -1.5)], 5); paw = P[P.length - 1]; if (!pawOnly) R.fill(ribbon(P, .5 * U, .42 * U), col, { line: true, lw: 2.2 }); R.fill(ell(paw[0], paw[1], .32 * U, .28 * U, 14), col, { line: true, lw: 2 }); }
+    else if (ARM === 'C') { const P = smooth(h ? [at(1.2, -2.5), at(1.5, -2.0), at(1.9, -2.6)] : [at(s * 1.2, -2.5), at(s * 1.1, -1.9), at(s * .45, -1.8)], 5); paw = P[P.length - 1]; if (!pawOnly) R.fill(ribbon(P, .55 * U, .38 * U), col, { line: true, lw: 2.2 }); R.fill(ell(paw[0], paw[1], .3 * U, .26 * U, 14), col, { line: true, lw: 2 }); }
+    else { const sh = at(s * 1.2, -2.7), pc = h ? at(2.0, -3.0) : at(s * 1.75, -1.5); paw = pc;
+      const dx = pc[0] - sh[0], dy = pc[1] - sh[1], L = Math.hypot(dx, dy), nx = -dy / L, ny = dx / L;
+      if (!pawOnly) R.fill(smooth([[sh[0] + nx * .15 * U, sh[1] + ny * .15 * U], [pc[0] + nx * .38 * U, pc[1] + ny * .38 * U], [pc[0] + dx / L * .4 * U, pc[1] + dy / L * .4 * U], [pc[0] - nx * .38 * U, pc[1] - ny * .38 * U], [sh[0] - nx * .15 * U, sh[1] - ny * .15 * U]], 5), col, { line: true, lw: 2.2 }); }
+  }
+  return paw;
+}
+
+// ---------- four renderers ----------
+const poly = (c, pts) => { c.beginPath(); pts.forEach(([a, b], i) => i ? c.lineTo(a, b) : c.moveTo(a, b)); c.closePath(); };
+const path = (c, pts) => { c.beginPath(); pts.forEach(([a, b], i) => i ? c.lineTo(a, b) : c.moveTo(a, b)); };
+
+// 1. Flat cartoon: solid colour, a soft shadow side on big shapes, a rim in a darker tone (no black outlines).
+function flatR(c) {
+  return {
+    fill(pts, col, o) {
+      poly(c, pts); c.fillStyle = col; c.fill();
+      if (o.shade && col[0] === '#') {   // shadow side: the same shape, offset, clipped to itself
+        c.save(); poly(c, pts); c.clip(); c.translate(12, -10); poly(c, pts); c.restore();
+        c.save(); poly(c, pts); c.clip(); c.fillStyle = mix(col, '#3B2340', .22);
+        c.beginPath(); const xs = pts.map(p => p[0]), ys = pts.map(p => p[1]), x0 = Math.min(...xs), x1 = Math.max(...xs), y0 = Math.min(...ys), y1 = Math.max(...ys);
+        c.ellipse((x0 + x1) / 2 - (x1 - x0) * .18, (y0 + y1) / 2 - (y1 - y0) * .1, (x1 - x0) * .62, (y1 - y0) * .62, 0, 0, TAU);
+        c.rect(x1 + 10, y1 + 10, -(x1 - x0) - 40, -(y1 - y0) - 40); c.fill('evenodd'); c.restore();
+      }
+      if (o.line && col[0] === '#') { poly(c, pts); c.strokeStyle = mix(col, '#2B1B30', .45); c.lineWidth = (o.lw || 2) * .8; c.lineJoin = 'round'; c.stroke(); }
+    },
+    line(pts, col, w) { path(c, pts); c.strokeStyle = col; c.lineWidth = w; c.lineCap = 'round'; c.lineJoin = 'round'; c.stroke(); },
+  };
+}
+
+// 2. Pixel art: the flat render at 1/6 size, colours snapped to a small palette, scaled up with hard pixels + outline.
+function pixelate(src, dst, dx, dy, scale = 6) {
+  const w = src.width / scale, h = src.height / scale, small = document.createElement('canvas'); small.width = w; small.height = h;
+  const s = small.getContext('2d'); s.imageSmoothingEnabled = true; s.drawImage(src, 0, 0, w, h);
+  const pal = Object.values(C).filter(v => v[0] === '#').map(hex).concat([[43, 34, 51]]);
+  const img = s.getImageData(0, 0, w, h), d = img.data;
+  for (let i = 0; i < d.length; i += 4) { let best = 0, bd = 1e9; pal.forEach((p, k) => { const e = (p[0] - d[i]) ** 2 + (p[1] - d[i + 1]) ** 2 + (p[2] - d[i + 2]) ** 2; if (e < bd) { bd = e; best = k; } }); [d[i], d[i + 1], d[i + 2]] = pal[best]; d[i + 3] = 255; }
+  s.putImageData(img, 0, 0);
+  dst.imageSmoothingEnabled = false; dst.drawImage(small, dx, dy, src.width, src.height);
+}
+
+// 3. Paper cut-out: every shape is a cut piece of coloured paper, slightly askew, with a cast shadow and paper grain.
+function paperR(c, grain) {
+  return {
+    fill(pts, col, o) {
+      if (o.shadow) return;
+      const k = rnd() * .06 - .03, cx = pts.reduce((s, p) => s + p[0], 0) / pts.length, cy = pts.reduce((s, p) => s + p[1], 0) / pts.length;
+      const P = pts.map(([a, b]) => [cx + (a - cx) * Math.cos(k) - (b - cy) * Math.sin(k) + (rnd() - .5) * 1.5, cy + (a - cx) * Math.sin(k) + (b - cy) * Math.cos(k) + (rnd() - .5) * 1.5]);
+      c.save(); if (!o.bg) { c.shadowColor = 'rgba(40,20,10,.45)'; c.shadowBlur = 8; c.shadowOffsetX = 4; c.shadowOffsetY = 6; }
+      poly(c, P); c.fillStyle = col; c.fill(); c.restore();
+      c.save(); poly(c, P); c.clip(); c.globalAlpha = .22; c.globalCompositeOperation = 'multiply'; c.drawImage(grain, 0, 0); c.restore();
+      if (o.line && !o.bg) { poly(c, P); c.strokeStyle = 'rgba(255,255,255,.35)'; c.lineWidth = 1.2; c.stroke(); }
+    },
+    line(pts, col, w) {
+      c.save(); c.shadowColor = 'rgba(40,20,10,.35)'; c.shadowBlur = 3; c.shadowOffsetX = 1.5; c.shadowOffsetY = 2.5;
+      path(c, pts); c.strokeStyle = col; c.lineWidth = w * 1.2; c.lineCap = 'butt'; c.lineJoin = 'miter'; c.stroke(); c.restore();
+    },
+  };
+}
+
+// 4. Crayon: waxy scribble fills that never quite reach the edge, and a wobbly dark outline gone over twice.
+function crayonR(c) {
+  const dense = pts => pts.flatMap((p, i) => { const q = pts[(i + 1) % pts.length], n = Math.max(1, Math.ceil(Math.hypot(q[0] - p[0], q[1] - p[1]) / 14)); return Array.from({ length: n }, (_, k) => [lerp(p[0], q[0], k / n), lerp(p[1], q[1], k / n)]); });
+  const wob = (pts, a) => pts.map(([x, y]) => [x + (rnd() - .5) * a, y + (rnd() - .5) * a]);
+  return {
+    fill(pts, col, o) {
+      if (o.shadow) { c.save(); poly(c, pts); c.clip(); c.globalAlpha = .5; scrib(pts, 'rgba(90,60,50,.5)', 4, .9); c.restore(); return; }
+      c.save(); poly(c, pts); c.clip();
+      if (o.bg) { c.fillStyle = mix(col, '#FFFFFF', .35); c.fill(); }
+      scrib(pts, col, o.bg ? 9 : 5, o.bg ? .55 : .85);
+      c.restore();
+      if (o.line && !o.bg) for (let k = 0; k < 2; k++) { { const D = dense(pts); path(c, wob(D.concat([D[0]]), 2.6)); } c.strokeStyle = C.ink; c.globalAlpha = .75; c.lineWidth = (o.lw || 2) * .9; c.lineCap = 'round'; c.stroke(); c.globalAlpha = 1; }
+    },
+    line(pts, col, w) { for (let k = 0; k < 2; k++) { path(c, wob(pts, 2.5)); c.strokeStyle = col; c.globalAlpha = .8; c.lineWidth = w; c.lineCap = 'round'; c.stroke(); c.globalAlpha = 1; } },
+  };
+  function scrib(pts, col, gap, alpha) {
+    const xs = pts.map(p => p[0]), ys = pts.map(p => p[1]), x0 = Math.min(...xs) - 10, x1 = Math.max(...xs) + 10, y0 = Math.min(...ys) - 10, y1 = Math.max(...ys) + 10;
+    c.strokeStyle = col; c.globalAlpha = alpha; c.lineWidth = gap * .9; c.lineCap = 'round';
+    c.beginPath(); for (let y = y0; y < y1; y += gap) { c.moveTo(x0 + rnd() * 8, y + rnd() * 3); c.lineTo(x1 - rnd() * 8, y + (x1 - x0) * .35 + rnd() * 3); } c.stroke();
+    c.globalAlpha = 1;
+  }
+}
+
+// ---------- compose: the four arm shapes, flat style, close on the characters ----------
+const out = document.getElementById('c'), o = out.getContext('2d');
+o.fillStyle = '#1E1B24'; o.fillRect(0, 0, out.width, out.height);
+const labels = { A: 'A  stubby mittens', B: 'B  elbow, paw on belly', C: 'C  paws together', D: 'D  bean arms' };
+['A', 'B', 'C', 'D'].forEach((a, i) => {
+  ARM = a; seed = 3;
+  const k = document.createElement('canvas'); k.width = 540; k.height = 960; scene(flatR(k.getContext('2d')));
+  const x = (i % 2) * 1080, y = Math.floor(i / 2) * 800;
+  o.drawImage(k, 0, 560, 540, 400, x, y, 1080, 800);
+  o.fillStyle = 'rgba(20,16,26,.75)'; o.fillRect(x + 20, y + 20, 420, 56); o.fillStyle = '#FFF'; o.font = 'bold 34px sans-serif'; o.fillText(labels[a], x + 36, y + 60);
+});
+window.done = true;
+</script>
+</body>
+</html>
