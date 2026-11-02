@@ -1,0 +1,12 @@
+[
+  {"id": "d01", "who": "pom", "shot": "01", "t": 0.4,  "text": "Don't. Say. Anything.", "emo": "through gritted teeth, embarrassed", "exag": 0.75, "cfg": 0.3, "speed": 1.15, "pitch": 1.0},
+  {"id": "d02", "who": "pip", "shot": "02", "t": 4.4,  "text": "I didn't say anything.", "emo": "innocent, deadpan", "exag": 0.4, "cfg": 0.5, "speed": 1.0, "pitch": 1.0},
+  {"id": "d03", "who": "pip", "shot": "02", "t": 7.2,  "text": "Big lunch?", "emo": "teasing", "exag": 0.6, "cfg": 0.4, "speed": 1.0, "pitch": 1.03},
+  {"id": "d04", "who": "pom", "shot": "04", "t": 14.3, "text": "Push me through. I'll give you half my dinner.", "emo": "trying to sound dignified", "exag": 0.55, "cfg": 0.45, "speed": 1.0, "pitch": 1.0},
+  {"id": "d05", "who": "pip", "shot": "05", "t": 18.2, "text": "You just ate your dinner.", "emo": "flat, unimpressed", "exag": 0.5, "cfg": 0.45, "speed": 1.0, "pitch": 1.0},
+  {"id": "d06", "who": "pom", "shot": "05", "t": 20.4, "text": "...Tomorrow's dinner.", "emo": "sheepish", "exag": 0.4, "cfg": 0.5, "speed": 1.05, "pitch": 1.0},
+  {"id": "d07", "who": "pip", "shot": "07", "t": 28.3, "text": "Okay. Run-up.", "emo": "determined, cracking knuckles", "exag": 0.7, "cfg": 0.35, "speed": 1.0, "pitch": 1.0},
+  {"id": "d08", "who": "pom", "shot": "10", "t": 40.0, "text": "...I'm thin now.", "emo": "soggy but proud", "exag": 0.5, "cfg": 0.45, "speed": 1.05, "pitch": 1.0},
+  {"id": "d09", "who": "pip", "shot": "12", "t": 48.2, "text": "Same time tomorrow?", "emo": "cheerful, munching", "exag": 0.55, "cfg": 0.45, "speed": 1.0, "pitch": 1.02},
+  {"id": "d10", "who": "pom", "shot": "12", "t": 50.0, "text": "...Bring a run-up.", "emo": "deadpan, resigned", "exag": 0.45, "cfg": 0.5, "speed": 1.05, "pitch": 0.98}
+]

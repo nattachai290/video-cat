@@ -1,6 +1,6 @@
 // core.js: constants, helpers, paper, paint wrapper, compositing and render hooks.
 // Length and rhythm come from PROJECT in config.js.
-const W = 1920, H = 1080;
+const W = PROJECT.w || 1920, H = PROJECT.h || 1080;   // PROJECT.w/h in config.js: 1080 x 1920 for Shorts (9:16)
 const BPM = PROJECT.bpm, BEAT = 60 / BPM, OFF = PROJECT.offset || 0, BOIL = 12, DUR = PROJECT.duration;
 const TAU = Math.PI * 2;
 const PAL = {
@@ -276,7 +276,7 @@ async function setup() {
   createCanvas(W, H, WEBGL); pixelDensity(1); noLoop();
   brush.scaleBrushes(5); defineBrushes();
   paperG = makePaper(); grainC = makeGrain(); glowTex = makeGlowTex(); letG = createGraphics(W, H); letG.pixelDensity(1);
-  outC = document.getElementById('out'); outX = outC.getContext('2d');
+  outC = document.getElementById('out'); outC.width = W; outC.height = H; outC.style.aspectRatio = `${W} / ${H}`; outX = outC.getContext('2d');
   await document.fonts.load('100px "Permanent Marker"');
   window.ready = true;
   if (!location.search.includes('render')) devUI();

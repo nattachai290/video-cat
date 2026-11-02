@@ -12,6 +12,7 @@ video-cat/
 ├── package.json             # p5, p5.brush, puppeteer-core (ติดตั้งครั้งเดียวที่ root)
 ├── engine/                  # เอนจินร่วม: core.js, timeline.js, render.mjs, voice.py, timing.py, ANIMATION_GUIDE.md
 └── stories/
+    ├── 03-cat-flap/         # เรื่องที่ 3: YouTube Shorts แนวตั้ง
     ├── 02-moon-cat/         # เรื่องที่ 2: "แมวขายดวงจันทร์" (นิทาน)
     └── 01-moji-letter/      # เรื่องที่ 1: "จดหมายถึงคนที่ให้ข้าวแมวเทา"
         ├── STORYBOARD.md
@@ -29,7 +30,8 @@ video-cat/
 | # | เรื่อง | ความยาว | สถานะ |
 |---|---|---|---|
 | 01 | [จดหมายถึงคนที่ให้ข้าวแมวเทา · The Letter for Moji](stories/01-moji-letter/STORYBOARD.md) | ~3:25 | พักไว้ (เนื้อเรื่องยังไม่โดน) |
-| 02 | [แมวขายดวงจันทร์ · The Cat Who Sold the Moon](stories/02-moon-cat/STORYBOARD.md) | ~3:30 | สตอรี่บอร์ด v1 รออนุมัติ |
+| 02 | [แมวขายดวงจันทร์ · The Cat Who Sold the Moon](stories/02-moon-cat/STORYBOARD.md) | ~3:36 | พักไว้ (เสียงพูดเสร็จแล้ว) |
+| 03 | [Pom & Pip: The Cat Flap · ป้อมติดประตูแมว](stories/03-cat-flap/STORYBOARD.md) | 0:52 Shorts 9:16 | สตอรี่บอร์ด v1 รออนุมัติ |
 
 ## ติดตั้งและรัน (บนเครื่องของคุณ)
 

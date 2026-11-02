@@ -1,0 +1,12 @@
+{
+ "pom": {
+  "voice": "en_GB-alan-medium",
+  "length": 1.0,
+  "pitch": 0.97
+ },
+ "pip": {
+  "voice": "en_US-amy-medium",
+  "length": 0.95,
+  "pitch": 1.15
+ }
+}
