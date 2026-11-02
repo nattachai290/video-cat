@@ -13,6 +13,9 @@
 | `voice.py` | สร้างเสียงพูดมีอารมณ์ (Chatterbox) หรือแบบเร็ว (Piper) | เขียนใหม่ |
 | `timing.py` | เช็กว่าทุกประโยคพูดจบทันในช็อต | เขียนใหม่ |
 | `dialog.mjs` | วางเสียงพูดลงไทม์ไลน์ → `out/audio/dialogue.wav` + ปากขยับตามเสียง (`src/dialog.js`) | ดัดแปลงจาก Kreycin/ton-sea (MIT) |
+| `cast/pumpkin_pip.js` | ตัวละครซีรีส์ Pumpkin & Pip: `pumpkin()`, `pip()`, สีหน้า `face()` / `faces()` (ทุกมุม front, 3/4, side) | เขียนใหม่ |
+| `cast/sheet.js` | model sheet: `?loop=cast`, `?loop=facesPumpkin`, `?loop=facesPip` | เขียนใหม่ |
+| `test/drycheck.mjs` | รันโค้ดฉากโดยไม่เปิดเบราว์เซอร์ เพื่อจับ NaN และ error | เขียนใหม่ |
 | `ANIMATION_GUIDE.md` | กฎการวาดและ API ทั้งหมดของเอนจิน อ่านก่อนเขียนฉาก | ClaudeAnimationBase (MIT) |
 
 ลำดับงานเสียงพูดของแต่ละเรื่อง:

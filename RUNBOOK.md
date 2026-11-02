@@ -74,6 +74,26 @@ Report: รายชื่อไฟล์ใน `out/voice/takes/` และส�
 `out/voice/raw/<id>_<who>.wav` แล้วรัน `timing.py` และ `dialog.mjs` อีกรอบ (เหมือนงาน voices บรรทัด 2–3)
 Commit: `src/dialog.js`
 
+## งาน: cast-sheet <story>
+
+เรนเดอร์ model sheet ของตัวละคร (ทุกมุม ทุกสีหน้า) ให้เซสชันหลักตรวจ
+
+จาก `stories/<story>`:
+
+```bash
+node ../../engine/test/drycheck.mjs cast facesPumpkin facesPip
+node ../../engine/render.mjs --loop=cast --sheet=0.5 --cols=1 --w=1080 --out=out/check/cast.jpg
+node ../../engine/render.mjs --loop=facesPumpkin --sheet=0.5 --cols=1 --w=1080 --out=out/check/faces_pumpkin.jpg
+node ../../engine/render.mjs --loop=facesPip --sheet=0.5 --cols=1 --w=1080 --out=out/check/faces_pip.jpg
+node ../../engine/render.mjs --loop=cast --strip=0:1 --cols=6 --w=360 --out=out/check/cast_motion.jpg
+```
+
+ถ้าเป็น Linux ที่ไม่มี GPU ให้เติม `--soft-gl` ทุกคำสั่ง render ถ้าหา Chrome ไม่เจอให้เติม `--chrome=<path>`
+(บนเครื่องคลาวด์ของ Claude ใช้ `--chrome=/opt/pw-browsers/chromium-1243/chrome-linux/chrome --soft-gl`)
+
+Report: บรรทัดสุดท้ายของ drycheck, ค่า ms/frame ที่ render.mjs พิมพ์ออกมา (ถ้ามี) และส่งภาพทั้ง 4 ให้ผู้ใช้
+Commit: `git add -f out/check/cast.jpg out/check/faces_pumpkin.jpg out/check/faces_pip.jpg out/check/cast_motion.jpg`
+
 ## งาน: check <story> <times>
 
 เรนเดอร์ภาพตรวจ (contact sheet) ที่เวลาที่กำหนด เซสชันหลักจะบอกเวลาและชื่อไฟล์ให้
