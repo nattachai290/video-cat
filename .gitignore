@@ -4,3 +4,5 @@ out/check/
 *.mp4
 out/voice-models/
 stories/*/out/voice/raw/
+stories/*/out/audio/
+stories/*/out/voice/
