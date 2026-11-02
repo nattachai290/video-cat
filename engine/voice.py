@@ -48,7 +48,7 @@ def model(name):
 
 def pitch_af(p):
     """ffmpeg filter that shifts pitch by factor p and keeps the length."""
-    return f"aresample=48000,asetrate={48000 * p:.0f},aresample=48000,atempo={1 / p:.4f}"
+    return f"aresample=48000,asetrate={48000 * p:.0f},aresample=48000,atempo={1 / p:.4f},volume=0.85"
 
 
 def piper(text, voice, out, length=1.0, pitch=1.0, noise=0.667, noise_w=0.8):

@@ -6,3 +6,4 @@ out/voice-models/
 stories/*/out/voice/raw/
 stories/*/out/audio/
 stories/*/out/voice/
+.venv/

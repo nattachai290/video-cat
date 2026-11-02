@@ -33,6 +33,9 @@ video-cat/
 
 ## ติดตั้งและรัน (บนเครื่องของคุณ)
 
+ขั้นตอนรันทุกงาน พร้อมพรอมต์ให้โมเดลเล็ก (Haiku) รันแทน อยู่ใน [RUNBOOK.md](RUNBOOK.md)
+
+
 ต้องมี Node 20+, Google Chrome, ffmpeg และ Python 3
 
 ```bash
