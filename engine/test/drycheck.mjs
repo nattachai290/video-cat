@@ -25,13 +25,17 @@ const ctx = {
   random: (a, b) => b === undefined ? (a === undefined ? rnd() : rnd() * a) : a + rnd() * (b - a), randomSeed: s => { seed = (Math.abs(s | 0) % 2147483646) + 1; },
   noiseSeed: noop, noise: () => .5, createGraphics: () => ({ pixelDensity: noop, drawingContext: {}, clear: noop }), createCanvas: noop, pixelDensity: noop, noLoop: noop,
 };
-ctx.window = ctx; vm.createContext(ctx);
+ctx.addEventListener = noop; ctx.window = ctx; vm.createContext(ctx);
+// the flat engine draws with Canvas2D: give it a stub context whose path calls are checked for NaN
+const ctx2d = new Proxy({}, { get: (_, k) => k === 'moveTo' || k === 'lineTo' ? (x, y) => check(k, [[x, y]])
+  : k === 'createRadialGradient' ? () => ({ addColorStop: noop }) : k === 'measureText' ? () => ({ width: 10 }) : noop, set: () => true });
 for (const s of srcs) {
   let code = fs.readFileSync(s, 'utf8');
   // top-level const/let are not visible across vm scripts: make them globals
   code = code.replace(/^(const|let) /gm, 'var ');
   try { vm.runInContext(code, ctx, { filename: s }); } catch (e) { console.log(`load error in ${s}: ${e.message}`); bad++; }
 }
+if (srcs.some(s => s.includes('flat/core.js'))) vm.runInContext('CTX = __ctx2d', Object.assign(ctx, { __ctx2d: ctx2d }));
 const run = (label, fn, t) => { ctx.T = t; ctx.LETTERS = []; ctx.CAM = null; ctx.BOILN = Math.floor(t * 12); ctx.CLAWD_N = 0;
   try { fn(t); } catch (e) { bad++; console.log(`error at ${label} t=${t}: ${e.message}\n  ${e.stack.split('\n').slice(1, 4).join('\n  ')}`); } };
 if (loops.length) for (const n of loops) {

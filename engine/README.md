@@ -16,6 +16,8 @@
 | `cast/pumpkin_pip.js` | ตัวละครซีรีส์ Pumpkin & Pip: `pumpkin()`, `pip()`, สีหน้า `face()` / `faces()` (ทุกมุม front, 3/4, side) | เขียนใหม่ |
 | `cast/sheet.js` | model sheet: `?loop=cast`, `?loop=facesPumpkin`, `?loop=facesPip` | เขียนใหม่ |
 | `test/drycheck.mjs` | รันโค้ดฉากโดยไม่เปิดเบราว์เซอร์ เพื่อจับ NaN และ error | เขียนใหม่ |
+| `flat/core.js`, `flat/timeline.js` | **เอนจินสไตล์การ์ตูนแบน** (Canvas2D) ใช้ API เดียวกับเอนจินสีน้ำ (`paint`, `inkLine`, `camBegin`, `shots` ...) ไม่ต้องมี GPU เร็วประมาณ 50–110 ms/เฟรม | เขียนใหม่ |
+| `styles/samples.html`, `styles/arms.html` | ภาพตัวอย่างเทียบสไตล์ และทรงแขน | เขียนใหม่ |
 | `ANIMATION_GUIDE.md` | กฎการวาดและ API ทั้งหมดของเอนจิน อ่านก่อนเขียนฉาก | ClaudeAnimationBase (MIT) |
 
 ลำดับงานเสียงพูดของแต่ละเรื่อง:

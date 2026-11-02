@@ -24,10 +24,10 @@
 // time (a blink on the swap, numbers ease with a little overshoot):
 //   pumpkin(x, y, u, { ...faces(lt, [[0, 'embarrassed'], [2.1, 'annoyed']]), who: 'pumpkin', view: 'q' })
 
-const PUMPKIN_COL = { col: '#E8913A', dk: '#B5612B', lt: '#F8E2C2', stripe: '#A9542A', vest: '#B8333A', vestDk: '#7C1F2A',
-                      button: '#EAC25C', nose: '#E07F86', iris: '#B9CB4A', inner: '#EDA6AE' };
-const PIP_COL = { col: '#9C98A8', dk: '#6D6879', lt: '#DCD6E2', inner: '#EDA3B4', nose: '#E07F96', tail: '#D69CAB',
-                  scarf: '#4E9A5C', scarfDk: '#2F6B3C', cracker: '#E3B25E', crackerDk: '#B8813A' };
+const PUMPKIN_COL = { col: '#F0973A', dk: '#C0652A', lt: '#FBE7C8', stripe: '#B4572A', vest: '#C8363F', vestDk: '#8A222B',
+                      button: '#EEC35A', nose: '#E8838C', iris: '#B7CC48', inner: '#F0A7B6' };
+const PIP_COL = { col: '#A3A0B0', dk: '#757083', lt: '#DFDAE5', inner: '#F0A7B6', nose: '#E8838C', tail: '#EDA7B5',
+                  scarf: '#4FA060', scarfDk: '#2F6E3E', cracker: '#E6B65F', crackerDk: '#B8813A' };
 
 const CAST_FACES = {
   neutral:     { eyes: 'open', lid: .1, low: 0, pupil: .7, brow: 0, browUp: 0, mouth: 'w', blush: 0 },
@@ -160,10 +160,19 @@ function castWhiskers(mx, my, s, len, sw, droop = 0, col = PAL.ink) {
 }
 
 // A short paw arm from a shoulder: angle a (0 out, + up), dir -1 left / 1 right, length len (px), width w (px).
+// A bean arm: narrow at the shoulder (sx, sy), round and heavy at the paw. Angle a (0 out, + up, - down), dir -1 left /
+// 1 right, length len (shoulder to paw centre, px), w = paw width (px). Two toe lines on the paw. The hook draws at the paw.
 function castArm(sx, sy, a, dir, len, w, col, sw, hook, u) {
-  const ex = sx + dir * Math.cos(a) * len, ey = sy - Math.sin(a) * len, mx = (sx + ex) / 2 + dir * Math.sin(a) * len * .08, my = (sy + ey) / 2 + Math.cos(a) * len * .08;
-  paint(ribbon([[sx, sy], [mx, my], [ex, ey]], w, w * .85), { wash: col, ink: PAL.ink, sw: sw * .8 });
-  paint(ellPts(ex, ey, w * .55, w * .5, 12), { wash: col, ink: PAL.ink, sw: sw * .7 });
+  const ux = dir * Math.cos(a), uy = -Math.sin(a), nx = -uy, ny = ux, ex = sx + ux * len, ey = sy + uy * len;
+  const r0 = w * .27, r1 = w * .7, bulge = len * .1;
+  const bean = through([[sx + nx * r0, sy + ny * r0], [sx + ux * len * .55 + nx * (r1 * .8 + bulge * .3), sy + uy * len * .55 + ny * (r1 * .8 + bulge * .3)],
+    [ex + nx * r1, ey + ny * r1], [ex + ux * r1 * 1.05, ey + uy * r1 * 1.05], [ex - nx * r1, ey - ny * r1],
+    [sx + ux * len * .55 - nx * r1 * .75, sy + uy * len * .55 - ny * r1 * .75], [sx - nx * r0, sy - ny * r0]], 5);
+  paint(bean, { wash: col, ink: PAL.ink, sw: sw * .85, shade: true, shadeK: .7 });
+  for (const d of [-.32, .32]) {
+    const ca = Math.cos(d), sa = Math.sin(d), dx = ux * ca - uy * sa, dy = ux * sa + uy * ca;
+    inkLine([[ex + dx * r1 * .4, ey + dy * r1 * .4], [ex + dx * r1 * .95, ey + dy * r1 * .95]], sw * .6, mixCol(col, '#2A1A30', .45), 'inkfine', 0);
+  }
   if (hook) { push(); translate(ex, ey); rotate(dir < 0 ? Math.PI + a : -a); if (dir < 0) scale(1, -1); hook(u, sw); pop(); }
 }
 
@@ -208,15 +217,14 @@ function pumpkin(x, y, u, o = {}) {
   for (const s of [-1, 1]) paint(ellPts((s * 1.9 + q * .5) * u * Math.min(fat, 1.15), -.45 * u, 1.2 * u, .6 * u, 14, u * .03), { wash: col, fill: lt, fillOp: 80, tex: .5, ink: PAL.ink, sw: sw * .8 });
   // far arm (3/4 view hides most of it behind the body)
   rs('armFar');
-  const shY = -6.1 * u, shX = 2.75 * u * fat;
-  if (q) castArm(-shX + q * .9 * u, shY, o.aL ?? -1.3, -1, 2.1 * u, 1.35 * u, mixCol(col, dk, .35), sw, o.armL, u);
+  const shY = -6.4 * u, shX = 3.15 * u * fat;
+  if (q) castArm(-shX + q * .9 * u, shY, o.aL ?? -1.14, -1, 3.0 * u, 1.4 * u, mixCol(col, dk, .35), sw, o.armL, u);
   // body
   rs('body');
   const bcx = q * .4 * u, bcy = -3.9 * u, brx = 4.3 * u * fat, bry = 3.7 * u * (1 - belly * .02);
   const body = furry(ellPts(bcx, bcy, brx, bry, 28, u * .04), bcx, bcy, puff * 1.2 + wet * .3);
-  paint(body, { wash: col, ink: null });
+  paint(body, { wash: col, ink: null, shade: true });
   paint(ellPts(bcx + q * .5 * u, -3.1 * u, 2.6 * u * fat, 2.55 * u, 20), { wash: lt, washOp: 235, ink: null });           // belly
-  paint(ellPts(bcx - 1.6 * u, -6.2 * u, 2.2 * u, 1.2 * u, 16, u * .05), { fill: '#FFF1D8', fillOp: 70, bleed: .2, tex: .8, ink: null });   // light
   for (const s of [-1, 1]) for (let k = 0; k < 3; k++) {   // side stripes
     const sx = bcx + s * (brx - u * (.25 + k * .05)), sy = -5.2 * u + k * 1.1 * u;
     inkLine([[sx, sy], [sx - s * u * .8, sy + u * .25], [sx - s * u * 1.3, sy + u * .15]], sw * 1.2, C.stripe, 'ink', .5);
@@ -228,14 +236,14 @@ function pumpkin(x, y, u, o = {}) {
   for (const s of [-1, 1]) {
     const off = q * .5 * (s > 0 ? 1.15 : .8);
     const pts = [[s * gap * .5 + off, -7.25], [s * 3.4 * vf + off, -6.7], [s * 4.0 * vf + off, -4.9], [s * 2.9 * vf + off, -3.75], [s * gap * 1.35 + off, -4.15]];
-    paint(_P(u, pts), { wash: C.vest, ink: PAL.ink, sw: sw * .85, curv: .25 });
+    paint(_P(u, pts), { wash: C.vest, ink: PAL.ink, sw: sw * .85, curv: .25, shade: true, shadeK: .6 });
     paint(_P(u, [[s * gap * .6 + off, -7.1], [s * 2.6 * vf + off, -6.7], [s * 2.2 * vf + off, -6.2], [s * gap * .9 + off, -6.5]]), { fill: '#E2646B', fillOp: 90, bleed: .1, tex: .5, ink: null });
     if (s < 0) for (const by of [-6.3, -5.0]) paint(ellPts((s * (gap * .55 + .5) + off) * u, by * u, .28 * u, .28 * u, 10), { wash: C.button, ink: PAL.ink, sw: sw * .5 });
   }
   // near arm(s)
   rs('arms');
-  if (!q) castArm(-shX, shY, o.aL ?? -1.3, -1, 2.1 * u, 1.35 * u, col, sw, o.armL, u);
-  castArm(shX + q * .5 * u, shY, o.aR ?? -1.3, 1, 2.1 * u, 1.35 * u, col, sw, o.armR, u);
+  if (!q) castArm(-shX, shY, o.aL ?? -1.14, -1, 3.0 * u, 1.4 * u, col, sw, o.armL, u);
+  castArm(shX + q * .5 * u, shY, o.aR ?? -1.14, 1, 3.0 * u, 1.4 * u, col, sw, o.armR, u);
   // head
   rs('head');
   push(); translate(q * .55 * u, -8.5 * u + puff * -.4 * u);
@@ -250,8 +258,7 @@ function pumpkin(x, y, u, o = {}) {
     const ang = Math.atan2(b / hy, a / hx), cheek = Math.abs(Math.sin(ang)) < .45 && b > -hy * .1 ? .18 * u : 0;   // cheek tufts
     return [a + Math.sign(a) * cheek * (i % 2 ? 1 : .4), b];
   }), 0, 0, puff * 1.1 + wet * .25);
-  paint(head, { wash: col, ink: null });
-  paint(ellPts(-1.2 * u, -1.1 * u, 1.6 * u, .8 * u, 14, u * .05), { fill: '#FFF1D8', fillOp: 70, bleed: .2, tex: .8, ink: null });
+  paint(head, { wash: col, ink: null, shade: true, shadeK: .8 });
   for (const k of [-1, 0, 1]) inkLine([[fx * .4 + k * .45 * u, -2.75 * u], [fx * .4 + k * .5 * u, -2.05 * u]], sw * 1.15, C.stripe, 'ink', 0);   // the M
   for (const s of [-1, 1]) inkLine([[s * hx * .97, -.5 * u], [s * (hx - .9 * u), -.35 * u]], sw * 1.05, C.stripe, 'ink', .3);
   paint(head, { ink: PAL.ink, sw });
@@ -298,14 +305,14 @@ function pumpkinSide(u, o, sw, k) {
   });
   rs('body');
   const body = furry(ellPts(0, -3.9 * u, 4.7 * u * fat, 3.0 * u * (1 + k.belly * .25), 28, u * .04), 0, -3.9 * u, puff * 1.2 + wet * .3);
-  paint(body, { wash: col, ink: null });
+  paint(body, { wash: col, ink: null, shade: true });
   paint(ellPts(.6 * u, -2.6 * u, 3.4 * u * fat, 1.4 * u * (1 + k.belly * .4), 18), { wash: lt, washOp: 230, ink: null });
   for (let i = 0; i < 4; i++) { const sx = (-2.6 + i * 1.3) * u * fat; inkLine([[sx, -6.6 * u], [sx + .35 * u, -5.6 * u], [sx + .15 * u, -4.9 * u]], sw * 1.2, C.stripe, 'ink', .5); }
   paint(body, { ink: PAL.ink, sw });
   rs('vest');
-  paint(_P(u, [[-1.2 * fat, -6.75], [2.8 * fat, -6.6], [3.3 * fat, -4.4], [2.2 * fat, -3.5], [-.6 * fat, -4.0]]), { wash: C.vest, ink: PAL.ink, sw: sw * .85, curv: .25 });
+  paint(_P(u, [[-1.2 * fat, -6.75], [2.8 * fat, -6.6], [3.3 * fat, -4.4], [2.2 * fat, -3.5], [-.6 * fat, -4.0]]), { wash: C.vest, ink: PAL.ink, sw: sw * .85, curv: .25, shade: true, shadeK: .6 });
   rs('arm');
-  castArm(2.6 * u * fat, -5.4 * u, o.aR ?? -1.2, 1, 2.3 * u, 1.05 * u, col, sw, o.armR, u);
+  castArm(2.6 * u * fat, -5.6 * u, o.aR ?? -1.14, 1, 2.8 * u, 1.3 * u, col, sw, o.armR, u);
   rs('head');
   push(); translate(3.5 * u * fat, -7.6 * u);
   const hx = 2.9 * u * (1 + puff * .15), hy = 2.75 * u * (1 + puff * .12);
@@ -315,7 +322,7 @@ function pumpkinSide(u, o, sw, k) {
     if (!far) paint([[(ex - .5) * u, -1.8 * u], [lerp((ex + .1) * u, tip[0], .9), lerp(-1.8 * u, tip[1], .8)], [(ex + .55) * u, -1.95 * u]], { wash: C.inner, ink: null });
   }
   const head = furry(ellPts(0, 0, hx, hy, 24, u * .04), 0, 0, puff + wet * .2);
-  paint(head, { wash: col, ink: null });
+  paint(head, { wash: col, ink: null, shade: true, shadeK: .8 });
   paint(ellPts(2.3 * u, .75 * u, 1.0 * u, .65 * u, 14), { wash: lt, ink: null });   // muzzle
   for (const kx of [-.9, -.4, .1]) inkLine([[kx * u, -2.65 * u], [(kx + .15) * u, -1.95 * u]], sw * 1.1, C.stripe, 'ink', 0);
   paint(head, { ink: PAL.ink, sw });
@@ -356,10 +363,10 @@ function pip(x, y, u, o = {}) {
       paint(ellPts((lx + sx) * u, -h * .5 * u, .32 * u, h * .6 * u, 10), { wash: far ? C.dk : C.tail, ink: PAL.ink, sw: sw * .6 });
     });
     rs('body');
-    paint(ellPts(0, -1.85 * u, 2.1 * u, 1.45 * u, 22, u * .03), { wash: C.col, ink: PAL.ink, sw });
+    paint(ellPts(0, -1.85 * u, 2.1 * u, 1.45 * u, 22, u * .03), { wash: C.col, ink: PAL.ink, sw, shade: true });
     paint(ellPts(.6 * u, -1.3 * u, 1.2 * u, .6 * u, 14), { wash: C.lt, washOp: 220, ink: null });
     rs('scarf'); pipScarf(u, sw, C, wind, 1, 'side');
-    rs('arm'); castArm(1.3 * u, -2.3 * u, o.aR ?? -1.3, 1, 1.0 * u, .55 * u, C.col, sw, o.cracker ? pipCracker : o.armR, u);
+    rs('arm'); castArm(1.3 * u, -2.5 * u, o.aR ?? -1.14, 1, 1.3 * u, .6 * u, C.col, sw, o.cracker ? pipCracker : o.armR, u);
     rs('head');
     push(); translate(1.9 * u, -3.4 * u);
     paint(ellPts(-.5 * u, -1.25 * u, 1.05 * u, 1.15 * u, 18), { wash: C.col, ink: PAL.ink, sw: sw * .8 });            // the ear
@@ -380,13 +387,13 @@ function pip(x, y, u, o = {}) {
   for (const s of [-1, 1]) paint(ellPts((s * .75 + q * .2) * u, -.2 * u, .55 * u, .25 * u, 10), { wash: C.tail, ink: PAL.ink, sw: sw * .6 });
   rs('body');
   const bcx = q * .15 * u;
-  paint(ellPts(bcx, -1.75 * u, 1.55 * u, 1.75 * u, 22, u * .03), { wash: C.col, ink: PAL.ink, sw });
+  paint(ellPts(bcx, -1.75 * u, 1.55 * u, 1.75 * u, 22, u * .03), { wash: C.col, ink: PAL.ink, sw, shade: true });
   paint(ellPts(bcx + q * .25 * u, -1.35 * u, .95 * u, 1.05 * u, 16), { wash: C.lt, washOp: 220, ink: null });
   rs('arms');
   const hookR = o.cracker ? pipCracker : o.armR;
-  castArm(-1.1 * u + bcx, -2.5 * u, o.aL ?? -1.3, -1, 1.0 * u, .55 * u, q ? C.dk : C.col, sw, o.armL, u);
+  castArm(-1.2 * u + bcx, -2.7 * u, o.aL ?? -1.14, -1, 1.3 * u, .6 * u, q ? C.dk : C.col, sw, o.armL, u);
   rs('scarf'); pipScarf(u, sw, C, wind, q, 'front');
-  rs('armR'); castArm(1.1 * u + bcx + q * .1 * u, -2.5 * u, o.aR ?? -1.3, 1, 1.0 * u, .55 * u, C.col, sw, hookR, u);
+  rs('armR'); castArm(1.2 * u + bcx + q * .1 * u, -2.7 * u, o.aR ?? -1.14, 1, 1.3 * u, .6 * u, C.col, sw, hookR, u);
   // head
   rs('head');
   push(); translate(q * .25 * u, -4.55 * u);
@@ -398,7 +405,7 @@ function pip(x, y, u, o = {}) {
     paint(ellPts(s * .05 * u, .05 * u, r * .66, r * .7, 16), { wash: C.inner, ink: null });
     pop();
   }
-  paint(ellPts(0, 0, 1.5 * u, 1.3 * u, 22, u * .03), { wash: C.col, ink: null });
+  paint(ellPts(0, 0, 1.5 * u, 1.3 * u, 22, u * .03), { wash: C.col, ink: null, shade: true, shadeK: .8 });
   paint(ellPts(fx, .55 * u, .85 * u, .55 * u, 14), { wash: C.lt, washOp: 230, ink: null });   // snout
   paint(ellPts(0, 0, 1.5 * u, 1.3 * u, 22, u * .03), { ink: PAL.ink, sw });
   if (o.blush) for (const s of [-1, 1]) paint(ellPts(fx + s * .95 * u, .4 * u, .36 * u, .2 * u, 10), { wash: '#E8607A', washOp: 160 * clamp(o.blush), ink: null });
@@ -421,7 +428,7 @@ function pip(x, y, u, o = {}) {
 // The scarf: a band round the neck and one long end that hangs, or streams back in the wind (wind -1..1).
 function pipScarf(u, sw, C, wind, q, view) {
   const side = view === 'side', cx = side ? 1.3 * u : q * .2 * u, cy = side ? -3.05 * u : -3.25 * u;
-  paint(ellPts(cx, cy, (side ? 1.0 : 1.35) * u, .42 * u, 16, u * .03), { wash: C.scarf, ink: PAL.ink, sw: sw * .8 });
+  paint(ellPts(cx, cy, (side ? 1.0 : 1.35) * u, .42 * u, 16, u * .03), { wash: C.scarf, ink: PAL.ink, sw: sw * .8, shade: true });
   for (let k = -1; k <= 1; k++) inkLine([[cx + k * .45 * u, cy - .3 * u], [cx + k * .45 * u + .1 * u, cy + .3 * u]], sw * .5, C.scarfDk, 'inkfine', 0);
   const w = wind, fl = Math.sin(T * (4 + Math.abs(w) * 6)), ox = side ? cx - .6 * u : cx + .55 * u;
   const end = [];

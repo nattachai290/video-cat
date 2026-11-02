@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <title>Cat Flap studio</title>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Permanent+Marker&display=block">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@700&display=block">
 <style>
   html, body { margin: 0; background: #1b1820; color: #eee; font: 13px system-ui, sans-serif; }
   main { padding: 12px; display: grid; gap: 8px; }
@@ -13,8 +13,6 @@
   #scrub { flex: 1; }
   #tt { font-variant-numeric: tabular-nums; min-width: 190px; }
 </style>
-<script src="../../node_modules/p5/lib/p5.min.js"></script>
-<script src="../../node_modules/p5.brush/dist/p5.brush.js"></script>
 </head>
 <body>
 <main>
@@ -23,15 +21,14 @@
 </main>
 <!-- engine -->
 <script src="src/config.js"></script>
-<script src="../../engine/core.js"></script>
-<script src="../../engine/clawd.js"></script>
-<script src="../../engine/timeline.js"></script>
+<script src="../../engine/flat/core.js"></script>
+<script src="../../engine/clawd.js"></script>  <!-- for emote() only -->
+<script src="../../engine/flat/timeline.js"></script>
 <script src="../../engine/acting.js"></script>
 <!-- cast: Pumpkin & Pip (shared by the series) -->
 <script src="../../engine/cast/pumpkin_pip.js"></script>
 <script src="../../engine/cast/sheet.js"></script>
 <!-- reference sheets (standalone loops) -->
-<script src="../../engine/sheets.js"></script>
 <!-- your video: add a script per scene file, in order -->
 <!-- scene files go here, one per act: src/scenes/a01_morning.js ... -->
 <script>
