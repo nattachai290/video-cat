@@ -52,10 +52,10 @@
     kitchenFront(t);
     stuckFront(t, { face: faces(t, [[4, 'embarrassed'], [4.5, 'annoyed'], [7.7, 'embarrassed', { lookX: -.8 }]]) });
     const walk = seg(t, 4.0, 5.3), px = lerp(1260, 820, ease(walk));
-    const looking = t > 6.1 && t < 7.0, lookY = looking ? Math.sin((t - 6.1) / .9 * TAU) * .9 : 0;
-    const pf = faces(t, [[4, 'munching'], [4.35, 'innocent'], [6.1, 'deadpan'], [7.05, 'teasing']]);
+    const looking = t > 5.75 && t < 6.65, lookY = looking ? Math.sin((t - 5.75) / .9 * TAU) * .9 : 0;
+    const pf = faces(t, [[4, 'munching'], [4.35, 'innocent'], [5.75, 'deadpan'], [6.75, 'teasing']]);
     if (t < 5.35) pip(px, KF.floor + 70, U, { view: 'side', flip: true, walk: (1260 - px) / (1.6 * U), dy: -Math.abs(Math.sin(walk * 9)) * .15, cracker: true, aR: .2, ...pf, talk: chew(t), boilKey: 'pip' });
-    else pip(820, KF.floor + 70, U, { view: 'q', flip: true, cracker: true, aR: .25 + (t > 7 ? .15 : 0), ...pf, lookY, talk: Math.max(say('pip', t), chew(t, t < 6.1 || t > 8.2)), boilKey: 'pip' });
+    else pip(820, KF.floor + 70, U, { view: 'q', flip: true, cracker: true, aR: .25 + (t > 7 ? .15 : 0), ...pf, lookY, talk: Math.max(say('pip', t), chew(t, t < 5.75 || t > 8.9)), boilKey: 'pip' });
     camEnd();
     if (lt > dur - .3) brushWipe((lt - (dur - .3)) / .6, ['#F2B33E', '#F4C98A']);
   }
