@@ -1,8 +1,8 @@
 {
-  "pom":    {"voice": "en_GB-alan-medium",                  "length": 1.0,  "pitch": 0.97},
-  "pip":    {"voice": "en_US-amy-medium",                   "length": 0.95, "pitch": 1.15},
-  "shell":  {"voice": "en_GB-alba-medium",                  "length": 1.35, "pitch": 0.90},
-  "bramble":{"voice": "en_GB-northern_english_male-medium", "length": 0.95, "pitch": 1.00},
-  "frogs":  {"voice": "en_US-joe-medium",                   "length": 1.1,  "pitch": 0.85},
-  "crowd":  {"voice": "en_US-ryan-medium",                  "length": 0.9,  "pitch": 1.00}
+  "pom": {"voice": "en_GB-alan-medium", "length": 1.0, "pitch": 0.97},
+  "pip": {"voice": "en_US-amy-medium", "length": 0.95, "pitch": 1.15},
+  "shell": {"voice": "en_GB-alba-medium", "length": 1.35, "pitch": 0.9},
+  "bramble": {"voice": "en_GB-northern_english_male-medium", "length": 0.95, "pitch": 1.0},
+  "frogs": {"voice": "en_US-joe-medium", "length": 1.1, "pitch": 0.85, "chorus": 3},
+  "crowd": {"voice": "en_US-ryan-medium", "length": 0.9, "pitch": 1.0, "chorus": 5}
 }
