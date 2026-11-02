@@ -6,7 +6,7 @@
 //   Shot sizes (Shorts, 1080 wide): Pumpkin medium u ≈ 38–48, close-up u ≈ 70–110; Pip medium u ≈ 38–48.
 //
 // Options (all optional; spread several objects together, later ones win):
-//   pose    view: 'front' | 'q' (3/4) | 'side'; flip (face left); dx, dy (in u, -dy = up); sq (squash, < 0 stretches);
+//   pose    view: 'front' | 'q' (3/4) | 'side'; flip (face left); dx, dy (in u, -dy = up); sq (squash, < 0 stretches); noTail;
 //           rot (pivots at the feet); aL, aR (arm angle: 0 straight out, + up, - down; default -1.1 hangs);
 //           walk (leg phase, side view); tailWag 0..1; noShadow
 //   face    eyes: open | wide | half | closed | happy | squeeze | spiral | dot  (or [left, right]);
@@ -206,7 +206,7 @@ function pumpkin(x, y, u, o = {}) {
   const tw = (o.tailWag ?? .4), ts = Math.sin(T * (1.4 + tw * 3)) * (.25 + tw * .5);
   // tail (behind): one ribbon curling up on the far side
   rs('tail');
-  {
+  if (!o.noTail) {
     const P = [[2.4, -2.2], [4.3 + ts * .3, -2.6], [5.4 + ts * .6, -4.2], [5.1 + ts, -6.0 - wet * -1.5], [4.2 + ts * 1.4, -6.8 + wet * 2.2]];
     const Pt = P.map(([a, b]) => [(a + q * .8) * u * fat * .95, b * u]);
     paint(ribbon(Pt, u * (1.25 + puff * .9 - wet * .45), u * (.7 + puff * .7 - wet * .3)), { wash: col, ink: PAL.ink, sw: sw * .85 });

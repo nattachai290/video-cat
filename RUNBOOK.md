@@ -94,6 +94,16 @@ node ../../engine/render.mjs --loop=cast --strip=0:1 --cols=6 --w=360 --out=out/
 Report: บรรทัดสุดท้ายของ drycheck, ค่า ms/frame ที่ render.mjs พิมพ์ออกมา (ถ้ามี) และส่งภาพทั้ง 4 ให้ผู้ใช้
 Commit: `git add -f out/check/cast.jpg out/check/faces_pumpkin.jpg out/check/faces_pip.jpg out/check/cast_motion.jpg`
 
+## งาน: preview <story> (เอนจินแบน)
+
+เรนเดอร์คลิปเต็มด้วย Playwright (มีในเครื่องคลาวด์ของ Claude อยู่แล้ว ไม่ต้อง npm install) จาก `stories/<story>`:
+
+```bash
+NODE_PATH=$(npm root -g) node ../../engine/flat/render_pw.mjs --out=out/preview.mp4 --audio=out/audio/dialogue.wav
+```
+
+Report: บรรทัดสุดท้าย (จำนวนเฟรม/เวลา) และส่งไฟล์ให้ผู้ใช้
+
 ## งาน: check <story> <times>
 
 เรนเดอร์ภาพตรวจ (contact sheet) ที่เวลาที่กำหนด เซสชันหลักจะบอกเวลาและชื่อไฟล์ให้

@@ -7,7 +7,7 @@
 - [ ] Haiku: งาน `voices 03-cat-flap` ใน RUNBOOK.md แล้วเช็กเวลา
 - [x] ริก Pumpkin & Pip (`engine/cast/pumpkin_pip.js`) + model sheet (`engine/cast/sheet.js`), drycheck ผ่าน
 - [x] เปลี่ยนเป็นสไตล์การ์ตูนแบน (`engine/flat/`) แขนทรงถั่ว (D) ตรวจ model sheet แล้ว (`out/check/cast.jpg`, `faces_*.jpg`) ~50–110 ms/เฟรม
-- [ ] ฉาก 12 ช็อต + ตรวจ contact sheet
+- [x] ฉาก + พร็อพ (`src/props.js`) และ 12 ช็อต (`src/scenes/shots.js`) ตรวจ contact sheet + motion แล้ว, เรนเดอร์ทั้งคลิปได้ใน ~2 นาที (`engine/flat/render_pw.mjs`)
 - [ ] SFX + ดนตรีลูป + มิกซ์
 - [ ] ซับไตเติลอังกฤษ (บนกลางจอ)
 - [ ] เรนเดอร์ตัวจริง
