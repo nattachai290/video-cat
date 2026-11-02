@@ -31,7 +31,7 @@ video-cat/
 |---|---|---|---|
 | 01 | [จดหมายถึงคนที่ให้ข้าวแมวเทา · The Letter for Moji](stories/01-moji-letter/STORYBOARD.md) | ~3:25 | พักไว้ (เนื้อเรื่องยังไม่โดน) |
 | 02 | [แมวขายดวงจันทร์ · The Cat Who Sold the Moon](stories/02-moon-cat/STORYBOARD.md) | ~3:36 | พักไว้ (เสียงพูดเสร็จแล้ว) |
-| 03 | [Pom & Pip: The Cat Flap · ป้อมติดประตูแมว](stories/03-cat-flap/STORYBOARD.md) | 0:52 Shorts 9:16 | สตอรี่บอร์ด v1 รออนุมัติ |
+| 03 | [Pumpkin & Pip: The Cat Flap · พัมป์กินติดประตูแมว](stories/03-cat-flap/STORYBOARD.md) | 0:52 Shorts 9:16 | สตอรี่บอร์ด v1 รออนุมัติ |
 
 ## ติดตั้งและรัน (บนเครื่องของคุณ)
 
