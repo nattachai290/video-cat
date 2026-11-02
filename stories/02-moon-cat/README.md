@@ -10,6 +10,7 @@
 pip install piper-tts
 python3 ../../engine/voice.py          # 26 ช่วงพูด -> out/voice/raw/*.wav
 python3 ../../engine/voice.py d07 d20  # ทำใหม่เฉพาะบางประโยค
+python3 ../../engine/timing.py         # เช็กว่าทุกประโยคพูดจบทันในช็อตของมัน
 node ../../engine/render.mjs --sheet=1,5,9 --cols=3 --w=480 --out=out/check/test.jpg
 ```
 

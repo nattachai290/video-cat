@@ -15,7 +15,7 @@ from pathlib import Path
 ROOT = Path.cwd()
 MODELS = Path(__file__).resolve().parent.parent / "out/voice-models"
 RAW = ROOT / "out/voice/raw"
-HF = "https://huggingface.co/rhasspy/piper-voices/resolve/main/en"
+HF = "https://huggingface.co/rhasspy/piper-voices/resolve/main"
 
 
 

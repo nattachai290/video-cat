@@ -2,3 +2,5 @@ node_modules/
 out/frames/
 out/check/
 *.mp4
+out/voice-models/
+stories/*/out/voice/raw/

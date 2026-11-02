@@ -10,7 +10,7 @@
 ```
 video-cat/
 ├── package.json             # p5, p5.brush, puppeteer-core (ติดตั้งครั้งเดียวที่ root)
-├── engine/                  # เอนจินร่วม: core.js, timeline.js, render.mjs, voice.py, ANIMATION_GUIDE.md
+├── engine/                  # เอนจินร่วม: core.js, timeline.js, render.mjs, voice.py, timing.py, ANIMATION_GUIDE.md
 └── stories/
     ├── 02-moon-cat/         # เรื่องที่ 2: "แมวขายดวงจันทร์" (นิทาน)
     └── 01-moji-letter/      # เรื่องที่ 1: "จดหมายถึงคนที่ให้ข้าวแมวเทา"
