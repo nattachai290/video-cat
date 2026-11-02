@@ -89,7 +89,7 @@ node ../../engine/render.mjs --loop=cast --strip=0:1 --cols=6 --w=360 --out=out/
 ```
 
 ถ้าเป็น Linux ที่ไม่มี GPU ให้เติม `--soft-gl` ทุกคำสั่ง render ถ้าหา Chrome ไม่เจอให้เติม `--chrome=<path>`
-(บนเครื่องคลาวด์ของ Claude ใช้ `--chrome=/opt/pw-browsers/chromium-1243/chrome-linux/chrome --soft-gl`)
+(บนเครื่องคลาวด์ของ Claude มี `/usr/bin/google-chrome` อยู่แล้ว เติมแค่ `--soft-gl` ก็พอ)
 
 Report: บรรทัดสุดท้ายของ drycheck, ค่า ms/frame ที่ render.mjs พิมพ์ออกมา (ถ้ามี) และส่งภาพทั้ง 4 ให้ผู้ใช้
 Commit: `git add -f out/check/cast.jpg out/check/faces_pumpkin.jpg out/check/faces_pip.jpg out/check/cast_motion.jpg`
