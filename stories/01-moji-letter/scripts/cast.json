@@ -1,0 +1,4 @@
+{
+  "fah":   {"voice": "en_US-lessac-medium", "length": 1.0,  "pitch": 1.00},
+  "lamai": {"voice": "en_GB-alba-medium",   "length": 1.25, "pitch": 0.93}
+}

@@ -12,11 +12,11 @@
 
 ```bash
 pip install piper-tts
-python3 scripts/voice.py              # 18 ประโยค -> out/voice/raw/*.wav
-python3 scripts/voice.py d09          # ทำใหม่เฉพาะบางประโยค
+python3 ../../engine/voice.py         # 18 ประโยค -> out/voice/raw/*.wav
+python3 ../../engine/voice.py d09     # ทำใหม่เฉพาะบางประโยค
 ```
 
-บทพูดอยู่ใน `scripts/lines.json` ส่วนเสียงของแต่ละตัวละครตั้งไว้ใน `CAST` ของ `scripts/voice.py`
+บทพูดอยู่ใน `scripts/lines.json` ส่วนเสียงของแต่ละตัวละครอยู่ใน `scripts/cast.json`
 
 ## ภาพตรวจงาน
 
