@@ -45,9 +45,9 @@
   const grid = (t, draw, scale) => {
     bg();
     const names = Object.keys(CAST_FACES), cols = W > H ? 6 : 3, rows = Math.ceil(names.length / cols);
-    const cw = W / cols, rh = H / rows, u = Math.min(cw / 10, rh / 14) * scale;
+    const cw = W / cols, rh = H / rows, u = Math.min(cw / 10, rh / 15.5) * scale;
     names.forEach((n, i) => {
-      const cx = cw * (i % cols) + cw / 2, gy = rh * Math.floor(i / cols) + rh * .84;
+      const cx = cw * (i % cols) + cw / 2, gy = rh * Math.floor(i / cols) + rh * .86;
       draw(cx, gy, u, { ...face(n, { seed: i }), view: 'q', boilKey: 'f' + i, talk: n === 'neutral' ? talk(t) : 0 });
       label(n, cx, gy + 26, 20);
     });
@@ -55,6 +55,6 @@
   // Every face preset in CAST_FACES (3/4 view). 'neutral' is shown talking.
   LOOPS.facesPumpkin = t => grid(t, pumpkin, 1);
   LOOPS.facesPumpkin.len = 2;
-  LOOPS.facesPip = t => grid(t, pip, 1.9);
+  LOOPS.facesPip = t => grid(t, pip, 1.6);
   LOOPS.facesPip.len = 2;
 })();
