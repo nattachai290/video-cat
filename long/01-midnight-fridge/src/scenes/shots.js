@@ -82,17 +82,25 @@
     crayon([[-60, 960], [W + 60, 960]], '#8E6A55', 8);
     crayon([[1360, 958], [1360, 520], [1640, 520], [1640, 958]], '#4F7FC9', 9, 3);
     crayon([[1360, 680], [1640, 680]], '#4F7FC9', 6, 4);
-    const U2 = 30;
+    const U2 = 22;
     if (tt < 16.6) {
       letter('1. SNEAK', 420, 140, 90, '#E2463F', { font: '800 90px "Baloo 2", sans-serif', rot: -.04 });
       const k = seg(tt, 14.4, 16.6), x = lerp(250, 1000, k), bob = -Math.abs(Math.sin(tt * 8)) * .3;
       pumpkin(x - 170, 958, U2, { ...face('smug', { mouth: 'smirk' }), view: 'q', dy: bob, sq: .15, aL: -.4, aR: -.4, draw: (u, sw) => shades(u, sw), noShadow: true, boilKey: 'pk' });
       pip(x + 60, 958, U2, { ...face('smug'), view: 'q', dy: bob, sq: .1, aL: .2, aR: -.2, draw: pipShades, noShadow: true, boilKey: 'pip' });
-    } else if (tt < 18.4) {
+    } else if (tt < 18.4) {   // 2. CLIMB: spy-style grappling hook, then up the rope (Pip rides on his head)
       letter('2. CLIMB', 420, 140, 90, '#4F7FC9', { font: '800 90px "Baloo 2", sans-serif', rot: .03 });
-      const k = ease(seg(tt, 16.6, 18.3)), p = arcPt([900, 958], [1500, 520], 330, k);
-      pumpkin(p[0], p[1], U2, { ...face('smug', { mouth: 'smirk' }), rot: -k * TAU, aL: 1.2, aR: 1.2, draw: (u, sw) => shades(u, sw), noShadow: true, boilKey: 'pk' });
-      push(); translate(p[0], p[1]); rotate(-k * TAU); pip(0, -13.0 * U2, U2 * .9, { ...face('smug'), aL: 1.2, aR: 1.2, draw: pipShades, noShadow: true, boilKey: 'pip' }); pop();
+      const KX = 1215, HOOK = [1372, 528], fire = seg(tt, 16.6, 16.95), climb = ease(seg(tt, 17.0, 18.2)), top = tt >= 18.2;
+      const ky = top ? 520 : lerp(958, 640, climb), kx = top ? 1440 : KX;
+      const sw = Math.sin(tt * 22), U3 = U2;
+      const paw = [kx + (climb > 0 && !top ? 0 : 1.6 * U3), ky - (climb > 0 && !top ? 13.6 : 11.5) * U3];
+      // the grapple: shot up, then the rope stays taut
+      const hk = fire < 1 ? [lerp(paw[0], HOOK[0], fire), lerp(paw[1], HOOK[1], fire)] : HOOK;
+      if (!top) { inkLine([paw, hk], 3, '#5A4636', 'ink', 0); paint([[hk[0] - 14, hk[1]], [hk[0], hk[1] - 18], [hk[0] + 14, hk[1]], [hk[0], hk[1] - 6]], { wash: '#8E96A3', sw: 1 }); }
+      if (climb > 0 && !top) for (let i = 0; i < 3; i++) inkLine([[kx - 120 + i * 120, ky + 40], [kx - 120 + i * 120, ky + 140]], 4, '#C9A06A', 'ink', 0);   // speed lines (going up)
+      const aL = climb > 0 && !top ? 1.35 + .25 * sw : -.4, aR = climb > 0 && !top ? 1.35 - .25 * sw : fire > 0 ? 1.1 : -.4;
+      pumpkin(kx, ky, U3, { ...face('smug', { mouth: 'smirk' }), aL, aR, dy: climb > 0 && !top ? -Math.abs(sw) * .2 : 0, draw: (u, sw2) => shades(u, sw2), noShadow: true, boilKey: 'pk' });
+      pip(kx, ky - 13.0 * U3, U3 * .9, { ...face('smug'), aL: 1.0, aR: climb > 0 ? -.3 : 1.0, draw: pipShades, noShadow: true, boilKey: 'pip' });
     } else {
       letter('3. CAKE!!!', 520, 140, 110, '#E2463F', { font: '800 110px "Baloo 2", sans-serif', rot: -.05 });
       for (let i = 0; i < 9; i++) { const a = Math.PI / 2 + (i - 4) * .16 + Math.sin(tt) * .03; paint([[1500, -100], [1500 + Math.cos(a - .05) * 1400, -100 + Math.sin(a - .05) * 1400], [1500 + Math.cos(a + .05) * 1400, -100 + Math.sin(a + .05) * 1400]], { wash: '#FFF3B0', washOp: 90, ink: null }); }
