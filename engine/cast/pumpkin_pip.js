@@ -299,53 +299,74 @@ function pumpkinFace(u, o, sw, fx, q, k) {
 
 // Pumpkin in profile, facing right: a long round body, the head at the front, four stubby legs (walk), the tail behind.
 function pumpkinSide(u, o, sw, k) {
+  // Side view drawn like a real cat in profile (long body, four walking legs, tail curled up from the rump, head with a
+  // muzzle at the front), kept chubby and flat. Faces +x; ground at y = 0.
   const { col, dk, lt, C, fat, wet, puff, talk, rs, furry } = k;
-  const walk = o.walk;
+  const walk = o.walk, farCol = mixCol(col, dk, .45);
+  const bodyY = -4.6 * u, brx = 4.4 * u * fat, bry = 2.45 * u * (1 + k.belly * .25);
+  const hip = [-2.6 * u * fat, -4.4 * u], sho = [2.4 * u * fat, -4.6 * u];
+  const raise = o.aR != null && o.aR > -.9 ? clamp((o.aR + .9) / 2.2) : 0;   // near front paw lifted (a swipe / a reach)
+  // a leg: a tapered column from a joint to a round paw; swing = angle (+ = forward)
+  const leg = (j, len, swing, w0, w1, c, hook) => {
+    const ex = j[0] + Math.sin(swing) * len, ey = j[1] + Math.cos(swing) * len;
+    paint(ribbon([[j[0], j[1]], [lerp(j[0], ex, .55) - Math.sin(swing) * .1 * u, lerp(j[1], ey, .55)], [ex, ey - .25 * u]], w0, w1), { wash: c, ink: PAL.ink, sw: sw * .8 });
+    paint(ellPts(ex + .25 * u, ey - .3 * u, .62 * u, .38 * u, 12), { wash: c, ink: PAL.ink, sw: sw * .8 });
+    if (hook) { push(); translate(ex + .25 * u, ey - .3 * u); rotate(-Math.PI / 2 + swing); hook(u, sw); pop(); }
+  };
+  const ph = i => walk == null ? 0 : Math.sin((walk + [0, .5, .5, 0][i]) * TAU) * .55;
+  const L = -bodyY - .2 * u;
+  // tail: up from the rump in an S, tip curling forward
   rs('tail');
-  const ts = Math.sin(T * 1.8) * .4;
-  paint(ribbon(_P(u, [[-3.6 * fat, -4.2], [-5.4 * fat, -4.6 + ts * .5], [-6.1 * fat, -6.6 + ts], [-5.4 * fat, -8.1 + ts + wet * 2.5]]), u * (1.2 + puff * .8 - wet * .4), u * (.75 + puff * .6 - wet * .3)), { wash: col, ink: PAL.ink, sw: sw * .85 });
-  rs('legs');
-  const legs = [[-2.4, 1], [2.2, 1], [-1.6, 0], [3.0, 0]];
-  legs.forEach(([lx, far], i) => {
-    let sx = 0, h = 1.9;
-    if (walk != null) { const ph = (walk + [0, .5, .5, 0][i]) * TAU; sx = Math.sin(ph) * .6; h = 1.9 - Math.max(0, Math.cos(ph)) * .7; }
-    paint(rrPts((lx * fat * .9 + sx - .55) * u, -h * u - .3 * u, 1.1 * u, h * u + .3 * u, .5 * u), { wash: far ? mixCol(col, dk, .45) : col, ink: PAL.ink, sw: sw * .8 });
-  });
+  const ts = Math.sin(T * (1.4 + (o.tailWag ?? .4) * 3)) * (.25 + (o.tailWag ?? .4) * .4);
+  if (!o.noTail) {
+    const P = [[-4.0 * fat, -5.6], [-5.3 * fat, -6.6 + ts * .2], [-5.7 * fat + ts * .5, -8.6 + wet * 2.5], [-5.0 * fat + ts, -10.0 + wet * 3.5], [-4.2 * fat + ts * 1.3, -10.2 + wet * 3.6]].map(([a, b2]) => [a * u, b2 * u]);
+    paint(ribbon(P, u * (1.1 + puff * .8 - wet * .4), u * (.65 + puff * .6 - wet * .3)), { wash: col, ink: PAL.ink, sw: sw * .85 });
+    for (let i = 1; i < 4; i++) { const m = [(P[i][0] + P[i + 1][0]) / 2, (P[i][1] + P[i + 1][1]) / 2]; inkLine([[m[0] - .4 * u, m[1] - .1 * u], [m[0] + .35 * u, m[1] + .15 * u]], sw * .7, C.stripe, 'ink', .3); }
+  }
+  // far legs (darker), then the body, then the near legs
+  rs('legsFar');
+  leg([hip[0] + .5 * u, hip[1]], L, ph(1), 1.15 * u, .8 * u, farCol);
+  leg([sho[0] - .4 * u, sho[1]], L - .2 * u, ph(2), 1.0 * u, .75 * u, farCol);
   rs('body');
-  const body = furry(ellPts(0, -3.9 * u, 4.7 * u * fat, 3.0 * u * (1 + k.belly * .25), 28, u * .04), 0, -3.9 * u, puff * 1.2 + wet * .3);
+  const body = furry(ellPts(0, bodyY, brx, bry, 30, u * .04), 0, bodyY, puff * 1.2 + wet * .3);
   paint(body, { wash: col, ink: null, shade: true });
-  paint(ellPts(.6 * u, -2.6 * u, 3.4 * u * fat, 1.4 * u * (1 + k.belly * .4), 18), { wash: lt, washOp: 230, ink: null });
-  for (let i = 0; i < 4; i++) { const sx = (-2.6 + i * 1.3) * u * fat; inkLine([[sx, -6.6 * u], [sx + .35 * u, -5.6 * u], [sx + .15 * u, -4.9 * u]], sw * 1.2, C.stripe, 'ink', .5); }
+  paint(ellPts(.3 * u, bodyY + 1.3 * u, brx * .8, bry * .48, 20), { wash: lt, washOp: 230, ink: null });   // belly
+  for (let i = 0; i < 5; i++) { const sx = (-3.0 + i * 1.25) * u * fat; inkLine([[sx, bodyY - bry * .95], [sx + .3 * u, bodyY - bry * .5], [sx + .1 * u, bodyY - bry * .15]], sw * 1.2, C.stripe, 'ink', .5); }
   paint(body, { ink: PAL.ink, sw });
-  rs('vest');
-  paint(_P(u, [[-1.2 * fat, -6.75], [2.8 * fat, -6.6], [3.3 * fat, -4.4], [2.2 * fat, -3.5], [-.6 * fat, -4.0]]), { wash: C.vest, ink: PAL.ink, sw: sw * .85, curv: .25, shade: true, shadeK: .6 });
-  rs('arm');
-  castArm(2.6 * u * fat, -5.6 * u, o.aR ?? -1.14, 1, 2.8 * u, 1.3 * u, col, sw, o.armR, u);
+  rs('vest');   // the too-small vest: a band round the chest
+  paint(_P(u, [[.6 * fat, -7.0], [3.3 * fat, -6.8], [4.1 * fat, -5.0], [3.4 * fat, -3.2], [1.2 * fat, -3.0], [.2 * fat, -4.6]]), { wash: C.vest, ink: PAL.ink, sw: sw * .85, curv: .3, shade: true, shadeK: .6 });
+  paint(ellPts(3.5 * u * fat, -4.4 * u, .26 * u, .26 * u, 10), { wash: C.button, ink: PAL.ink, sw: sw * .5 });
+  rs('legsNear');
+  leg([hip[0], hip[1] + .3 * u], L - .3 * u, ph(0), 1.35 * u, .85 * u, col);
+  leg(sho, L, raise ? -2.2 * raise + ph(3) * (1 - raise) : ph(3), 1.15 * u, .8 * u, col, o.armR);
+  // head: in front of and above the shoulders, with a muzzle
   rs('head');
-  push(); translate(3.5 * u * fat, -7.6 * u);
-  const hx = 2.9 * u * (1 + puff * .15), hy = 2.75 * u * (1 + puff * .12);
-  for (const [ex, far] of [[-.9, 1], [.5, 0]]) {
-    const tip = [(ex + .1) * u + wet * u, -3.8 * u + wet * 1.6 * u];
-    paint([[(ex - 1) * u, -1.5 * u], tip, [(ex + 1.05) * u, -1.8 * u]], { wash: far ? mixCol(col, dk, .35) : col, ink: PAL.ink, sw: sw * .85 });
-    if (!far) paint([[(ex - .5) * u, -1.8 * u], [lerp((ex + .1) * u, tip[0], .9), lerp(-1.8 * u, tip[1], .8)], [(ex + .55) * u, -1.95 * u]], { wash: C.inner, ink: null });
+  push(); translate(4.7 * u * fat, -7.7 * u);
+  const hx = 2.35 * u * (1 + puff * .15 - wet * .08), hy = 2.15 * u * (1 + puff * .12 - wet * .05);
+  for (const [ex, far] of [[-.9, 1], [.4, 0]]) {   // ears
+    const droop = wet * .9, tip = [(ex + .2 + droop) * u, (-3.4 + droop * 1.6) * u];
+    paint([[(ex - .85) * u, -1.2 * u], tip, [(ex + .95) * u, -1.5 * u]], { wash: far ? mixCol(col, dk, .35) : col, ink: PAL.ink, sw: sw * .85 });
+    if (!far) paint([[(ex - .4) * u, -1.5 * u], [lerp((ex + .2) * u, tip[0], .85), lerp(-1.5 * u, tip[1], .8)], [(ex + .5) * u, -1.65 * u]], { wash: C.inner, ink: null });
   }
   const head = furry(ellPts(0, 0, hx, hy, 24, u * .04), 0, 0, puff + wet * .2);
-  const MZ = [2.55 * u, .78 * u, 1.05 * u, .78 * u];   // the muzzle bump that sticks out of the profile
+  const MZ = [1.95 * u, .6 * u, 1.0 * u, .8 * u];
   paint(ellPts(...MZ, 18), { wash: col, ink: PAL.ink, sw });
   paint(head, { wash: col, ink: null, shade: true, shadeK: .8 });
-  for (const kx of [-.9, -.4, .1]) inkLine([[kx * u, -2.65 * u], [(kx + .15) * u, -1.95 * u]], sw * 1.1, C.stripe, 'ink', 0);
+  for (const kx of [-.9, -.4, .1]) inkLine([[kx * u, -2.05 * u], [(kx + .15) * u, -1.45 * u]], sw * 1.1, C.stripe, 'ink', 0);
+  inkLine([[-hx * .95, .1 * u], [-hx * .6, .35 * u]], sw, C.stripe, 'ink', .3);
   paint(head, { ink: PAL.ink, sw });
   paint(ellPts(MZ[0], MZ[1], MZ[2] - sw * .9, MZ[3] - sw * .9, 18), { wash: col, ink: null });
-  paint(ellPts(2.75 * u, .95 * u, .85 * u, .5 * u, 14), { wash: lt, ink: null });
+  paint(ellPts(2.1 * u, .85 * u, .85 * u, .5 * u, 14), { wash: lt, ink: null });
   rs('face');
   const kinds = Array.isArray(o.eyes) ? o.eyes : [o.eyes || 'open', o.eyes || 'open'];
-  push(); translate(1.3 * u, -.4 * u); castEye(kinds[1], 1, .65 * u, .85 * u, { ...o, lookX: (o.lookX ?? .5) }, sw, col, C.iris, 'cat'); pop();
-  castBrow(1.3 * u, -.4 * u, 1.1 * u, 1.2 * u, 1, o.brow || 0, (o.browUp || 0) + (o.browR || 0), sw);
-  if (o.blush) paint(ellPts(1.6 * u, .7 * u, .7 * u, .38 * u, 12), { wash: '#E8607A', washOp: 150 * clamp(o.blush), ink: null });
-  paint([[3.25 * u, .2 * u], [3.68 * u, .32 * u], [3.42 * u, .62 * u]], { wash: C.nose, ink: PAL.ink, sw: sw * .5 });
-  push(); translate(3.2 * u, .85 * u); scale(.75, 1); castMouth(o.mouth || 'w', talk, .8 * u, sw); pop();
-  castWhiskersSide(2.6 * u, .95 * u, 1.8 * u, sw, wet * .8);
+  push(); translate(.9 * u, -.35 * u); castEye(kinds[1], 1, .55 * u, .72 * u, { ...o, lookX: (o.lookX ?? .5) }, sw, col, C.iris, 'cat'); pop();
+  castBrow(.9 * u, -.35 * u, .95 * u, 1.05 * u, 1, o.brow || 0, (o.browUp || 0) + (o.browR || 0), sw);
+  if (o.blush) paint(ellPts(1.2 * u, .6 * u, .6 * u, .32 * u, 12), { wash: '#E8607A', washOp: 150 * clamp(o.blush), ink: null });
+  paint([[2.65 * u, .05 * u], [3.05 * u, .17 * u], [2.82 * u, .45 * u]], { wash: C.nose, ink: PAL.ink, sw: sw * .5 });
+  push(); translate(2.6 * u, .72 * u); scale(.75, 1); castMouth(o.mouth || 'w', talk, .7 * u, sw); pop();
+  castWhiskersSide(2.1 * u, .8 * u, 1.6 * u, sw, wet * .8);
   pop();
+  rs('draw'); if (o.draw) o.draw(u, sw);
 }
 
 // ---------- Pip ----------
