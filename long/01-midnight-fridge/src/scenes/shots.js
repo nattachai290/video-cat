@@ -54,27 +54,29 @@
     crayon([[1360, 958], [1360, 520], [1640, 520], [1640, 958]], '#4F7FC9', 9, 3);   // the crayon fridge
     crayon([[1360, 680], [1640, 680]], '#4F7FC9', 6, 4);
     const U2 = 30;
-    if (t < 19) {   // 1. SNEAK
+    if (t < 17.0) {   // 1. SNEAK ("Step one. Sneak." 15.0-16.4)
       letter('1. SNEAK', 420, 140, 90, '#E2463F', { font: '800 90px "Baloo 2", sans-serif', rot: -.04 });
-      const k = seg(t, 14.6, 19), x = lerp(250, 1100, k), bob = -Math.abs(Math.sin(t * 7)) * .3;
+      const k = seg(t, 14.6, 17.0), x = lerp(250, 1000, k), bob = -Math.abs(Math.sin(t * 7)) * .3;
       for (let i = 0; i < 8; i++) { const fx = 250 + i * 110; if (fx < x - 120) paint(ellPts(fx, 975 + (i % 2) * 14, 14, 7, 8), { wash: '#C9A06A', ink: null }); }
       pumpkin(x - 170, 958, U2, { ...face('smug', { mouth: 'smirk' }), view: 'q', dy: bob, sq: .15, aL: -.4, aR: -.4, draw: (u, sw) => shades(u, sw), noShadow: true, boilKey: 'pk' });
       pip(x + 60, 958, U2, { ...face('smug'), view: 'q', dy: bob, sq: .1, aL: .2, aR: -.2, draw: pipShades, noShadow: true, boilKey: 'pip' });
-    } else if (t < 23.5) {   // 2. CLIMB: the slow-motion backflip
+    } else if (t < 19.8) {   // 2. CLIMB ("Step two. Climb." 16.6-18.0): the slow-motion backflip
       letter('2. CLIMB', 420, 140, 90, '#4F7FC9', { font: '800 90px "Baloo 2", sans-serif', rot: .03 });
-      const k = ease(seg(t, 19.2, 22.6)), p = arcPt([900, 958], [1500, 520], 330, k);
+      const k = ease(seg(t, 17.0, 19.6)), p = arcPt([900, 958], [1500, 520], 330, k);
       pumpkin(p[0], p[1], U2, { ...face('smug', { mouth: 'smirk' }), rot: -k * TAU, aL: 1.2, aR: 1.2, draw: (u, sw) => shades(u, sw), noShadow: true, boilKey: 'pk' });
       push(); translate(p[0], p[1]); rotate(-k * TAU); pip(0, -13.0 * U2, U2 * .9, { ...face('smug'), aL: 1.2, aR: 1.2, draw: pipShades, noShadow: true, boilKey: 'pip' }); pop();
       for (let i = 0; i < 5; i++) { const q = clamp(k - i * .06); const pp = arcPt([900, 958], [1500, 520], 330, q); paint(starPts(pp[0], pp[1] - 200, 16, .3, 5), { wash: '#F7D154', ink: null }); }
-    } else {   // 3. CAKE: heavenly light
+    } else {   // 3. CAKE ("Step three... CAKE." 18.3-20.2): heavenly light, a slow-motion bite, full bellies
       letter('3. CAKE!!!', 520, 140, 110, '#E2463F', { font: '800 110px "Baloo 2", sans-serif', rot: -.05 });
       for (let i = 0; i < 9; i++) { const a = Math.PI / 2 + (i - 4) * .16 + Math.sin(t) * .03; paint([[1500, -100], [1500 + Math.cos(a - .05) * 1400, -100 + Math.sin(a - .05) * 1400], [1500 + Math.cos(a + .05) * 1400, -100 + Math.sin(a + .05) * 1400]], { wash: '#FFF3B0', washOp: 90, ink: null }); }
       glow(1500, 260, 420, '#FFF3B0', .7);
-      const d = easeOut(seg(t, 23.6, 25.4));
-      cakeSlice(1240, lerp(-60, 470, d), 1.3, true, seg(t, 25.0, 25.5));
-      pumpkin(1440, 520, U2, { ...faces(t, [[23.5, 'surprised', { eyes: 'wide' }], [25.4, 'happy', { blush: .6 }]]), aL: 1.4, aR: 1.4, draw: (u, sw) => shades(u, sw), noShadow: true, boilKey: 'pk' });
-      pip(1590, 520, U2, { ...faces(t, [[23.5, 'surprised'], [25.4, 'happy']]), view: 'q', flip: true, aL: 1.4, aR: 1.4, draw: pipShades, noShadow: true, boilKey: 'pip' });
-      for (let i = 0; i < 6; i++) { const k = frac((t - 25.4) * .7 + i / 6); if (t > 25.4) crayon([[300 + i * 160, 700 - k * 300], [300 + i * 160 + 40 * Math.cos(i), 700 - k * 300 - 40]], ['#E2463F', '#F7D154', '#4FA060'][i % 3], 7, i); }
+      const d = easeOut(seg(t, 19.8, 21.4)), bite = t > 23.0, full = ease(seg(t, 24.0, 25.5));
+      if (!bite) cakeSlice(1240, lerp(-60, 470, d), 1.3, true, seg(t, 21.2, 21.6));
+      else if (t < 23.4) { for (let i = 0; i < 10; i++) { const k = seg(t, 23.0, 23.4); paint(ellPts(1240 + Math.cos(i) * 200 * k, 400 + Math.sin(i * 2) * 120 * k, 14, 10, 8), { wash: i % 2 ? '#F6E3C6' : '#F49AC1', ink: null }); } }
+      pumpkin(1440, 520, U2, { ...faces(t, [[19.8, 'surprised', { eyes: 'wide' }], [21.4, 'greedy'], [22.6, 'munching'], [24.0, 'happy', { blush: .6 }]]), belly: full, sq: full * .1, aL: t > 22.4 && t < 23.2 ? .3 : full > 0 ? -1.3 : 1.4, aR: t > 22.4 && t < 23.2 ? .3 : full > 0 ? -1.3 : 1.4, draw: (u, sw) => shades(u, sw), noShadow: true, boilKey: 'pk' });
+      pip(1590, 520, U2, { ...faces(t, [[19.8, 'surprised'], [21.4, 'greedy'], [22.6, 'munching'], [24.0, 'happy']]), view: 'q', flip: true, sq: full * .1, aL: full > 0 ? -.8 : 1.4, aR: full > 0 ? -.8 : 1.4, draw: pipShades, noShadow: true, boilKey: 'pip' });
+      if (t > 24.0) zzz(1500, 120, 1.2, t);
+      for (let i = 0; i < 6; i++) { const k = frac((t - 21.4) * .7 + i / 6); if (t > 21.4) crayon([[300 + i * 160, 700 - k * 300], [300 + i * 160 + 40 * Math.cos(i), 700 - k * 300 - 40]], ['#E2463F', '#F7D154', '#4FA060'][i % 3], 7, i); }
     }
     pop();
     if (crumple > 0) paint(rectPts(-10, -10, W + 20, H + 20), { wash: '#16143A', washOp: 255 * crumple, ink: null });
@@ -115,7 +117,7 @@
     pip(px, FK, U, { ...face(freeze ? 'surprised' : 'determined', freeze ? {} : { brow: .7 }), view: 'q', sq: .2, dy: bob, aL: .3, aR: -.4, draw: ninjaMask(1), boilKey: 'pip' });
     camEnd();
     night(.75);
-    cam(620, 1120, 1.15); searchlight(VAC[0] - 60, VAC[1] - 40, beamAngle(t) + Math.PI, 900, .2); glow(VAC[0] + 90, VAC[1] - 33, 60, '#FF4A4A', .6); camEnd();
+    cam(620, 1120, 1.15); { const p = Math.sin((t - 40) * .9), a = p > 0 ? lerp(Math.PI / 2 + .5, Math.PI - .08, p) : lerp(Math.PI / 2 - .5, .08, -p); searchlight(VAC[0] - 60, VAC[1] - 40, a, 900, .2); } glow(VAC[0] + 90, VAC[1] - 33, 60, '#FF4A4A', .6); camEnd();
   }
 
   // 1-6 · 52–60 · The beam swings their way. Pip dives behind the plant; Pumpkin snatches the lampshade, plants himself next
