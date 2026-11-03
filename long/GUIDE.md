@@ -28,7 +28,9 @@ stories/                   Shorts (ดูตัวอย่างโค้ดจ
 ## ขั้นตอนทำหนึ่งเรื่อง
 
 ### 0. เตรียม (ครั้งแรกของเครื่อง)
-ทำงาน "setup" ใน `RUNBOOK.md` ที่ root (ติดตั้ง piper + chatterbox ลง `.venv`) Playwright มีในเครื่อง cloud อยู่แล้ว
+อัตโนมัติ: hook `.claude/hooks/session-start.sh` ติดตั้ง `.venv` (piper + chatterbox), โหลดเสียงต้นแบบ Piper ลง `out/voice-models/` และน้ำหนัก Chatterbox ตอนเปิดเซสชัน
+(ครั้งแรก ~3 นาที ครั้งต่อไปข้าม) ต้องอนุญาต `huggingface.co`, `*.huggingface.co`, `*.hf.co`, `download.pytorch.org` ในการตั้งค่าเครือข่ายของ environment
+ถ้าเซสชันขึ้น WARNING ว่าโหลดไม่ได้ ให้แจ้งผู้ใช้ให้เปิดโดเมนเหล่านั้น Playwright มีในเครื่อง cloud อยู่แล้ว
 
 ### 1. เริ่มเรื่องจากแม่แบบ
 ```bash
