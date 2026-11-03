@@ -321,7 +321,8 @@ function pumpkinSide(u, o, sw, k) {
   rs('vest');
   paint(_P(u, [[-1.2 * fat, -6.75], [2.8 * fat, -6.6], [3.3 * fat, -4.4], [2.2 * fat, -3.5], [-.6 * fat, -4.0]]), { wash: C.vest, ink: PAL.ink, sw: sw * .85, curv: .25, shade: true, shadeK: .6 });
   rs('arm');
-  castArm(2.6 * u * fat, -5.6 * u, o.aR ?? -1.14, 1, 2.8 * u, 1.3 * u, col, sw, o.armR, u);
+  // no dangling arm in profile (with four legs it read as six limbs): only when a paw is raised or holds something
+  if (o.armR || (o.aR != null && o.aR > -.9)) castArm(2.6 * u * fat, -5.6 * u, o.aR ?? -1.14, 1, 2.8 * u, 1.3 * u, col, sw, o.armR, u);
   rs('head');
   push(); translate(3.5 * u * fat, -7.6 * u);
   const hx = 2.9 * u * (1 + puff * .15), hy = 2.75 * u * (1 + puff * .12);
@@ -332,7 +333,7 @@ function pumpkinSide(u, o, sw, k) {
   }
   const head = furry(ellPts(0, 0, hx, hy, 24, u * .04), 0, 0, puff + wet * .2);
   paint(head, { wash: col, ink: null, shade: true, shadeK: .8 });
-  paint(ellPts(2.3 * u, .75 * u, 1.0 * u, .65 * u, 14), { wash: lt, ink: null });   // muzzle
+  paint(ellPts(2.0 * u, .78 * u, .78 * u, .55 * u, 14), { wash: lt, ink: null });   // muzzle (inside the head outline)
   for (const kx of [-.9, -.4, .1]) inkLine([[kx * u, -2.65 * u], [(kx + .15) * u, -1.95 * u]], sw * 1.1, C.stripe, 'ink', 0);
   paint(head, { ink: PAL.ink, sw });
   rs('face');
@@ -340,8 +341,8 @@ function pumpkinSide(u, o, sw, k) {
   push(); translate(1.3 * u, -.4 * u); castEye(kinds[1], 1, .65 * u, .85 * u, { ...o, lookX: (o.lookX ?? .5) }, sw, col, C.iris, 'cat'); pop();
   castBrow(1.3 * u, -.4 * u, 1.1 * u, 1.2 * u, 1, o.brow || 0, (o.browUp || 0) + (o.browR || 0), sw);
   if (o.blush) paint(ellPts(1.6 * u, .7 * u, .7 * u, .38 * u, 12), { wash: '#E8607A', washOp: 150 * clamp(o.blush), ink: null });
-  paint([[2.75 * u, .25 * u], [3.15 * u, .35 * u], [2.9 * u, .65 * u]], { wash: C.nose, ink: PAL.ink, sw: sw * .5 });
-  push(); translate(2.75 * u, .7 * u); scale(.75, 1); castMouth(o.mouth || 'w', talk, .8 * u, sw); pop();
+  paint([[2.5 * u, .2 * u], [2.85 * u, .3 * u], [2.62 * u, .55 * u]], { wash: C.nose, ink: PAL.ink, sw: sw * .5 });
+  push(); translate(2.3 * u, .85 * u); scale(.6, 1); castMouth(o.mouth || 'w', talk, .7 * u, sw); pop();
   castWhiskersSide(1.55 * u, 1.1 * u, -1.6 * u, sw, wet * .8);   // whiskers sweep back
   pop();
 }
