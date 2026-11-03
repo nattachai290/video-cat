@@ -1,0 +1,137 @@
+// props.js: "The Red Dot": the series' living room (stories 04, 06-08) with the robot vacuum from story 06, plus
+// the laser pointer, the red dot, a cushion, speed lines, a leg-wheel scramble, the orange tornado and dizzy stars.
+const ROOM = { floor: 1300, win: { x: 40, y: 420, w: 360, h: 560 }, sill: { x: 18, y: 980, w: 410, h: 42 },
+               chair: { x: 640, y: 830, w: 420, seat: 1150 }, floorY: 1480, home: 480 };
+const RC = { wall: '#CFE3D8', wall2: '#C2D9CD', base: '#A9C7B8', floor: '#C99A6B', floorDk: '#AD7F55', frame: '#FFF8EC',
+             sky: '#AFE0F5', sun: '#FFE07A', roof: '#B5655A', roofDk: '#8E4A42', chair: '#E77F6A', chairDk: '#C2604E',
+             rug: '#7FB3C8', rugDk: '#5E95AC', curtain: '#9B86CF', curtainDk: '#7A66AE', vac: '#3B3F4A', vacTop: '#565B68', vacDk: '#24272E' };
+
+function livingRoom6(t, o = {}) {
+  boilSeed('room6');
+  paint(rectPts(-600, -600, W + 1200, ROOM.floor + 600), { wash: RC.wall, ink: null });
+  for (let i = -6; i < 16; i++) paint(rectPts(i * 90 + 20, -600, 30, ROOM.floor + 600), { wash: RC.wall2, ink: null });
+  paint(rectPts(-600, ROOM.floor - 36, W + 1200, 40), { wash: RC.base, ink: null });
+  paint(rectPts(-600, ROOM.floor, W + 1200, 1400), { wash: RC.floor, ink: null });
+  for (let i = 0; i < 9; i++) inkLine([[-600, ROOM.floor + 50 + i * 64 + i * i * 5], [W + 600, ROOM.floor + 50 + i * 64 + i * i * 5]], 1.5, RC.floorDk, 'ink', 0);
+  paint(ellPts(560, 1560, 360, 110, 40), { wash: RC.rug, sw: 1.2 }); paint(ellPts(560, 1560, 300, 84, 40), { wash: RC.rugDk, ink: null }); paint(ellPts(560, 1560, 250, 66, 40), { wash: RC.rug, ink: null });
+  const w = ROOM.win, s = ROOM.sill;
+  paint(rectPts(w.x - 18, w.y - 18, w.w + 36, w.h + 36), { wash: RC.frame, sw: 1.4 });
+  paint(rectPts(w.x, w.y, w.w, w.h), { wash: RC.sky, ink: null });
+  paint(ellPts(w.x + 250, w.y + 130, 58, 58, 28), { wash: RC.sun, ink: null });
+  paint([[w.x, w.y + w.h], [w.x, w.y + 380], [w.x + 170, w.y + 300], [w.x + w.w, w.y + 380], [w.x + w.w, w.y + w.h]], { wash: RC.roof, ink: null });
+  for (let i = 0; i < 6; i++) inkLine([[w.x, w.y + 410 + i * 26], [w.x + w.w, w.y + 410 + i * 26]], 1.4, RC.roofDk, 'ink', 0);
+  inkLine([[w.x + w.w / 2, w.y], [w.x + w.w / 2, w.y + w.h]], 3, RC.frame, 'ink', 0);
+  inkLine([[w.x, w.y + w.h / 2 - 60], [w.x + w.w, w.y + w.h / 2 - 60]], 3, RC.frame, 'ink', 0);
+  paint(rectPts(s.x, s.y, s.w, s.h), { wash: RC.frame, sw: 1.3, shade: true, shadeK: .4 });
+  // armchair
+  const c = ROOM.chair;
+  paint(rrPts(c.x + 40, c.y, c.w - 80, 360, 60), { wash: RC.chair, sw: 1.5, shade: true, shadeK: .5 });
+  paint(rrPts(c.x + 20, c.seat - 40, c.w - 40, 200, 40), { wash: mixCol(RC.chair, '#FFFFFF', .12), sw: 1.4 });
+  for (const sd of [0, 1]) paint(rrPts(sd ? c.x + c.w - 90 : c.x - 10, c.seat - 110, 100, 260, 40), { wash: RC.chairDk, sw: 1.4, shade: true, shadeK: .4 });
+  for (const sd of [0, 1]) paint(rectPts(sd ? c.x + c.w - 60 : c.x + 30, c.seat + 150, 26, ROOM.floor + 20 - c.seat - 150), { wash: '#7A5236', ink: null });
+  paint(rrPts(520, 520, 130, 160, 10), { wash: '#F6EBDA', sw: 1.2 }); paint(rrPts(538, 540, 94, 120, 6), { wash: '#9CC8E8', ink: null });
+  // the charging dock, bottom right
+  paint(rrPts(900, ROOM.floor - 70, 120, 110, 18), { wash: '#E8ECF0', sw: 1.2 }); paint(ellPts(960, ROOM.floor - 30, 10, 10, 10), { wash: Math.sin(t * 3) > 0 ? '#7FD18B' : '#C9D3DB', ink: null });
+}
+// The curtain hanging left of the window. drop 0..1: the rod snaps and the curtain falls in a heap. sway: a swing.
+function curtain(t, drop = 0, sway = 0) {
+  const rodY = 380 + drop * 900, x0 = -10, x1 = 250, len = 880 * (1 - drop * .75);
+  push(); translate(x1 / 2, rodY); rotate(drop * .4 + sway * .05); translate(-x1 / 2, -rodY);
+  const pts = [[x0, rodY], [x1, rodY], [x1 + 20 * sway + 10 * Math.sin(t * 2), rodY + len], [x0 + 20 * sway, rodY + len]];
+  paint(pts, { wash: RC.curtain, sw: 1.3, shade: true, shadeK: .4 });
+  for (let k = 1; k < 6; k++) inkLine([[x0 + k * 44, rodY + 10], [x0 + k * 42 + 16 * sway, rodY + len - 10]], 1.4, RC.curtainDk, 'ink', .3);
+  paint(rrPts(x0 - 30, rodY - 14, x1 + 80, 18, 8), { wash: '#8E6A55', sw: 1 });   // rod
+  pop();
+}
+// Crumbs Pip drops along the floor; a crumb at x disappears once the vacuum (at vx, going left) has passed it.
+const CRUMBS = [640, 590, 540, 480, 420, 360, 300, 250, 200];
+function crumbs(t, vx) { CRUMBS.forEach((x, i) => { if (t < 9.5 + i * .25 || x < vx + 20) return; paint(ellPts(x + (hash(i) - .5) * 20, ROOM.floorY + 10 + hash(i + 5) * 14, 9, 6, 8), { wash: '#E6B65F', sw: .6 }); }); }
+
+// The robot vacuum at (x, y) on the floor (y = where its bottom touches), scale s. led: 'red' | 'green' | 'blue'.
+// Returns the point on its top where a rider stands.
+function robotVac(x, y, s = 1, t = 0, o = {}) {
+  const led = { red: '#FF4A4A', green: '#5FE07A', blue: '#8FD3F0' }[o.led || 'red'];
+  push(); translate(x, y); rotate(o.rot || 0); scale(s, s); if (o.shake) translate(Math.sin(t * 70) * o.shake, 0);
+  paint(ellPts(0, 6, 165, 26, 28), { fill: '#3A2A2E', fillOp: 70, ink: null });
+  paint([...arcPts(0, -48, 155, 42, 0, Math.PI, 16), ...arcPts(0, -12, 155, 40, Math.PI, 0, 16)], { wash: RC.vac, sw: 1.6 });   // the side band
+  paint(ellPts(0, -50, 155, 42, 32), { wash: RC.vacTop, sw: 1.6, shade: true, shadeK: .5 });
+  paint(ellPts(-20, -56, 70, 18, 24), { wash: mixCol(RC.vacTop, '#FFFFFF', .12), ink: null });
+  inkLine([[-120, -30], [120, -30]], 2, RC.vacDk, 'ink', .4);
+  // the "eye" LED, blinking (and a little glow)
+  const blink = o.blink === false ? 1 : (Math.sin(t * 6) > -.2 ? 1 : .25);
+  glow(70, -26, 40, led, .5 * blink);
+  paint(ellPts(70, -26, 22, 12, 16), { wash: led, washOp: 255 * blink, sw: .9 });
+  // the spinning side brush
+  for (let k = 0; k < 3; k++) { const a = t * 14 + k * TAU / 3; inkLine([[-110, -6], [-110 + Math.cos(a) * 44, -6 + Math.sin(a) * 10]], 2, '#B9C2CC', 'ink', 0); }
+  pop();
+  return [x, y - 62 * s];
+}
+// from story 03's props
+function burst(x, y, r, age, n = 10, col = '#FFF4D6', seed = 1) {
+  if (age < 0 || age > 1) return;
+  const k = easeOut(age), a = 1 - age;
+  for (let i = 0; i < n; i++) { const ang = i / n * TAU + hash(i + seed) * .4, r0 = r * (.45 + .35 * k), r1 = r * (.7 + .7 * k);
+    inkLine([[x + Math.cos(ang) * r0, y + Math.sin(ang) * r0], [x + Math.cos(ang) * r1, y + Math.sin(ang) * r1]], 4 * a + .5, col, 'ink', 0); }
+}
+function puffCloud(x, y, r, age) {
+  if (age < 0 || age > .7) return;
+  const k = easeOut(age / .7), a = 1 - age / .7;
+  for (let i = 0; i < 7; i++) { const ang = i / 7 * TAU; paint(ellPts(x + Math.cos(ang) * r * k, y + Math.sin(ang) * r * k * .7, r * .45 * a + 2, r * .4 * a + 2, 16), { wash: '#FFFFFF', washOp: 230 * a, ink: null }); }
+}
+function zzz(x, y, s, t) { for (let i = 0; i < 3; i++) { const k = frac(t * .45 + i / 3), zx = x + k * 60 * s, zy = y - k * 170 * s, r = (12 + 10 * k) * s; inkLine([[zx - r, zy - r], [zx + r, zy - r], [zx - r, zy + r], [zx + r, zy + r]], 2.4 * s, '#5A6FA8', 'ink', 0); } }
+
+// ---------- story 09 ----------
+const FY9 = 1540, DOCK = [960, 1300];
+// The red dot (on the floor, a wall or a character). s = size, k = 0..1 fade in.
+function redDot(x, y, s = 1, k = 1) {
+  if (k <= 0) return;
+  glow(x, y, 46 * s, '#FF3A3A', .85 * k);
+  paint(ellPts(x, y, 10 * s * k, 8 * s * k, 12), { wash: '#FF2E2E', ink: null });
+  paint(ellPts(x - 2 * s, y - 2 * s, 4 * s * k, 3 * s * k, 8), { wash: '#FFE0E0', ink: null });
+}
+// Pip's right-paw hook: the laser pointer. lit: the little red tip light.
+function laserHook(lit = 0) {
+  return (u, sw) => {
+    paint(rrPts(.05 * u, -.2 * u, 1.55 * u, .4 * u, .16 * u), { wash: '#59606E', sw: sw * .6, shade: true, shadeK: .5 });
+    paint(rectPts(.55 * u, -.27 * u, .3 * u, .1 * u), { wash: '#E2464E', ink: null });
+    paint(ellPts(1.62 * u, 0, .13 * u, .16 * u, 8), { wash: lit ? '#FF3A3A' : '#8A2A30', ink: null });
+    if (lit) glow(1.62 * u, 0, .5 * u, '#FF3A3A', .6 * lit);
+  };
+}
+// The armchair's seat cushion (it gets knocked off, then sucked into the tornado).
+function cushion(x, y, rot = 0, s = 1) {
+  push(); translate(x, y); rotate(rot); scale(s, s);
+  paint(rrPts(-85, -36, 170, 72, 30), { wash: '#F2C14E', sw: 1.4, shade: true, shadeK: .45 });
+  paint(ellPts(0, 0, 9, 9, 10), { wash: '#C9932F', ink: null });
+  for (const d of [-1, 1]) inkLine([[d * 60, -20], [d * 30, -4]], 1.4, '#C9932F', 'ink', .3);
+  pop();
+}
+// Speed lines trailing behind (x, y): dir = +1 when moving right (lines to the left).
+function speedLines(x, y, dir, t, n = 5, len = 160, h = 220) {
+  for (let i = 0; i < n; i++) { const yy = y - h / 2 + h * (i + .5) / n, k = frac(t * 3 + hash(i) * 2), l = len * (.5 + .5 * hash(i + 3)); const x0 = x - dir * (40 + k * 60);
+    inkLine([[x0, yy], [x0 - dir * l, yy]], 3, '#FFFFFF', 'ink', 0); }
+}
+// The cartoon scramble: legs blurred into a spinning wheel under a running body at (x, y).
+function legWheel(x, y, r, t) {
+  paint(ellPts(x, y - r * .5, r, r * .55, 18), { wash: PUMPKIN_COL.col, washOp: 160, ink: null });
+  for (let k = 0; k < 3; k++) { const a = t * 40 + k * TAU / 3; inkLine(arcPts(x, y - r * .5, r * .9, r * .5, a, a + 1.4, 8), 2.6, '#B4572A', 'ink', 0); }
+}
+function dust(x, y, age, seed = 1) { if (age < 0 || age > .6) return; const k = age / .6; for (let i = 0; i < 4; i++) paint(ellPts(x - 40 * i * k - 20 * hash(i + seed), y - 10 - 30 * k * hash(i), 22 * (1 - k) + 6, 18 * (1 - k) + 5, 10), { wash: '#EFE3CF', washOp: 220 * (1 - k), ink: null }); }
+// The orange tornado: Pumpkin spinning so fast he becomes a whirl. (x, y) = its tip on the floor, k 0..1 grows it.
+function tornado(x, y, t, k = 1) {
+  const C = PUMPKIN_COL, hgt = 560 * k;
+  for (let i = 0; i < 9; i++) {
+    const f = i / 8, yy = y - f * hgt, w = (40 + 190 * f) * k, wob = Math.sin(t * 9 + f * 5) * 26 * f;
+    paint(ellPts(x + wob, yy, w, w * .28 + 6, 22), { wash: i % 2 ? C.col : mixCol(C.col, '#FFFFFF', .12), sw: 1.2 });
+    for (let s = 0; s < 3; s++) { const a = t * 14 + s * 2.1 + f * 3; const px = x + wob + Math.cos(a) * w * .8; if (Math.sin(a) > 0) inkLine([[px - 10, yy - 6], [px + 10, yy + 6]], 3, C.stripe, 'ink', 0); }
+  }
+  // ears on top, the tail whipping round, a blur of eyes
+  const top = y - hgt, tw = x + Math.sin(t * 9 + 5) * 26;
+  for (const s of [-1, 1]) paint([[tw + s * 60, top - 10], [tw + s * 95, top - 90 * k], [tw + s * 130, top]], { wash: C.col, sw: 1.2 });
+  const ta = t * 14; paint(ribbon([[tw + Math.cos(ta) * 170 * k, top + 120], [tw + Math.cos(ta) * 260 * k, top + 60], [tw + Math.cos(ta) * 300 * k, top - 20]], 26 * k, 14 * k), { wash: C.col, sw: 1.2 });
+  for (let i = 0; i < 5; i++) { const a = t * 6 + i * 1.3, r = 260 * k, yy = y - hgt * (.2 + .15 * i); inkLine(arcPts(x, yy, r, r * .3, a, a + 1.1, 8), 2.5, '#FFFFFF', 'ink', 0); }
+}
+// Stars / tweety dots circling a dizzy head.
+function dizzy(x, y, r, t) { for (let i = 0; i < 4; i++) { const a = t * 4 + i * TAU / 4; paint(starPts(x + Math.cos(a) * r, y + Math.sin(a) * r * .3, 16, .4, 5), { wash: '#FFE27A', sw: 1 }); } }
+// A cracker (thrown).
+function crackerProp(x, y, rot = 0) { push(); translate(x, y); rotate(rot); paint(rrPts(-22, -16, 44, 32, 6), { wash: '#E6B65F', sw: 1.1 }); for (const [a, b] of [[-10, -6], [8, -6], [-10, 6], [8, 6]]) paint(ellPts(a, b, 2.5, 2.5, 6), { wash: '#B8813A', ink: null }); pop(); }

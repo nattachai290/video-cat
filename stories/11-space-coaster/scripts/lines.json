@@ -1,0 +1,9 @@
+[
+  {"id": "d01", "who": "pumpkin", "shot": "01", "t": 1.0,  "text": "Rawr.", "emo": "proud, playful, fake-scary", "exag": 0.6, "cfg": 0.4, "speed": 1.0, "pitch": 0.97},
+  {"id": "d02", "who": "dusty",   "shot": "02", "t": 5.5,  "text": "All aboard. No refunds.", "emo": "bored, gravelly, deadpan conductor", "exag": 0.35, "cfg": 0.5, "speed": 1.0, "pitch": 0.85},
+  {"id": "d03", "who": "pumpkin", "shot": "04", "t": 12.8, "text": "WHEEE!", "emo": "thrilled roller-coaster scream", "exag": 1.0, "cfg": 0.3, "speed": 1.0, "pitch": 1.0},
+  {"id": "d04", "who": "dusty",   "shot": "06", "t": 28.4, "text": "Home run.", "emo": "flat, unimpressed, cool", "exag": 0.35, "cfg": 0.5, "speed": 1.0, "pitch": 0.85},
+  {"id": "d05", "who": "pumpkin", "shot": "07", "t": 33.6, "text": "...Rawr?", "emo": "tiny, nervous, squeaky", "exag": 0.6, "cfg": 0.4, "speed": 1.0, "pitch": 1.6},
+  {"id": "d06", "who": "pip",     "shot": "07", "t": 35.4, "text": "Well, well, well.", "emo": "evil, smug, slow villain", "exag": 0.7, "cfg": 0.4, "speed": 0.9, "pitch": 0.9},
+  {"id": "d07", "who": "dusty",   "shot": "08", "t": 40.0, "text": "Wrong stop.", "emo": "bored, flat", "exag": 0.35, "cfg": 0.5, "speed": 1.0, "pitch": 0.85}
+]

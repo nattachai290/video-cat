@@ -18,6 +18,8 @@ reusable. Reply to the user in Thai; write code, comments and dialogue in Englis
 - **Everything original:** no game/film characters or plots, no samples. SFX and music are synthesized.
 - **Token thrift:** the user prefers long-running or repetitive jobs to be handed to a cheaper model (Haiku) via
   `RUNBOOK.md` with a copy-paste prompt. Short renders (sheets, a 1-minute MP4) are fine to run directly.
+- **Fixes: stills first.** When the user points out a problem (or you change a shot), send still frames of exactly that
+  spot (`--sheet` around the times involved, `--w=540`) and wait for their OK before rendering the full video.
 - **Branch:** `claude/nice-heisenberg-5vtd6i`. Keep `PROGRESS.md` and the story's `STATUS.md` updated after each step.
 
 ## Folder layout
@@ -73,12 +75,19 @@ then replace STORYBOARD, lines.json, props.js, scenes, sfx.mjs, music.mjs.
 
 ## Shorts rules
 
+- **Pacing (user feedback on story 08: "ยืด ไม่สนุก"):** a new gag every 3-4 s, every gag bigger than the last, no shots
+  of characters just walking in, cut on action, speed lines / whip pans / shakes, fast music (~138 bpm), 45 s is enough.
+
 - Hook readable in the first 2 s with the sound off. Subtitles carry the dialogue.
 - Keep faces and subtitles out of the bottom ~350 px and the right-hand ~150 px (YouTube UI).
 - Characters big: at least 40% of frame height in acting shots. One gag, three beats, button at the end.
 - Tell the user to tick YouTube's "altered or synthetic content" box (AI voices).
 
 ## Gotchas learned
+
+- Side views (user feedback, story 09): whiskers sweep BACK from the cheek, no dangling arm on Pumpkin (four legs + arm
+  read as six limbs; the arm only shows when a paw is raised or holds something), muzzle/mouth stay inside the head
+  outline, Pip has grey legs with small pink paws. The user preferred the original stubby legs to realistic long legs.
 
 - `render.mjs`/p5.brush is the old watercolour engine (slow without a GPU). The flat engine renders ~50-110 ms/frame;
   a whole 52 s Short takes under a minute with `render_pw.mjs` (Playwright, no npm install on the cloud machine).

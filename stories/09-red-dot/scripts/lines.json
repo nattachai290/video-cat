@@ -1,0 +1,7 @@
+[
+  {"id": "d01", "who": "pip",     "shot": "02", "t": 4.6,  "text": "Too slow!", "emo": "cheeky, teasing, giggling", "exag": 0.8, "cfg": 0.35, "speed": 1.05, "pitch": 1.04},
+  {"id": "d02", "who": "pumpkin", "shot": "05", "t": 15.4, "text": "WHOAAA!", "emo": "wild rodeo ride, thrilled and scared", "exag": 1.0, "cfg": 0.3, "speed": 1.0, "pitch": 1.0},
+  {"id": "d03", "who": "pip",     "shot": "06", "t": 21.2, "text": "...Uh oh.", "emo": "sudden dread, small voice", "exag": 0.6, "cfg": 0.45, "speed": 1.0, "pitch": 1.0},
+  {"id": "d04", "who": "pip",     "shot": "08", "t": 30.8, "text": "Look! Behind you!", "emo": "panicked quick trick, pointing", "exag": 0.9, "cfg": 0.3, "speed": 1.1, "pitch": 1.05},
+  {"id": "d05", "who": "pumpkin", "shot": "09", "t": 38.4, "text": "...I caught it.", "emo": "dizzy, proud, woozy", "exag": 0.5, "cfg": 0.45, "speed": 1.0, "pitch": 0.97}
+]

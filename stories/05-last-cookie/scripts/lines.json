@@ -1,0 +1,9 @@
+[
+  {"id": "d01", "who": "pumpkin", "shot": "01", "t": 0.9, "text": "One... last... cookie.", "emo": "awed whisper, hungry", "exag": 0.55, "cfg": 0.4, "speed": 1.05, "pitch": 0.97},
+  {"id": "d02", "who": "pumpkin", "shot": "02", "t": 5.4, "text": "Mine.", "emo": "determined, low", "exag": 0.7, "cfg": 0.35, "speed": 1.0, "pitch": 0.95},
+  {"id": "d03", "who": "pumpkin", "shot": "03", "t": 12.6, "text": "...Plan B.", "emo": "muffled, face squashed on a door", "exag": 0.45, "cfg": 0.5, "speed": 1.05, "pitch": 0.97},
+  {"id": "d04", "who": "pip", "shot": "04", "t": 21.6, "text": "That tower looks... safe.", "emo": "dry, sarcastic", "exag": 0.5, "cfg": 0.45, "speed": 1.0, "pitch": 1.02},
+  {"id": "d05", "who": "pumpkin", "shot": "05", "t": 29.6, "text": "Victory is MINE!", "emo": "triumphant shout", "exag": 1.0, "cfg": 0.3, "speed": 0.95, "pitch": 1.05},
+  {"id": "d06", "who": "pip", "shot": "06", "t": 34.8, "text": "Took you long enough.", "emo": "mouth full, deadpan", "exag": 0.45, "cfg": 0.5, "speed": 1.0, "pitch": 1.0},
+  {"id": "d07", "who": "pumpkin", "shot": "08", "t": 45.0, "text": "...Plan C.", "emo": "dazed, deadpan", "exag": 0.4, "cfg": 0.5, "speed": 1.05, "pitch": 0.97}
+]

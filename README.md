@@ -31,6 +31,9 @@ video-cat/
 |---|---|---|---|
 | 01 | [จดหมายถึงคนที่ให้ข้าวแมวเทา · The Letter for Moji](stories/01-moji-letter/STORYBOARD.md) | ~3:25 | พักไว้ (เนื้อเรื่องยังไม่โดน) |
 | 02 | [แมวขายดวงจันทร์ · The Cat Who Sold the Moon](stories/02-moon-cat/STORYBOARD.md) | ~3:36 | พักไว้ (เสียงพูดเสร็จแล้ว) |
+| 07 | [Pumpkin & Pip: The Royal Bed · เตียงหลวง vs กล่อง](stories/07-royal-bed/STORYBOARD.md) | 0:50 Shorts 9:16 | **เสร็จ** (`out/video.mp4`) |
+| 06 | [Pumpkin & Pip: The Robot Vacuum · หุ่นยนต์ดูดฝุ่น](stories/06-robo-vac/STORYBOARD.md) | 0:50 Shorts 9:16 | **เสร็จ** (`out/video.mp4`) |
+| 05 | [Pumpkin & Pip: The Last Cookie · คุกกี้ชิ้นสุดท้าย](stories/05-last-cookie/STORYBOARD.md) | 0:50 Shorts 9:16 | **เสร็จ** (`out/video.mp4`) |
 | 04 | [Pumpkin & Pip: The Sun Spot · จุดแดดอุ่น](stories/04-sun-spot/STORYBOARD.md) | 0:50 Shorts 9:16 | **เสร็จ** (`out/video.mp4`) |
 | 03 | [Pumpkin & Pip: The Cat Flap · พัมป์กินติดประตูแมว](stories/03-cat-flap/STORYBOARD.md) | 0:52 Shorts 9:16 | **เสร็จ** (`out/video.mp4`) |
 

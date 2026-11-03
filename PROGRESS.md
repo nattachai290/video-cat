@@ -13,6 +13,13 @@
 
 | เรื่อง | รูปแบบ | สถานะ |
 |---|---|---|
+| 11 · Pumpkin & Pip: The Space Coaster | Shorts 9:16, 50 s, การ์ตูนแบน | **เสร็จ** · `stories/11-space-coaster/out/video.mp4` + ปก + `YOUTUBE.md` |
+| 10 · Pumpkin & Pip: The Sandwich | Shorts 9:16, 45 s, การ์ตูนแบน | **เสร็จ** · `stories/10-sandwich/out/video.mp4` + ปก + `YOUTUBE.md` |
+| 09 · Pumpkin & Pip: The Red Dot | Shorts 9:16, 45 s, การ์ตูนแบน | **เสร็จ** · `stories/09-red-dot/out/video.mp4` + ปก + `YOUTUBE.md` |
+| 08 · Pumpkin & Pip: Bath Time | Shorts 9:16, 50 s, การ์ตูนแบน | **เสร็จ** · `stories/08-bath-time/out/video.mp4` + ปก + `YOUTUBE.md` |
+| 07 · Pumpkin & Pip: The Royal Bed | Shorts 9:16, 50 s, การ์ตูนแบน | **เสร็จ** · `stories/07-royal-bed/out/video.mp4` + ปก + `YOUTUBE.md` |
+| 06 · Pumpkin & Pip: The Robot Vacuum | Shorts 9:16, 50 s, การ์ตูนแบน | **เสร็จ** · `stories/06-robo-vac/out/video.mp4` + ปก + `YOUTUBE.md` |
+| 05 · Pumpkin & Pip: The Last Cookie | Shorts 9:16, 50 s, การ์ตูนแบน | **เสร็จ** · `stories/05-last-cookie/out/video.mp4` + ปก + `YOUTUBE.md` |
 | 04 · Pumpkin & Pip: The Sun Spot | Shorts 9:16, 50 s, การ์ตูนแบน | **เสร็จ** · `stories/04-sun-spot/out/video.mp4` + ปก + `YOUTUBE.md` |
 | 03 · Pumpkin & Pip: The Cat Flap | Shorts 9:16, 52 s, การ์ตูนแบน | **เสร็จ** · `stories/03-cat-flap/out/video.mp4` (ไม่อยู่ใน git, สร้างใหม่ได้ใน ~1 นาที) |
 | 02 · The Cat Who Sold the Moon | 16:9, ~3:36, สีน้ำ | พักไว้ · สตอรี่บอร์ด + เสียงพูดมีอารมณ์เสร็จ (ต้องรันเสียงใหม่หลังเปลี่ยนชื่อ Pom → Pumpkin) |
@@ -22,7 +29,15 @@
 
 - [ ] ผู้ใช้ดู 03 แล้วสั่งแก้ (ความดังเพลง, จังหวะ, ขนาดซับ) หรืออัปขึ้น YouTube Shorts (ติ๊ก "altered or synthetic content")
 - [x] ตอนที่ 2: The Sun Spot
-- [ ] ตอนที่ 3 (ใช้ skill `pumpkin-pip-shorts`)
+- [x] ตอนที่ 3: The Last Cookie (ตลกแอ็กชัน)
+- [x] ตอนที่ 4: The Robot Vacuum
+- [ ] ช่องพากย์ไทย: **พักไว้ก่อน** (ผู้ใช้ขอข้าม; ทางเลือกเสียงไทย: Gemini TTS ⭐ / อัดเสียงเอง / โมเดลโอเพนซอร์สไทย, ดูบันทึก 2026-11-03)
+- [x] ตอนที่ 5: The Royal Bed
+- [x] ตอนที่ 6: Bath Time
+- [x] ตอนที่ 7: The Red Dot (จังหวะเร็ว แอ็กชัน)
+- [x] ตอนที่ 8: The Sandwich
+- [x] ตอนที่ 9: The Space Coaster (ตัวละครใหม่ Dusty แรคคูน)
+- [ ] ตอนที่ 10 (ใช้ skill `pumpkin-pip-shorts`)
 - [ ] ถ้าจะกลับไปทำเรื่อง 02 ให้ย้ายมาเป็นสไตล์แบนและเลือกรูปแบบ (ยาว 16:9 หรือแบ่งเป็น Shorts)
 
 ## สิ่งที่สร้างไว้ใช้ซ้ำ
@@ -34,6 +49,25 @@
 - **RUNBOOK.md**: งานรันพร้อมพรอมต์ให้ Haiku (setup, voices, retake, cast-sheet, preview, check, final)
 
 ## บันทึกการตัดสินใจ
+
+- 2026-11-03 · ตอนที่ 9 "The Space Coaster" เสร็จ จากโครงเรื่องของผู้ใช้: ตัวละครใหม่ Dusty (แรคคูนพนักงานรถไฟ ไม้เบสบอล, `dusty()` ใน stories/11-space-coaster/src/props.js), ชุดฉลาม, รถไฟเหาะ, ปีศาจ
+
+- 2026-11-03 · ตอนที่ 8 "The Sandwich" เสร็จ (ผู้ใช้เปลี่ยนจาก Prank War): แผนขโมย 3 แผน, กลืนทั้งตึกจนตัวเหลี่ยม, สะอึกคืนทีละชั้น
+- 2026-11-03 · มุมข้างตัวละครแก้ตามผู้ใช้ (หนวดชี้หลัง, ไม่มีแขนห้อย, ปากอยู่ในหน้า, ขาหนูเทา+อุ้งเท้าชมพู) ตอน 7 เรนเดอร์ใหม่แล้ว
+
+- 2026-11-03 · ผู้ใช้บอกตอน 6 ยืด ไม่สนุก → ตอน 7 "The Red Dot" 45 s มุกทุก 3–4 วิ ไล่ล่า ทอร์นาโด (กฎจังหวะเพิ่มใน skill แล้ว)
+
+- 2026-11-03 · ตอนที่ 6 "Bath Time" เสร็จ: ซ่อนแบบแย่ ๆ 3 ที่ (พรม/ม่าน/โคมไฟ), โป๊ะครอบ Pip, Pip แช่อ่างเอง แมวโดนฟองล่อจนตกอ่าง "I'm thin now" · drycheck รองรับ createLinearGradient แล้ว
+
+- 2026-11-03 · ผู้ใช้ขอ: เวลาแก้ ให้ส่งภาพนิ่งตรงจุดที่แก้ให้ดูก่อน ได้ OK แล้วค่อยเรนเดอร์วิดีโอเต็ม (เพิ่มใน skill แล้ว)
+
+- 2026-11-03 · ตอนที่ 5 "The Royal Bed" เสร็จ: เตียงหรู vs กล่อง, ดึงหางหลุดแบบจุกขวด (ล้อตอนแรก), Pip ได้นอนเตียง แล้วโดนดีดลงกล่อง (ลูป)
+- 2026-11-03 · `clipRects()` ย้ายเข้า `engine/flat/core.js` (ทุกเรื่องใช้)
+
+- 2026-11-03 · ตอนที่ 4 "The Robot Vacuum" เสร็จ: ใช้ห้องจากตอน 2 ซ้ำ, ตัวป่วนใหม่ = หุ่นยนต์ดูดฝุ่น (ไฟตาเปลี่ยนสีตามอารมณ์), กลัว → ติดใจ
+- 2026-11-03 · ผู้ใช้อยากทำช่องพากย์ไทย: Chatterbox ไม่มีภาษาไทย ต้องเลือกวิธีทำเสียงไทยใหม่
+
+- 2026-11-03 · ตอนที่ 3 "The Last Cookie" เสร็จ: ตลกแอ็กชัน, แผน A/B/C, Pip อยู่ในโหลก่อนแล้ว, ถาดพายครอบหัว (ล้อตอนแรก), ลูปด้วยคุกกี้เหยื่อ
 
 - 2026-11-03 · ตอนที่ 2 "The Sun Spot" เสร็จ: ห้องเดียว มุมหน้าตรง, ท่านอนก้อนขนมปัง, จุดแดดเป็นตัวเดินเรื่อง, ลูปจบด้วยฝากล่องพิงขอบหน้าต่าง
 

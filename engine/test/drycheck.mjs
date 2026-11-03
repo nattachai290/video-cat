@@ -28,7 +28,7 @@ const ctx = {
 ctx.addEventListener = noop; ctx.window = ctx; vm.createContext(ctx);
 // the flat engine draws with Canvas2D: give it a stub context whose path calls are checked for NaN
 const ctx2d = new Proxy({}, { get: (_, k) => k === 'moveTo' || k === 'lineTo' ? (x, y) => check(k, [[x, y]])
-  : k === 'createRadialGradient' ? () => ({ addColorStop: noop }) : k === 'measureText' ? () => ({ width: 10 }) : noop, set: () => true });
+  : (k === 'createRadialGradient' || k === 'createLinearGradient') ? () => ({ addColorStop: noop }) : k === 'measureText' ? () => ({ width: 10 }) : noop, set: () => true });
 for (const s of srcs) {
   let code = fs.readFileSync(s, 'utf8');
   // top-level const/let are not visible across vm scripts: make them globals

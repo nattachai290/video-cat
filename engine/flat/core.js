@@ -268,3 +268,7 @@ function devUI() {
   s.addEventListener('input', () => go(+s.value));
   const t = +(new URLSearchParams(location.search).get('t') || 0); s.value = t; go(t);
 }
+
+// clipRects(rects, fn): draw fn() only inside the union of [x, y, w, h] rectangles (in the current camera's world space).
+// For partly hidden characters: inside a hole, a box, a bucket, a bed.
+function clipRects(rects, fn) { push(); CTX.beginPath(); for (const [x, y, w, h] of rects) CTX.rect(x, y, w, h); CTX.clip(); fn(); pop(); }
