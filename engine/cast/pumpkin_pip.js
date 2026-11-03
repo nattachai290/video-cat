@@ -17,6 +17,7 @@
 //   who     'pumpkin' / 'pip': if src/dialog.js is loaded, the mouth opens with that character's voice (SPEAK)
 //   states  Pumpkin: belly 0..1 (full of pie), wet 0..1 (soaked, thin, fur flat), puff 0..1 (fur dried into a ball)
 //           Pip: scarfWind -1..1 (blows the scarf end), cracker (true: holds a cracker in the right paw)
+//   extras  Pumpkin: mustache (true | colour), headband (true | colour): face accessories that follow the view
 //   hooks   armL(u, sw), armR(u, sw): drawn at the paw, in arm space (+x along the arm); draw(u, sw): body space
 //   boil    boilKey: a stable id for this character's boil seeds (set it if characters come and go mid-shot)
 //   cute    0 (the old series look) .. 1 (chibi: bigger head and eyes, lower eyes, bigger ears, permanent soft blush,
@@ -317,6 +318,21 @@ function pumpkinFace(u, o, sw, fx, q, k) {
   paint([[fx - .32 * u, .42 * u + fy], [fx + .32 * u, .42 * u + fy], [fx, .72 * u + fy]], { wash: C.nose, ink: PAL.ink, sw: sw * .55 });
   push(); translate(fx, .72 * u + fy); castMouth(o.mouth || 'w', k.talk, 1.15 * u, sw); pop();
   for (const s of [-1, 1]) castWhiskers(fx + s * 1.05 * u, .95 * u + fy, s, 3.0 * u * (q && s < 0 ? .7 : 1), sw, k.wet * .8 + (o.mouth === 'frown' ? .3 : 0));
+  castAccessories(u, o, sw, fx, q, fy);
+}
+// Face accessories that must follow the face (front / 3/4): mustache (true or a colour), headband (a colour, tied at the back).
+function castAccessories(u, o, sw, fx, q, fy) {
+  if (o.headband) {
+    const c = o.headband === true ? '#262A33' : o.headband, y0 = -1.95 * u, y1 = -1.25 * u, x0 = -3.25 * u + fx * .25, x1 = 3.25 * u + fx * .25;
+    paint([...arcPts(fx * .25, y0 + 2.6 * u, (x1 - x0) / 2, 2.6 * u, Math.PI + .28, TAU - .28, 16), ...arcPts(fx * .25, y1 + 2.6 * u, (x1 - x0) / 2 + .05 * u, 2.6 * u, TAU - .3, Math.PI + .3, 16)], { wash: c, ink: PAL.ink, sw: sw * .8 });
+    const kx = q ? -2.9 * u : 2.9 * u, ky = -1.3 * u, fl = Math.sin(T * 6) * .2 * u;   // the knot and its two tails
+    paint(ellPts(kx, ky, .4 * u, .35 * u, 10), { wash: c, ink: PAL.ink, sw: sw * .7 });
+    for (const d of [-1, 1]) paint(ribbon([[kx, ky], [kx + Math.sign(kx) * .9 * u, ky + .4 * u * d + fl], [kx + Math.sign(kx) * 1.7 * u, ky + .2 * u * d - fl]], .35 * u, .2 * u), { wash: c, ink: PAL.ink, sw: sw * .6 });
+  }
+  if (o.mustache) {
+    const c = o.mustache === true ? '#262A33' : o.mustache, my = .66 * u + (fy || 0);
+    for (const s of [-1, 1]) paint(ribbon([[fx, my], [fx + s * .7 * u, my + .12 * u], [fx + s * 1.35 * u, my - .1 * u], [fx + s * 1.5 * u, my - .45 * u]], .42 * u, .16 * u), { wash: c, ink: PAL.ink, sw: sw * .5 });
+  }
 }
 
 // Pumpkin in profile, facing right: a long round body, the head at the front, four stubby legs (walk), the tail behind.
@@ -368,6 +384,8 @@ function pumpkinSide(u, o, sw, k) {
   paint([[2.5 * u, .2 * u], [2.85 * u, .3 * u], [2.62 * u, .55 * u]], { wash: C.nose, ink: PAL.ink, sw: sw * .5 });
   push(); translate(2.3 * u, .85 * u); scale(.6, 1); castMouth(o.mouth || 'w', talk, .7 * u, sw); pop();
   castWhiskersSide(1.55 * u, 1.1 * u, -1.6 * u, sw, wet * .8);   // whiskers sweep back
+  if (o.mustache) { const c = o.mustache === true ? '#262A33' : o.mustache; paint(ribbon([[2.45 * u, .7 * u], [2.0 * u, .82 * u], [1.55 * u, .6 * u], [1.45 * u, .25 * u]], .38 * u, .14 * u), { wash: c, ink: PAL.ink, sw: sw * .5 }); }
+  if (o.headband) { const c = o.headband === true ? '#262A33' : o.headband; paint([[-2.6 * u, -1.0 * u], [2.2 * u, -1.9 * u], [2.45 * u, -1.25 * u], [-2.4 * u, -.35 * u]], { wash: c, ink: PAL.ink, sw: sw * .8 }); for (const d of [-1, 1]) paint(ribbon([[-2.5 * u, -.7 * u], [-3.4 * u, -.5 * u + d * .3 * u], [-4.1 * u, -.8 * u + d * .4 * u + Math.sin(T * 6) * .2 * u]], .35 * u, .2 * u), { wash: c, ink: PAL.ink, sw: sw * .6 }); }
   pop();
   pop();
 }

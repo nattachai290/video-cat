@@ -11,10 +11,9 @@
   function floorLamp(x, y, withShade = true) { paint(ellPts(x, y - 4, 60, 14, 18), { wash: '#6B5A4E', sw: 1 }); paint(rectPts(x - 6, y - 620, 12, 616), { wash: '#C9A44C', sw: 1 }); if (withShade) lampShade(x, y - 600, 1.2); }
 
 
-  // Pumpkin's spy look after the dress-up: the ripped sweater worn as a scarf, and a crayon moustache. (body space)
-  const mustache = (u, sw) => { for (const s of [-1, 1]) paint(ribbon([[0, -7.95 * u], [s * .9 * u, -7.75 * u], [s * 1.7 * u, -8.15 * u], [s * 1.9 * u, -8.6 * u]], .55 * u, .2 * u), { wash: '#262A33', sw: sw * .6 }); };
-  const blackScarf = (u, sw) => { paint(ellPts(0, -5.2 * u, 3.3 * u, .6 * u, 22), { wash: '#262A33', sw }); paint(ribbon([[2.2 * u, -5.0 * u], [2.8 * u, -3.8 * u], [2.6 * u, -2.9 * u]], .9 * u, .6 * u), { wash: '#262A33', sw }); };
-  const spyLook = (u, sw) => { blackScarf(u, sw); mustache(u, sw); };
+  // Pumpkin's spy look after the dress-up: the ripped sweater tied on as a ninja headband, and a crayon moustache
+  // (rig options, so they follow his face in every view).
+  const SPY = { headband: '#262A33', mustache: true };
   const growl = (t, t0, x, y) => { const a = t - t0; if (a > 0 && a < 1.4) letter('GRRRWL', x + Math.sin(t * 60) * 6, y, 70, '#E2463F', { stroke: '#2B2233', pop: a * 4, rot: -.08, alpha: 1 - seg(a, 1.0, 1.4) }); };
 
   // 1-1 · 0–4 · Hook: the fridge light, the cake (DO NOT EAT). An orange paw creeps in... the door SLAMS on it. Title.
@@ -129,7 +128,7 @@
   }
 
   // 1-6 · 25–32 · Dressing up, fast: Pip's mask is too big (walks into Pumpkin's leg), the sweater rips instantly (-> a scarf),
-  // and Pip's war paint turns into a crayon moustache. "I love this plan."
+  // and Pip's war paint turns into a crayon moustache. (v2.1: the ripped sweater becomes a ninja headband) "I love this plan."
   function s1_6(t) {
     cam(600, 1300, 1.35, shake(t, 27.6, 10, .35));
     roomNight(t);
@@ -140,7 +139,7 @@
     const sweater = seg(t, 27.0, 27.5), ripped = t > 27.6, scarf = t > 28.2, stache = t > 29.8;
     pumpkin(800, FY, U, { ...faces(t, [[25, 'happy'], [26.4, 'surprised', { lookY: 1 }], [27.0, 'strain'], [27.6, 'surprised', { eyes: 'wide' }], [28.4, 'proud'], [29.0, 'neutral', { eyes: 'closed' }], [30.2, 'proud', { blush: .4 }]]),
       aL: !ripped && sweater > 0 ? 1.4 : -1.1, aR: !ripped && sweater > 0 ? 1.4 : -1.1,
-      draw: (u, sw) => { if (sweater > 0 && !ripped) { push(); translate(0, -(1 - sweater) * 5 * u); blackSweater(0)(u, sw); pop(); } if (scarf) blackScarf(u, sw); if (stache) mustache(u, sw); }, who: 'pumpkin', boilKey: 'pk' });
+      draw: (u, sw) => { if (sweater > 0 && !ripped) { push(); translate(0, -(1 - sweater) * 5 * u); blackSweater(0)(u, sw); pop(); } }, headband: scarf ? '#262A33' : undefined, mustache: stache, who: 'pumpkin', boilKey: 'pk' });
     if (ripped && !scarf) for (let i = 0; i < 6; i++) { const k = seg(t, 27.6, 28.2); paint(rrPts(800 + Math.cos(i * 1.1) * 260 * k, 1360 + Math.sin(i * 2) * 120 * k - 100 * k, 70, 30, 10), { wash: '#262A33', sw: 1 }); }
     burst(800, FY - 230, 220, (t - 27.6) / .35, 10, '#FFFFFF', 4);
     // Pip: the oversized mask, the bonk; later he climbs up and draws (the moustache) with a black crayon
@@ -172,7 +171,7 @@
     if (panic) { const r = seg(t, 39.6, 43.5); kx = lerp(330, 860, ease(r)); px = lerp(470, 720, ease(r)); }
     const bob = freeze || t > 38 && !panic ? 0 : -Math.abs(Math.sin(t * 6)) * .2;
     pumpkin(kx, FK, U, { ...faces(t, [[32, 'determined', { brow: .7 }], [34.0, 'surprised', { eyes: 'wide' }], [35.2, 'proud'], [38.5, 'embarrassed'], [39.2, 'panic']]),
-      view: kview, flip: kflip, rot: krot, dy: kdy + bob, sq: ballet > 0 ? 0 : .15, aL: freeze ? 1.0 : kaL, aR: freeze ? -1.3 : kaR, draw: spyLook, boilKey: 'pk' });
+      view: kview, flip: kflip, rot: krot, dy: kdy + bob, sq: ballet > 0 ? 0 : .15, aL: freeze ? 1.0 : kaL, aR: freeze ? -1.3 : kaR, ...SPY, boilKey: 'pk' });
     pip(px, FK, U, { ...faces(t, [[32, 'determined', { brow: .7 }], [34.0, 'surprised'], [35.4, 'deadpan', { lookX: -1 }], [39.2, 'panic']]), view: 'q', flip: t > 35.2 && t < 38.5, sq: .2, dy: bob, aL: freeze ? 1.0 : .3, aR: -.4, draw: ninjaMask(1), boilKey: 'pip' });
     growl(t, 38.5, kx, FK - 520);
     if (freeze) letter('EEK!', 230, FK - 40, 60, '#FFFFFF', { stroke: '#2B2233', pop: seg(t, 34.0, 34.2) * 1.2, rot: .1 });
@@ -191,7 +190,7 @@
     pottedPlant(PLANT[0], PLANT[1], .6);
     const LEAF = (u, sw) => { push(); translate(0, -8.4 * u); rotate(-.2); paint(ribbon([[-1.6 * u, .3 * u], [0, -.5 * u], [1.6 * u, .1 * u]], 1.6 * u, .3 * u), { wash: '#4FA060', sw }); inkLine([[-1.4 * u, .2 * u], [1.4 * u, 0]], sw * .6, '#2F6E3E', 'ink', 0); pop(); };
     pumpkin(910, FK, U, { ...faces(t, [[44, 'neutral', { eyes: 'closed' }], [48.6, 'surprised', { eyes: 'wide', lookX: 1 }]]), aL: 1.5, aR: -1.2, sq: -.04 + Math.sin(t * 30) * .01,
-      draw: (u, sw) => { spyLook(u, sw); if (t < 49.6) LEAF(u, sw); }, boilKey: 'pk' });
+      ...SPY, draw: (u, sw) => { if (t < 49.6) LEAF(u, sw); }, boilKey: 'pk' });
     robotVac(VAC[0] + 150, VAC[1], 1.0, t, { led: 'red' });
     if (t > 47.4 && t < 48.6) emote('?', VAC[0] + 150, VAC[1] - 200, 60, seg(t, 47.4, 47.6), t - 47.4);
     camEnd();
@@ -218,7 +217,7 @@
     const stiff = t > 53.9;
     pumpkin(600, FK, U, { ...faces(t, [[52, 'surprised', { eyes: 'wide' }], [53.9, 'neutral', { eyes: 'wide', lid: 0, pupil: .4, mouth: 'flat' }], [57.0, 'neutral', { eyes: 'wide', lid: 0, pupil: .3, lookX: 1, mouth: 'flat' }]]),
       aL: stiff ? -1.5 : 1.2, aR: stiff ? -1.5 : 1.2, rot: !stiff && t > 53.0 ? Math.sin(t * 30) * .03 : 0,
-      draw: (u, sw) => { spyLook(u, sw); if (stiff) shadeHook(0)(u, sw); }, who: 'pumpkin', boilKey: 'pk' });
+      ...SPY, draw: (u, sw) => { if (stiff) shadeHook(0)(u, sw); }, who: 'pumpkin', boilKey: 'pk' });
     if (grab > 0 && grab < 1) { const p = arcPt([LAMP[0], LAMP[1] - 600], [600, FK - 10.3 * U], 80, ease(grab)); lampShade(p[0], p[1], 1.2 + .55 * grab, grab * 3); }
     camEnd();
     night(.75);
