@@ -18,6 +18,9 @@
 | `test/drycheck.mjs` | รันโค้ดฉากโดยไม่เปิดเบราว์เซอร์ เพื่อจับ NaN และ error | เขียนใหม่ |
 | `flat/core.js`, `flat/timeline.js` | **เอนจินสไตล์การ์ตูนแบน** (Canvas2D) ใช้ API เดียวกับเอนจินสีน้ำ (`paint`, `inkLine`, `camBegin`, `shots` ...) ไม่ต้องมี GPU เร็วประมาณ 50–110 ms/เฟรม | เขียนใหม่ |
 | `styles/samples.html`, `styles/arms.html` | ภาพตัวอย่างเทียบสไตล์ และทรงแขน | เขียนใหม่ |
+| `audio/synth.mjs` | ชุดสังเคราะห์เสียง: เสียงเอฟเฟกต์การ์ตูน (boing, pop, splash, whoosh ...) และเครื่องมือทำเพลง ไม่ใช้ไฟล์เสียงสำเร็จรูป | เขียนใหม่ |
+| `audio/mix.mjs` | มิกซ์เสียงพูด/เพลง/เอฟเฟกต์ เพลงหลบเสียงพูด ปรับดัง -14 LUFS (มาตรฐาน YouTube) | ดัดแปลงจาก Kreycin/ton-sea (MIT) |
+| `flat/render_pw.mjs` | เรนเดอร์เอนจินแบนเป็น MP4 ด้วย Playwright (ไม่ต้อง npm install) | เขียนใหม่ |
 | `ANIMATION_GUIDE.md` | กฎการวาดและ API ทั้งหมดของเอนจิน อ่านก่อนเขียนฉาก | ClaudeAnimationBase (MIT) |
 
 ลำดับงานเสียงพูดของแต่ละเรื่อง:
