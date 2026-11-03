@@ -23,7 +23,7 @@ video-cat/
         └── out/             # (ภายหลัง) เฟรม เสียง วิดีโอ (ไม่ commit ไฟล์ใหญ่)
 ```
 
-เพิ่มเรื่องใหม่: สร้าง `stories/NN-ชื่อเรื่อง/` แล้วเริ่มจาก `STORYBOARD.md`
+เพิ่มเรื่องใหม่: สร้าง `stories/NN-ชื่อเรื่อง/` แล้วเริ่มจาก `STORYBOARD.md` · วิธีทำทีละขั้น: [skill `pumpkin-pip-shorts`](.claude/skills/pumpkin-pip-shorts/SKILL.md) · ความคืบหน้า: [PROGRESS.md](PROGRESS.md)
 
 ## เรื่องทั้งหมด
 
