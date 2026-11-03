@@ -13,6 +13,7 @@
 
 | เรื่อง | รูปแบบ | สถานะ |
 |---|---|---|
+| 08 · Pumpkin & Pip: Bath Time | Shorts 9:16, 50 s, การ์ตูนแบน | **เสร็จ** · `stories/08-bath-time/out/video.mp4` + ปก + `YOUTUBE.md` |
 | 07 · Pumpkin & Pip: The Royal Bed | Shorts 9:16, 50 s, การ์ตูนแบน | **เสร็จ** · `stories/07-royal-bed/out/video.mp4` + ปก + `YOUTUBE.md` |
 | 06 · Pumpkin & Pip: The Robot Vacuum | Shorts 9:16, 50 s, การ์ตูนแบน | **เสร็จ** · `stories/06-robo-vac/out/video.mp4` + ปก + `YOUTUBE.md` |
 | 05 · Pumpkin & Pip: The Last Cookie | Shorts 9:16, 50 s, การ์ตูนแบน | **เสร็จ** · `stories/05-last-cookie/out/video.mp4` + ปก + `YOUTUBE.md` |
@@ -29,7 +30,8 @@
 - [x] ตอนที่ 4: The Robot Vacuum
 - [ ] ช่องพากย์ไทย: **พักไว้ก่อน** (ผู้ใช้ขอข้าม; ทางเลือกเสียงไทย: Gemini TTS ⭐ / อัดเสียงเอง / โมเดลโอเพนซอร์สไทย, ดูบันทึก 2026-11-03)
 - [x] ตอนที่ 5: The Royal Bed
-- [ ] ตอนที่ 6 (ใช้ skill `pumpkin-pip-shorts`)
+- [x] ตอนที่ 6: Bath Time
+- [ ] ตอนที่ 7 (ใช้ skill `pumpkin-pip-shorts`)
 - [ ] ถ้าจะกลับไปทำเรื่อง 02 ให้ย้ายมาเป็นสไตล์แบนและเลือกรูปแบบ (ยาว 16:9 หรือแบ่งเป็น Shorts)
 
 ## สิ่งที่สร้างไว้ใช้ซ้ำ
@@ -41,6 +43,8 @@
 - **RUNBOOK.md**: งานรันพร้อมพรอมต์ให้ Haiku (setup, voices, retake, cast-sheet, preview, check, final)
 
 ## บันทึกการตัดสินใจ
+
+- 2026-11-03 · ตอนที่ 6 "Bath Time" เสร็จ: ซ่อนแบบแย่ ๆ 3 ที่ (พรม/ม่าน/โคมไฟ), โป๊ะครอบ Pip, Pip แช่อ่างเอง แมวโดนฟองล่อจนตกอ่าง "I'm thin now" · drycheck รองรับ createLinearGradient แล้ว
 
 - 2026-11-03 · ผู้ใช้ขอ: เวลาแก้ ให้ส่งภาพนิ่งตรงจุดที่แก้ให้ดูก่อน ได้ OK แล้วค่อยเรนเดอร์วิดีโอเต็ม (เพิ่มใน skill แล้ว)
 
