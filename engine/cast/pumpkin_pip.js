@@ -163,7 +163,8 @@ function castWhiskers(mx, my, s, len, sw, droop = 0, col = PAL.ink) {
 function castWhiskersSide(mx, my, len, sw, droop = 0, col = PAL.ink) {
   [[-.55, .8], [-.12, 1], [.32, .85]].forEach(([a, l], k) => {
     const ang = a + droop * .6 + .05 * Math.sin(T * 2.3 + k), L = len * l;
-    inkLine([[mx, my], [mx + Math.cos(ang) * L * .5, my + Math.sin(ang) * L * .5 + L * .04], [mx + Math.cos(ang + .12) * L, my + Math.sin(ang + .12) * L + L * .1]], sw * .45, col, 'inkfine', .6);
+    const d = Math.sign(L), A = Math.abs(L);
+    inkLine([[mx, my], [mx + d * Math.cos(ang) * A * .5, my + Math.sin(ang) * A * .5 + A * .04], [mx + d * Math.cos(ang + .12) * A, my + Math.sin(ang + .12) * A + A * .1]], sw * .45, col, 'inkfine', .6);
   });
 }
 
@@ -307,14 +308,15 @@ function pumpkinSide(u, o, sw, k) {
   const hip = [-2.6 * u * fat, -4.4 * u], sho = [2.4 * u * fat, -4.6 * u];
   const raise = o.aR != null && o.aR > -.9 ? clamp((o.aR + .9) / 2.2) : 0;   // near front paw lifted (a swipe / a reach)
   // a leg: a tapered column from a joint to a round paw; swing = angle (+ = forward)
-  const leg = (j, len, swing, w0, w1, c, hook) => {
+  const leg = (j, len, swing, w0, w1, c, hook, bend = 0) => {
     const ex = j[0] + Math.sin(swing) * len, ey = j[1] + Math.cos(swing) * len;
-    paint(ribbon([[j[0], j[1]], [lerp(j[0], ex, .55) - Math.sin(swing) * .1 * u, lerp(j[1], ey, .55)], [ex, ey - .25 * u]], w0, w1), { wash: c, ink: PAL.ink, sw: sw * .8 });
-    paint(ellPts(ex + .25 * u, ey - .3 * u, .62 * u, .38 * u, 12), { wash: c, ink: PAL.ink, sw: sw * .8 });
+    paint(ribbon([[j[0], j[1]], [lerp(j[0], ex, .5) + bend * u, lerp(j[1], ey, .5)], [ex, ey - .3 * u]], w0, w1), { wash: c, ink: PAL.ink, sw: sw * .8 });
+    paint(ellPts(ex + .3 * u, ey - .35 * u, .75 * u, .45 * u, 12), { wash: c, ink: PAL.ink, sw: sw * .8 });
     if (hook) { push(); translate(ex + .25 * u, ey - .3 * u); rotate(-Math.PI / 2 + swing); hook(u, sw); pop(); }
   };
   const ph = i => walk == null ? 0 : Math.sin((walk + [0, .5, .5, 0][i]) * TAU) * .55;
-  const L = -bodyY - .2 * u;
+  const DY = 1.1 * u, L = -bodyY - .2 * u - DY;   // the cat sits lower on short legs
+  push(); translate(0, DY);
   // tail: up from the rump in an S, tip curling forward
   rs('tail');
   const ts = Math.sin(T * (1.4 + (o.tailWag ?? .4) * 3)) * (.25 + (o.tailWag ?? .4) * .4);
@@ -325,8 +327,8 @@ function pumpkinSide(u, o, sw, k) {
   }
   // far legs (darker), then the body, then the near legs
   rs('legsFar');
-  leg([hip[0] + .5 * u, hip[1]], L, ph(1), 1.15 * u, .8 * u, farCol);
-  leg([sho[0] - .4 * u, sho[1]], L - .2 * u, ph(2), 1.0 * u, .75 * u, farCol);
+  leg([hip[0] + .5 * u, hip[1]], L, ph(1), 1.5 * u, 1.0 * u, farCol, null, -.35);
+  leg([sho[0] - .4 * u, sho[1]], L - .2 * u, ph(2), 1.35 * u, .95 * u, farCol, null, .15);
   rs('body');
   const body = furry(ellPts(0, bodyY, brx, bry, 30, u * .04), 0, bodyY, puff * 1.2 + wet * .3);
   paint(body, { wash: col, ink: null, shade: true });
@@ -337,8 +339,9 @@ function pumpkinSide(u, o, sw, k) {
   paint(_P(u, [[.6 * fat, -7.0], [3.3 * fat, -6.8], [4.1 * fat, -5.0], [3.4 * fat, -3.2], [1.2 * fat, -3.0], [.2 * fat, -4.6]]), { wash: C.vest, ink: PAL.ink, sw: sw * .85, curv: .3, shade: true, shadeK: .6 });
   paint(ellPts(3.5 * u * fat, -4.4 * u, .26 * u, .26 * u, 10), { wash: C.button, ink: PAL.ink, sw: sw * .5 });
   rs('legsNear');
-  leg([hip[0], hip[1] + .3 * u], L - .3 * u, ph(0), 1.35 * u, .85 * u, col);
-  leg(sho, L, raise ? -2.2 * raise + ph(3) * (1 - raise) : ph(3), 1.15 * u, .8 * u, col, o.armR);
+  paint(ellPts(hip[0] - .1 * u, hip[1] + .2 * u, 1.6 * u, 1.5 * u, 18), { wash: col, ink: PAL.ink, sw, shade: true, shadeK: .5 });   // the haunch
+  leg([hip[0], hip[1] + .6 * u], L - .6 * u, ph(0), 1.5 * u, 1.05 * u, col, null, -.35);
+  leg(sho, L, raise ? -2.2 * raise + ph(3) * (1 - raise) : ph(3), 1.4 * u, 1.0 * u, col, o.armR, .15);
   // head: in front of and above the shoulders, with a muzzle
   rs('head');
   push(); translate(4.7 * u * fat, -7.7 * u);
@@ -349,22 +352,23 @@ function pumpkinSide(u, o, sw, k) {
     if (!far) paint([[(ex - .4) * u, -1.5 * u], [lerp((ex + .2) * u, tip[0], .85), lerp(-1.5 * u, tip[1], .8)], [(ex + .5) * u, -1.65 * u]], { wash: C.inner, ink: null });
   }
   const head = furry(ellPts(0, 0, hx, hy, 24, u * .04), 0, 0, puff + wet * .2);
-  const MZ = [1.95 * u, .6 * u, 1.0 * u, .8 * u];
+  const MZ = [1.75 * u, .7 * u, .72 * u, .58 * u];
   paint(ellPts(...MZ, 18), { wash: col, ink: PAL.ink, sw });
   paint(head, { wash: col, ink: null, shade: true, shadeK: .8 });
   for (const kx of [-.9, -.4, .1]) inkLine([[kx * u, -2.05 * u], [(kx + .15) * u, -1.45 * u]], sw * 1.1, C.stripe, 'ink', 0);
   inkLine([[-hx * .95, .1 * u], [-hx * .6, .35 * u]], sw, C.stripe, 'ink', .3);
   paint(head, { ink: PAL.ink, sw });
   paint(ellPts(MZ[0], MZ[1], MZ[2] - sw * .9, MZ[3] - sw * .9, 18), { wash: col, ink: null });
-  paint(ellPts(2.1 * u, .85 * u, .85 * u, .5 * u, 14), { wash: lt, ink: null });
+  paint(ellPts(1.85 * u, .85 * u, .6 * u, .4 * u, 14), { wash: lt, ink: null });
   rs('face');
   const kinds = Array.isArray(o.eyes) ? o.eyes : [o.eyes || 'open', o.eyes || 'open'];
   push(); translate(.9 * u, -.35 * u); castEye(kinds[1], 1, .55 * u, .72 * u, { ...o, lookX: (o.lookX ?? .5) }, sw, col, C.iris, 'cat'); pop();
   castBrow(.9 * u, -.35 * u, .95 * u, 1.05 * u, 1, o.brow || 0, (o.browUp || 0) + (o.browR || 0), sw);
   if (o.blush) paint(ellPts(1.2 * u, .6 * u, .6 * u, .32 * u, 12), { wash: '#E8607A', washOp: 150 * clamp(o.blush), ink: null });
-  paint([[2.65 * u, .05 * u], [3.05 * u, .17 * u], [2.82 * u, .45 * u]], { wash: C.nose, ink: PAL.ink, sw: sw * .5 });
-  push(); translate(2.6 * u, .72 * u); scale(.75, 1); castMouth(o.mouth || 'w', talk, .7 * u, sw); pop();
-  castWhiskersSide(2.1 * u, .8 * u, 1.6 * u, sw, wet * .8);
+  paint([[2.2 * u, .25 * u], [2.5 * u, .34 * u], [2.3 * u, .56 * u]], { wash: C.nose, ink: PAL.ink, sw: sw * .5 });
+  push(); translate(2.15 * u, .85 * u); scale(.75, 1); castMouth(o.mouth || 'w', talk, .7 * u, sw); pop();
+  castWhiskersSide(1.5 * u, .85 * u, -1.7 * u, sw, wet * .8);
+  pop();
   pop();
   rs('draw'); if (o.draw) o.draw(u, sw);
 }
@@ -409,7 +413,7 @@ function pip(x, y, u, o = {}) {
     push(); translate(.45 * u, -.25 * u); castEye(kinds[1], 1, .28 * u, .34 * u, o, sw * .8, C.col, '#3A3045', 'cat'); pop();
     castBrow(.45 * u, -.25 * u, .5 * u, .55 * u, 1, o.brow || 0, (o.browUp || 0) + (o.browR || 0), sw * .6);
     push(); translate(1.45 * u, .42 * u); scale(.7, 1); castMouth(o.mouth || 'w', talk, .6 * u, sw * .8); pop();
-    castWhiskersSide(1.3 * u, .3 * u, 1.0 * u, sw * .8);
+    castWhiskersSide(1.2 * u, .4 * u, -1.0 * u, sw * .8);
     pop();
     rs('draw'); if (o.draw) o.draw(u, sw);
     pop(); rs('after'); return;
