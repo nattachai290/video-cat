@@ -7,3 +7,5 @@ stories/*/out/voice/raw/
 stories/*/out/audio/
 stories/*/out/voice/
 .venv/
+stories/*/out/check/
+stories/*/out/*.log
