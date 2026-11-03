@@ -75,6 +75,9 @@ then replace STORYBOARD, lines.json, props.js, scenes, sfx.mjs, music.mjs.
 
 ## Shorts rules
 
+- **Pacing (user feedback on story 08: "ยืด ไม่สนุก"):** a new gag every 3-4 s, every gag bigger than the last, no shots
+  of characters just walking in, cut on action, speed lines / whip pans / shakes, fast music (~138 bpm), 45 s is enough.
+
 - Hook readable in the first 2 s with the sound off. Subtitles carry the dialogue.
 - Keep faces and subtitles out of the bottom ~350 px and the right-hand ~150 px (YouTube UI).
 - Characters big: at least 40% of frame height in acting shots. One gag, three beats, button at the end.
