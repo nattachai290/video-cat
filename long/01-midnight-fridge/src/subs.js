@@ -6,6 +6,7 @@ const SUBS = { y: 950, size: 64, maxW: 1500, lead: .12, hold: .5, gap: 18,
                font: s => `800 ${s}px "Baloo 2", "Comic Sans MS", sans-serif`,
                col: { pumpkin: '#FFB347', pip: '#8EE39B', dusty: '#C9C3F2' }, base: '#FFFFFF', stroke: '#2B2233' };
 function subs(t) {
+  if (typeof partTeaser === 'function') partTeaser(t);
   if (typeof LY === 'undefined') return;
   const row = LY.find(([a, b]) => t >= a - SUBS.lead && t < b + SUBS.hold);
   if (!row) return;
@@ -32,4 +33,19 @@ function subs(t) {
       x += wd[i] + sp;
     }
   });
+}
+// "NEXT: PART 2" teaser badge for the last seconds of a standalone part-1 upload: render with --query=teaser
+// (left out of the full 3-minute video, where part 2 simply follows).
+const TEASER = typeof location !== 'undefined' && /teaser/.test(location.search);
+function partTeaser(t) {
+  if (!TEASER || t < 57.8 || t >= 60) return;
+  const k = backOut(seg(t, 57.8, 58.1)), b = Math.sin(t * 6) * 4;
+  CTX.save(); CTX.setTransform(1, 0, 0, 1, 0, 0);
+  CTX.globalAlpha = clamp((60 - t) * 4);
+  CTX.translate(W - 260, 120 + b); CTX.scale(k, k);
+  CTX.fillStyle = '#F2C14E'; CTX.strokeStyle = '#2B2233'; CTX.lineWidth = 6;
+  CTX.beginPath(); CTX.roundRect(-210, -52, 420, 104, 52); CTX.fill(); CTX.stroke();
+  CTX.fillStyle = '#2B2233'; CTX.font = '800 58px "Baloo 2", sans-serif'; CTX.textAlign = 'center'; CTX.textBaseline = 'middle';
+  CTX.fillText('NEXT: PART 2 ▶', 0, 4);
+  CTX.restore();
 }
