@@ -370,8 +370,11 @@ function pip(x, y, u, o = {}) {
     [[-1.0, 1], [.9, 1], [-.6, 0], [1.3, 0]].forEach(([lx, far], i) => {
       let sx = 0, h = .8;
       if (o.walk != null) { const ph = (o.walk + [0, .5, .5, 0][i]) * TAU; sx = Math.sin(ph) * .5; h = .8 - Math.max(0, Math.cos(ph)) * .35; }
-      paint(ellPts((lx + sx) * u, -h * .5 * u, .32 * u, h * .6 * u, 10), { wash: far ? C.dk : C.tail, ink: PAL.ink, sw: sw * .6 });
+      const lc = far ? C.dk : C.col, px = (lx + sx) * u, top = -1.6 * u, py = -(.8 - h) * u - .12 * u;   // a short grey leg...
+      paint(rrPts(lx * u - .26 * u + sx * u * .5, top, .52 * u, py - top + .05 * u, .24 * u), { wash: lc, ink: PAL.ink, sw: sw * .6 });
+      paint(ellPts(px + .12 * u, py, .34 * u, .17 * u, 10), { wash: far ? mixCol(C.tail, C.dk, .4) : C.tail, ink: PAL.ink, sw: sw * .5 });   // ...with a little pink paw
     });
+    push(); translate(0, -.4 * u);   // body up a little so the legs show
     rs('body');
     paint(ellPts(0, -1.85 * u, 2.1 * u, 1.45 * u, 22, u * .03), { wash: C.col, ink: PAL.ink, sw, shade: true });
     paint(ellPts(.6 * u, -1.3 * u, 1.2 * u, .6 * u, 14), { wash: C.lt, washOp: 220, ink: null });
@@ -388,6 +391,7 @@ function pip(x, y, u, o = {}) {
     castBrow(.45 * u, -.25 * u, .5 * u, .55 * u, 1, o.brow || 0, (o.browUp || 0) + (o.browR || 0), sw * .6);
     push(); translate(1.45 * u, .42 * u); scale(.7, 1); castMouth(o.mouth || 'w', talk, .6 * u, sw * .8); pop();
     castWhiskersSide(1.2 * u, .4 * u, -1.0 * u, sw * .8);
+    pop();
     pop();
     rs('draw'); if (o.draw) o.draw(u, sw);
     pop(); rs('after'); return;
