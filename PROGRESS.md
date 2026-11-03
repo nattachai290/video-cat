@@ -13,6 +13,7 @@
 
 | เรื่อง | รูปแบบ | สถานะ |
 |---|---|---|
+| 05 · Pumpkin & Pip: The Last Cookie | Shorts 9:16, 50 s, การ์ตูนแบน | **เสร็จ** · `stories/05-last-cookie/out/video.mp4` + ปก + `YOUTUBE.md` |
 | 04 · Pumpkin & Pip: The Sun Spot | Shorts 9:16, 50 s, การ์ตูนแบน | **เสร็จ** · `stories/04-sun-spot/out/video.mp4` + ปก + `YOUTUBE.md` |
 | 03 · Pumpkin & Pip: The Cat Flap | Shorts 9:16, 52 s, การ์ตูนแบน | **เสร็จ** · `stories/03-cat-flap/out/video.mp4` (ไม่อยู่ใน git, สร้างใหม่ได้ใน ~1 นาที) |
 | 02 · The Cat Who Sold the Moon | 16:9, ~3:36, สีน้ำ | พักไว้ · สตอรี่บอร์ด + เสียงพูดมีอารมณ์เสร็จ (ต้องรันเสียงใหม่หลังเปลี่ยนชื่อ Pom → Pumpkin) |
@@ -22,7 +23,8 @@
 
 - [ ] ผู้ใช้ดู 03 แล้วสั่งแก้ (ความดังเพลง, จังหวะ, ขนาดซับ) หรืออัปขึ้น YouTube Shorts (ติ๊ก "altered or synthetic content")
 - [x] ตอนที่ 2: The Sun Spot
-- [ ] ตอนที่ 3 (ใช้ skill `pumpkin-pip-shorts`)
+- [x] ตอนที่ 3: The Last Cookie (ตลกแอ็กชัน)
+- [ ] ตอนที่ 4 (ใช้ skill `pumpkin-pip-shorts`)
 - [ ] ถ้าจะกลับไปทำเรื่อง 02 ให้ย้ายมาเป็นสไตล์แบนและเลือกรูปแบบ (ยาว 16:9 หรือแบ่งเป็น Shorts)
 
 ## สิ่งที่สร้างไว้ใช้ซ้ำ
@@ -34,6 +36,8 @@
 - **RUNBOOK.md**: งานรันพร้อมพรอมต์ให้ Haiku (setup, voices, retake, cast-sheet, preview, check, final)
 
 ## บันทึกการตัดสินใจ
+
+- 2026-11-03 · ตอนที่ 3 "The Last Cookie" เสร็จ: ตลกแอ็กชัน, แผน A/B/C, Pip อยู่ในโหลก่อนแล้ว, ถาดพายครอบหัว (ล้อตอนแรก), ลูปด้วยคุกกี้เหยื่อ
 
 - 2026-11-03 · ตอนที่ 2 "The Sun Spot" เสร็จ: ห้องเดียว มุมหน้าตรง, ท่านอนก้อนขนมปัง, จุดแดดเป็นตัวเดินเรื่อง, ลูปจบด้วยฝากล่องพิงขอบหน้าต่าง
 
