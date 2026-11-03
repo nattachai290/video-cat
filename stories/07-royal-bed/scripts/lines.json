@@ -1,0 +1,9 @@
+[
+  {"id": "d01", "who": "pip",     "shot": "01", "t": 2.4,  "text": "Special delivery!", "emo": "bright, cheerful announcer", "exag": 0.75, "cfg": 0.35, "speed": 1.0, "pitch": 1.04},
+  {"id": "d02", "who": "pip",     "shot": "02", "t": 8.4,  "text": "A royal bed. Only the best for you.", "emo": "proud salesman, posh", "exag": 0.6, "cfg": 0.4, "speed": 1.0, "pitch": 1.02},
+  {"id": "d03", "who": "pumpkin", "shot": "03", "t": 14.6, "text": "...Box.", "emo": "hypnotised, in awe", "exag": 0.5, "cfg": 0.45, "speed": 1.05, "pitch": 0.97},
+  {"id": "d04", "who": "pumpkin", "shot": "03", "t": 18.4, "text": "Perfect.", "emo": "blissful, content", "exag": 0.45, "cfg": 0.5, "speed": 1.05, "pitch": 0.97},
+  {"id": "d05", "who": "pip",     "shot": "04", "t": 21.0, "text": "That bed cost forty crackers!", "emo": "outraged, stomping", "exag": 0.95, "cfg": 0.3, "speed": 0.95, "pitch": 1.06},
+  {"id": "d06", "who": "pumpkin", "shot": "04", "t": 28.0, "text": "Still... perfect.", "emo": "squashed but blissful", "exag": 0.5, "cfg": 0.45, "speed": 1.05, "pitch": 0.98},
+  {"id": "d07", "who": "pip",     "shot": "05", "t": 35.0, "text": "...Oh no. It IS nice.", "emo": "melting, reluctant bliss", "exag": 0.45, "cfg": 0.5, "speed": 1.05, "pitch": 1.0}
+]

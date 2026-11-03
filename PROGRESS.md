@@ -13,6 +13,7 @@
 
 | เรื่อง | รูปแบบ | สถานะ |
 |---|---|---|
+| 07 · Pumpkin & Pip: The Royal Bed | Shorts 9:16, 50 s, การ์ตูนแบน | **เสร็จ** · `stories/07-royal-bed/out/video.mp4` + ปก + `YOUTUBE.md` |
 | 06 · Pumpkin & Pip: The Robot Vacuum | Shorts 9:16, 50 s, การ์ตูนแบน | **เสร็จ** · `stories/06-robo-vac/out/video.mp4` + ปก + `YOUTUBE.md` |
 | 05 · Pumpkin & Pip: The Last Cookie | Shorts 9:16, 50 s, การ์ตูนแบน | **เสร็จ** · `stories/05-last-cookie/out/video.mp4` + ปก + `YOUTUBE.md` |
 | 04 · Pumpkin & Pip: The Sun Spot | Shorts 9:16, 50 s, การ์ตูนแบน | **เสร็จ** · `stories/04-sun-spot/out/video.mp4` + ปก + `YOUTUBE.md` |
@@ -27,7 +28,8 @@
 - [x] ตอนที่ 3: The Last Cookie (ตลกแอ็กชัน)
 - [x] ตอนที่ 4: The Robot Vacuum
 - [ ] ช่องพากย์ไทย: **พักไว้ก่อน** (ผู้ใช้ขอข้าม; ทางเลือกเสียงไทย: Gemini TTS ⭐ / อัดเสียงเอง / โมเดลโอเพนซอร์สไทย, ดูบันทึก 2026-11-03)
-- [ ] ตอนที่ 5 (ใช้ skill `pumpkin-pip-shorts`)
+- [x] ตอนที่ 5: The Royal Bed
+- [ ] ตอนที่ 6 (ใช้ skill `pumpkin-pip-shorts`)
 - [ ] ถ้าจะกลับไปทำเรื่อง 02 ให้ย้ายมาเป็นสไตล์แบนและเลือกรูปแบบ (ยาว 16:9 หรือแบ่งเป็น Shorts)
 
 ## สิ่งที่สร้างไว้ใช้ซ้ำ
@@ -39,6 +41,9 @@
 - **RUNBOOK.md**: งานรันพร้อมพรอมต์ให้ Haiku (setup, voices, retake, cast-sheet, preview, check, final)
 
 ## บันทึกการตัดสินใจ
+
+- 2026-11-03 · ตอนที่ 5 "The Royal Bed" เสร็จ: เตียงหรู vs กล่อง, ดึงหางหลุดแบบจุกขวด (ล้อตอนแรก), Pip ได้นอนเตียง แล้วโดนดีดลงกล่อง (ลูป)
+- 2026-11-03 · `clipRects()` ย้ายเข้า `engine/flat/core.js` (ทุกเรื่องใช้)
 
 - 2026-11-03 · ตอนที่ 4 "The Robot Vacuum" เสร็จ: ใช้ห้องจากตอน 2 ซ้ำ, ตัวป่วนใหม่ = หุ่นยนต์ดูดฝุ่น (ไฟตาเปลี่ยนสีตามอารมณ์), กลัว → ติดใจ
 - 2026-11-03 · ผู้ใช้อยากทำช่องพากย์ไทย: Chatterbox ไม่มีภาษาไทย ต้องเลือกวิธีทำเสียงไทยใหม่
