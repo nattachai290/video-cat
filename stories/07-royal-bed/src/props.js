@@ -129,27 +129,27 @@ function royalBedBlanket(x, y, s, px, top) {
   inkLine([[px - 30, top + 40], [px - 10, top + 70]], 1.4, '#8E73C4', 'ink', 0); inkLine([[px + 30, top + 42], [px + 12, top + 72]], 1.4, '#8E73C4', 'ink', 0);
 }
 function royalBed(x, y, s = 1, t = 0, glint = 0) { royalBedBack(x, y, s, t); royalBedFront(x, y, s, t, glint); }
-// Pip's tiny cracker box (front face with a cracker picture). at: [x, y] bottom centre.
+// Pip's cracker box (the "tiny" box; same drawing as the one Pumpkin crams into). s = 1.5 is its size in the film.
 function tinyBox(x, y, s = 1, rot = 0) {
+  const w = 160 * s, h = 133 * s, rim = y - h;
   push(); translate(x, y); rotate(rot); translate(-x, -y);
-  const w = TINY.w * s, h = TINY.h * s;
-  paint([[x + w / 2, y], [x + w / 2 + 22 * s, y - 14 * s], [x + w / 2 + 22 * s, y - h - 14 * s], [x + w / 2, y - h]], { wash: '#B8813A', sw: 1.1 });
-  paint(rectPts(x - w / 2, y - h, w, h), { wash: '#E6B65F', sw: 1.3 });
-  paint(rrPts(x - w * .28, y - h * .78, w * .56, h * .5, 6 * s), { wash: '#F2D08A', sw: .8 });
-  for (const [a, b] of [[-.12, -.62], [.12, -.62], [0, -.48]]) paint(ellPts(x + a * w, y + b * h, 3.5 * s, 3.5 * s, 8), { wash: '#B8813A', ink: null });
+  paint([[x - w / 2, rim], [x - w / 2 + 26, rim - 18], [x + w / 2 + 26, rim - 18], [x + w / 2, rim]], { wash: '#C99A55', sw: 1.2 });
+  crackerFront(x, y, w, h, 0, false);
+  paint([[x - 20, rim], [x + 20, rim], [x + 20, rim + 60], [x - 20, rim + 60]], { wash: '#E9D7A8', ink: null });
   pop();
 }
 
-// Pumpkin crammed into the tiny box: his bottom sunk in it (feet hidden), the rest of him spilling over its rim on both
-// sides, with crease marks where the rim bites. sink 0..1 (how far down he's squeezed), o: extra pumpkin() options.
+// Pumpkin crammed into the tiny box (option B, chosen by the user): only his head (and dangling paws) stick out of a
+// swollen box; the tape pops. sink 0..1: from sitting on top of it to all the way in. o: extra pumpkin() options.
 const TINYS = 1.5;
 function crammed(t, sink, o = {}) {
-  const w = TINY.w * TINYS, h = TINY.h * TINYS, top = TINY.y - h, left = TINY.x - w / 2, right = TINY.x + w / 2;
-  const feet = top + 10 + 55 * sink, bulge = 70 * sink;
-  // the box's open top (dark inside), then him, clipped: above the rim, or spilling out beside the box
-  paint([[left, top], [left + 22 * TINYS, top - 14 * TINYS], [right + 22 * TINYS, top - 14 * TINYS], [right, top]], { wash: '#7A5A36', sw: 1 });
-  clipRects([[-600, -600, 2400, top + 8 + 600], [-600, top, left + 600, bulge], [right, top, 1200, bulge]], () =>
-    pumpkin(TINY.x, feet, 40, { sq: .12 + .1 * sink, aL: -1.3, aR: -1.3, noShadow: true, boilKey: 'pk', ...o }));
-  tinyBox(TINY.x, TINY.y, TINYS);
-  if (sink > .3) for (const d of [-1, 1]) { const x = TINY.x + d * (w / 2 + 14); inkLine([[x, top - 6], [x + d * 12, top + 12], [x + d * 4, top + 30]], 2.2, '#B4572A', 'ink', .5); }
+  const cx = TINY.x, floor = TINY.y, w = 240, h = 200, rim = floor - h, U = 40, k = clamp(sink);
+  paint([[cx - w / 2, rim], [cx - w / 2 + 26, rim - 18], [cx + w / 2 + 26, rim - 18], [cx + w / 2, rim]], { wash: '#7A5A36', sw: 1.2 });
+  const feetY = lerp(rim + 10, rim + 8.2 * U - 10, ease(k));
+  clipRects([[-600, -600, 2400, rim + 600 - 2]], () => pumpkin(cx, feetY, U, { sq: -.05 * k, aL: -1.4, aR: -1.4, noShadow: true, noTail: true, boilKey: 'pk', ...o }));
+  crackerFront(cx, floor, w, h, 1.6 * ease(k), k > .7);
+  if (k > .7) paint([[cx + w / 2 - 50, rim + 2], [cx + w / 2 - 14, rim + 2], [cx + w / 2 + 6, rim - 34], [cx + w / 2 - 34, rim - 42]], { wash: '#E9D7A8', sw: 1 });   // the tape, popped
+  else paint([[cx - 20, rim], [cx + 20, rim], [cx + 20, rim + 60], [cx - 20, rim + 60]], { wash: '#E9D7A8', ink: null });
+  if (k > .6) for (const s of [-1, 1]) { const px = cx + s * 70; paint(ellPts(px, rim + 34, 30, 40, 18), { wash: PUMPKIN_COL.col, sw: 1.4, shade: true, shadeK: .5 }); for (const kk of [-1, 0, 1]) inkLine([[px + kk * 9, rim + 52], [px + kk * 10, rim + 68]], 1.2, '#8A4A22', 'inkfine', 0); }
+  paint(ribbon([[cx + w / 2 + 6, floor - 30], [cx + w / 2 + 60, floor - 50], [cx + w / 2 + 50 + Math.sin(t * 3) * 10, floor - 120]], 30, 22), { wash: PUMPKIN_COL.col, sw: 1.4 });   // the tail
 }

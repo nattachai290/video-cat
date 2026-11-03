@@ -93,7 +93,7 @@
       else { x = TINY.x; y = FY; pf2 = faces(t, [[25.6, 'determined'], [26.4, 'strain'], [27.6, 'happy', { blush: .5 }]]); }
       if (walk < 1) { tinyBox(TINY.x, TINY.y, TINYS); pumpkin(x, y, U, { ...pf2, sq, rot, view: view2, flip: flip2, walk: walkp, aL: -1.3, aR: -1.3, noShadow: fly < 1, who: 'pumpkin', boilKey: 'pk' }); }
       else { const hop = seg(t, 25.7, 26.1), wig = sqz > 0 && sqz < 1 ? Math.sin(t * 22) * .05 : 0;
-        if (hop < 1) { tinyBox(TINY.x, TINY.y, TINYS); const p = arcPt([TINY.x, FY], [TINY.x, TINY.y - TINY.h * TINYS + 10], 120, ease(hop)); pumpkin(p[0], p[1], U, { ...pf2, aL: .8, aR: .8, noShadow: true, boilKey: 'pk' }); }
+        if (hop < 1) { tinyBox(TINY.x, TINY.y, TINYS); const p = arcPt([TINY.x, FY], [TINY.x, TINY.y - 190], 120, ease(hop)); pumpkin(p[0], p[1], U, { ...pf2, aL: .8, aR: .8, noShadow: true, boilKey: 'pk' }); }
         else crammed(t, ease(sqz), { ...pf2, rot: wig, who: 'pumpkin' }); }
       puffCloud(BOX.x, BOX.y - BOX.h - 20, 120, t - yank);
     } else tinyBox(TINY.x, TINY.y, TINYS);

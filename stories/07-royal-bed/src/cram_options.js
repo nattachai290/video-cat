@@ -31,7 +31,6 @@ function crammedB(cx, floor, U, o = {}) {
   crackerFront(cx, floor, w, h, 1.6, true);
   // the tape popping off the top, fur tufts squeezing out of the corners
   paint([[cx + w / 2 - 50, rim + 2], [cx + w / 2 - 14, rim + 2], [cx + w / 2 + 6, rim - 34], [cx + w / 2 - 34, rim - 42]], { wash: '#E9D7A8', sw: 1 });
-  for (const s of [-1, 1]) paint(through([[cx + s * (w / 2 - 6), rim + 30], [cx + s * (w / 2 + 26), rim + 46], [cx + s * (w / 2 + 14), rim + 70], [cx + s * (w / 2 + 30), rim + 90], [cx + s * (w / 2 - 4), rim + 100]], 4), { wash: PUMPKIN_COL.col, sw: 1.2 });
   for (const s of [-1, 1]) { const px = cx + s * 70; paint(ellPts(px, rim + 34, 30, 40, 18), { wash: PUMPKIN_COL.col, sw: 1.4, shade: true, shadeK: .5 }); for (const k of [-1, 0, 1]) inkLine([[px + k * 9, rim + 52], [px + k * 10, rim + 68]], 1.2, '#8A4A22', 'inkfine', 0); }
   paint(ribbon([[cx + w / 2 + 6, floor - 30], [cx + w / 2 + 60, floor - 50], [cx + w / 2 + 50, floor - 120]], 30, 22), { wash: PUMPKIN_COL.col, sw: 1.4 });
 }
