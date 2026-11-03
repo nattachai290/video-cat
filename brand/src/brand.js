@@ -52,16 +52,16 @@
       if (!inSafe) snack(i, x + (hash(i) - .5) * 70, y + (hash(i + 9) - .5) * 60, 46 + hash(i + 3) * 18);
     }
     // logo: "Snack" orange + "atoon" green, one word, chunky with a dark outline
-    const size = 168, f = s => `800 ${s}px "Baloo 2", sans-serif`;
+    const size = 140, f = s => `800 ${s}px "Baloo 2", sans-serif`;
     CTX.save(); CTX.font = f(size); const w1 = CTX.measureText('Snack').width, w2 = CTX.measureText('atoon').width; CTX.restore();
-    const x0 = 1280 - (w1 + w2) / 2, ly = 680;
+    const x0 = 1280 - (w1 + w2) / 2, ly = 690;
     letter('Snack', x0 + w1 / 2, ly, size, SN.orange, { font: f(size), stroke: SN.ink, rot: -.03 });
     letter('atoon', x0 + w1 + w2 / 2, ly + 6, size, '#5DBB6E', { font: f(size), stroke: SN.ink, rot: .02 });
-    letter('Bite-size cartoon stories', 1280, 815, 62, '#FFFFFF', { font: f(62), stroke: SN.ink });
+    letter('Bite-size cartoon stories', 1280, 792, 52, '#FFFFFF', { font: f(52), stroke: SN.ink });
     // Pumpkin left (waving), Pip right on a cracker stack
-    pumpkin(655, 935, 33, { ...face('happy', { blush: .6 }), view: 'q', aR: 1.25 + .1 * Math.sin(t * 6), aL: -.9, boilKey: 'bp' });
-    for (let k = 0; k < 3; k++) { push(); translate(1915 + (k % 2 ? 8 : -6), 925 - k * 30); scale(1, .32); cracker(0, 0, 105, 0); pop(); }
-    pip(1915, 840, 36, { ...face('teasing', { blush: .4 }), view: 'q', flip: true, cracker: true, aR: .4, aL: 1.2, scarfWind: -.3, noShadow: true, boilKey: 'bpi' });
+    pumpkin(735, 875, 25, { ...face('happy', { blush: .6 }), view: 'q', aR: 1.25 + .1 * Math.sin(t * 6), aL: -.9, boilKey: 'bp' });
+    for (let k = 0; k < 3; k++) { push(); translate(1760 + (k % 2 ? 6 : -5), 868 - k * 23); scale(1, .32); cracker(0, 0, 80, 0); pop(); }
+    pip(1760, 808, 27, { ...face('teasing', { blush: .4 }), view: 'q', flip: true, cracker: true, aR: .4, aL: 1.2, scarfWind: -.3, noShadow: true, boilKey: 'bpi' });
   };
   LOOPS.banner.len = 2;
 })();
