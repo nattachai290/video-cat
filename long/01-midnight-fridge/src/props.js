@@ -291,3 +291,114 @@ LOOPS.models = t => {
   pip(880, 1600, 40, { ...face('surprised'), view: 'q', draw: pipSharkHood(1), boilKey: 'm6' });
 };
 LOOPS.models.len = 2;
+
+// ---------- this story: The Midnight Fridge ----------
+const FY1 = 1560, KIT = { floor: 1310, fridge: [1480, 1310], counter: [300, 1310], clock: [700, 520], door: [0, 240] };
+const NC = { wall: '#E9DFB8', tile: '#DDD1A3', floor: '#C8B48A', floorDk: '#A8946C', cab: '#7FA7B5', cabDk: '#5F8796', top: '#EDEDED', fridge: '#F4F6F8', fridgeDk: '#C9D0D8', inside: '#EAF6FF' };
+// The night: a deep-blue veil over the whole frame (screen space). k 0..1.
+function night(k = 1) { if (k <= 0) return; CTX.save(); CTX.setTransform(1, 0, 0, 1, 0, 0); CTX.fillStyle = `rgba(12,16,52,${.72 * k})`; CTX.fillRect(0, 0, W, H); CTX.restore(); }
+// A pool of light (drawn after night()) at (x, y) world, radius r.
+function lightPool(x, y, r, col = '#FFE9A8', a = .7) { glow(x, y, r, col, a); }
+// The kitchen, face-on: doorway to the living room LEFT, counter + cupboards, wall clock, the fridge RIGHT.
+function kitchen(t, o = {}) {
+  boilSeed('kitchen1');
+  paint(rectPts(-800, -600, 3600, KIT.floor + 600), { wash: NC.wall, ink: null });
+  for (let i = 0; i < 12; i++) inkLine([[-800, 700 + i * 50], [2800, 700 + i * 50]], 1, NC.tile, 'ink', 0);
+  for (let j = -16; j < 56; j++) inkLine([[j * 50, 700], [j * 50, 1290]], 1, NC.tile, 'ink', 0);
+  paint(rectPts(-800, KIT.floor, 3600, 1000), { wash: NC.floor, ink: null });
+  for (let i = -16; i < 40; i++) for (let k = 0; k < 6; k++) if ((i + k) % 2) paint(rectPts(i * 120, KIT.floor + k * 70 * (1 + k * .15), 120, 70 * (1 + k * .15)), { wash: NC.floorDk, washOp: 120, ink: null });
+  // doorway (dark living room beyond)
+  paint(rectPts(KIT.door[0] - 20, 520, KIT.door[1] + 40, KIT.floor - 520), { wash: '#F6F0DA', sw: 1.4 });
+  paint(rectPts(KIT.door[0], 540, KIT.door[1], KIT.floor - 540), { wash: '#3A3550', ink: null });
+  // counter + cupboards
+  const [cx, cy] = KIT.counter;
+  paint(rectPts(cx, cy - 380, 760, 380), { wash: NC.cab, sw: 1.4, shade: true, shadeK: .4 });
+  for (let i = 0; i < 4; i++) { paint(rrPts(cx + 20 + i * 185, cy - 340, 165, 300, 10), { wash: mixCol(NC.cab, '#FFFFFF', .1), sw: 1 }); paint(ellPts(cx + 85 + i * 185 + (i % 2) * 40, cy - 190, 8, 8, 8), { wash: '#E9D7A8', ink: null }); }
+  paint(rrPts(cx - 20, cy - 410, 800, 40, 8), { wash: NC.top, sw: 1.3 });
+  paint(rectPts(cx, 420, 760, 200), { wash: NC.cab, sw: 1.2 });   // wall cupboards
+  // wall clock (hands at t-driven time, midnight at the start)
+  const [kx, ky] = KIT.clock;
+  paint(ellPts(kx, ky - 140, 64, 64, 30), { wash: '#FFFFFF', sw: 2 });
+  for (let i = 0; i < 12; i++) { const a = i / 12 * TAU; inkLine([[kx + Math.sin(a) * 52, ky - 140 - Math.cos(a) * 52], [kx + Math.sin(a) * 58, ky - 140 - Math.cos(a) * 58]], 2, '#2B2233', 'ink', 0); }
+  const mins = o.minutes ?? 0, am = mins / 60 * TAU, ah = mins / 720 * TAU;
+  inkLine([[kx, ky - 140], [kx + Math.sin(ah) * 30, ky - 140 - Math.cos(ah) * 30]], 6, '#2B2233', 'ink', 0);
+  inkLine([[kx, ky - 140], [kx + Math.sin(am) * 46, ky - 140 - Math.cos(am) * 46]], 4, '#2B2233', 'ink', 0);
+  fridge(t, o.fridgeOpen || 0, o);
+}
+// The fridge at KIT.fridge (x = middle, y = floor). open 0..1 swings the door right; the inside glows.
+function fridge(t, open = 0, o = {}) {
+  const [x, y] = KIT.fridge, w = 360, h = 820, top = y - h;
+  paint(rrPts(x - w / 2, top, w, h, 30), { wash: NC.fridge, sw: 2, shade: true, shadeK: .3 });
+  if (open > .01) {
+    // the inside: shelves, the cake on the top shelf
+    paint(rrPts(x - w / 2 + 16, top + 250, w - 32, h - 270, 16), { wash: NC.inside, sw: 1.4 });
+    for (const sy of [top + 470, top + 650]) inkLine([[x - w / 2 + 20, sy], [x + w / 2 - 20, sy]], 5, '#B9D3E8', 'ink', 0);
+    if (o.cake !== false) cakeSlice(x - 20, top + 465, 1, o.label !== false);
+    paint(rectPts(x + 90, top + 520, 50, 120), { wash: '#FFFFFF', sw: 1 }); paint(rectPts(x + 90, top + 500, 50, 24), { wash: '#4F9BD9', sw: 1 });   // a milk carton
+    glow(x, top + 400, 360 * open, '#DDF2FF', .6 * open);
+    // the door, swung open (a narrowing panel to the right)
+    const dw = w * (1 - open * .85);
+    paint([[x + w / 2, top + 240], [x + w / 2 + dw * .25 + 40 * open, top + 240 - 20 * open], [x + w / 2 + dw * .25 + 40 * open, y + 10 * open], [x + w / 2, y - 6]], { wash: NC.fridgeDk, sw: 1.4 });
+  } else {
+    inkLine([[x - w / 2 + 10, top + 240], [x + w / 2 - 10, top + 240]], 3, NC.fridgeDk, 'ink', 0);
+    paint(rrPts(x - w / 2 + 26, top + 300, 18, 200, 8), { wash: '#B9C2CC', sw: 1 });
+  }
+  paint(rrPts(x - w / 2 + 26, top + 60, 18, 120, 8), { wash: '#B9C2CC', sw: 1 });   // freezer handle
+  if (o.note) { paint(rectPts(x - 60, top + 320, 110, 90), { wash: '#FFF6A8', sw: 1 }); }
+}
+// The last slice of strawberry cake (with its DO NOT EAT flag). (x, y) = bottom middle.
+function cakeSlice(x, y, s = 1, label = true, shine = 0) {
+  push(); translate(x, y); scale(s, s);
+  paint([[-80, 0], [70, 0], [70, -80], [-80, -95]], { wash: '#F6E3C6', sw: 1.4 });   // sponge side
+  for (const yy of [-28, -56]) inkLine([[-78, yy], [68, yy - 4]], 7, '#F49AC1', 'ink', 0);   // cream + jam layers
+  paint([[-80, -95], [70, -80], [40, -110], [-100, -122]], { wash: '#FFF7F0', sw: 1.3 });   // icing top
+  paint(ellPts(-20, -122, 22, 18, 14), { wash: '#E2343F', sw: 1.2 }); paint([[-26, -138], [-20, -150], [-12, -138]], { wash: '#4FA060', ink: null });   // strawberry
+  if (label) { inkLine([[40, -100], [40, -190]], 3, '#8E6A55', 'ink', 0); paint(rectPts(40, -190, 120, 52), { wash: '#FFFFFF', sw: 1.2 }); }
+  if (shine) for (let i = 0; i < 4; i++) paint(starPts(-120 + i * 80, -170 - (i % 2) * 40, 18 * shine, .22, 4), { wash: '#FFFFFF', ink: null });
+  pop();
+  // letter() works in world (camera) coordinates, not in the local transform: place the label text by hand
+  if (label) { letter('DO NOT', x + 100 * s, y - 175 * s, 20 * s, '#E2343F', { font: `800 ${20 * s}px "Baloo 2", sans-serif` }); letter('EAT', x + 100 * s, y - 152 * s, 22 * s, '#E2343F', { font: `800 ${22 * s}px "Baloo 2", sans-serif` }); }
+}
+// Pip's flashlight (right paw hook) and the glow it throws up his face when held under his chin.
+function flashHook(on = 1) { return (u, sw) => { paint(rrPts(-.1 * u, -.22 * u, 1.3 * u, .44 * u, .15 * u), { wash: '#3B3F4A', sw: sw * .6 }); paint(ellPts(1.25 * u, 0, .14 * u, .3 * u, 10), { wash: on ? '#FFF3B0' : '#888', sw: sw * .4 }); }; }
+// The crayon plan: a sheet of paper (in Pip's paws, or full-screen in the fantasy).
+function planPaper(x, y, w, h, rot = 0) {
+  push(); translate(x, y); rotate(rot);
+  paint(rectPts(-w / 2, -h / 2, w, h), { wash: '#FBF6E8', sw: 1.4 });
+  for (let i = 1; i < 8; i++) inkLine([[-w / 2, -h / 2 + i * h / 8], [w / 2, -h / 2 + i * h / 8]], 1, '#BFD6EA', 'ink', 0);
+  crayon([[-w * .35, h * .25], [-w * .1, -h * .05], [w * .15, h * .2]], '#E2463F', w / 120);   // an arrow-ish squiggle
+  crayon([[w * .15, -h * .3], [w * .35, -h * .3], [w * .35, h * .3], [w * .15, h * .3], [w * .15, -h * .3]], '#4F7FC9', w / 120);   // the "fridge"
+  crayon([[w * .2, -h * .05], [w * .3, -h * .05]], '#E2463F', w / 100);
+  letter('CAKE!', w * .25, -h * .38, h * .14, '#E2463F', { font: `800 ${h * .14}px "Baloo 2", sans-serif` });
+  pop();
+}
+// a wobbly crayon stroke (thick, slightly jittered, deterministic)
+function crayon(P, col, wdt = 6, seed = 1) {
+  const pts = []; for (let i = 0; i < P.length - 1; i++) { const [a, b] = [P[i], P[i + 1]]; for (let k = 0; k < 8; k++) { const f = k / 8; pts.push([lerp(a[0], b[0], f) + (hash(i * 9 + k + seed) - .5) * wdt * .8, lerp(a[1], b[1], f) + (hash(i * 7 + k + seed + 3) - .5) * wdt * .8]); } }
+  pts.push(P[P.length - 1]); inkLine(pts, wdt, col, 'ink', 0); inkLine(pts.map(([a, b]) => [a + wdt * .3, b + wdt * .2]), wdt * .4, mixCol(col, '#FFFFFF', .35), 'ink', 0);
+}
+// Spy outfits (draw hooks). Pip: his scarf tied as a ninja mask across his eyes. Pumpkin: a too-small black sweater + war paint.
+const ninjaMask = (q = 0) => (u, sw) => { const cx = q * .25 * u, cy = -4.75 * u; paint(rrPts(cx - 1.6 * u, cy - .45 * u, 3.2 * u, .7 * u, .3 * u), { wash: '#2E3A34', sw: sw * .7 }); for (const s of [-1, 1]) paint(ellPts(cx + s * .58 * u + q * .3 * u, cy - .1 * u, .32 * u, .26 * u, 10), { wash: '#FFFFFF', ink: null }); paint(ribbon([[cx + 1.5 * u, cy - .1 * u], [cx + 2.4 * u, cy + .3 * u], [cx + 2.8 * u, cy + .1 * u]], .3 * u, .2 * u), { wash: '#2E3A34', sw: sw * .5 }); };
+const blackSweater = (rip = 0) => (u, sw) => {
+  const pts = [[-3.6, -5.6], [3.6, -5.6], [4.3, -4.6], [3.7, -2.9], [-3.7, -2.9], [-4.3, -4.6]].map(([a, b]) => [a * u, b * u]);
+  paint(pts, { wash: '#262A33', sw, curv: .3, shade: true, shadeK: .4 });
+  if (rip > 0) { for (let i = 0; i < 3; i++) paint(ellPts((-1 + i) * 1.3 * u, -4.2 * u + (i % 2) * .3 * u, .45 * u * rip, .7 * u * rip, 10), { wash: PUMPKIN_COL.lt, sw: sw * .5 }); }
+  for (const s of [-1, 1]) for (const k of [0, 1]) inkLine([[s * 1.1 * u - .4 * u, -8.1 * u + k * .35 * u], [s * 1.1 * u + .4 * u, -8.1 * u + k * .35 * u]], sw * 2.2, '#262A33', 'ink', 0);   // war paint under the eyes
+};
+// A potted plant (Pip hides behind it).
+function pottedPlant(x, y, s = 1) { push(); translate(x, y); scale(s, s); for (let i = 0; i < 7; i++) { const a = -Math.PI / 2 + (i - 3) * .32; paint(ribbon([[0, -150], [Math.cos(a) * 110, -150 + Math.sin(a) * 160], [Math.cos(a) * 170, -150 + Math.sin(a) * 200]], 40, 10), { wash: i % 2 ? '#4FA060' : '#3E8A50', sw: 1.2 }); } paint([[-80, -150], [80, -150], [60, 0], [-60, 0]], { wash: '#C66A4A', sw: 1.4, shade: true, shadeK: .4 }); pop(); }
+// The vacuum's searchlight: a cone from (x, y) at angle a (radians, 0 = right), length L, half-width spread.
+function searchlight(x, y, a, L = 900, spread = .22, k = 1) {
+  if (k <= 0) return;
+  const p1 = [x + Math.cos(a - spread) * L, y + Math.sin(a - spread) * L], p2 = [x + Math.cos(a + spread) * L, y + Math.sin(a + spread) * L];
+  paint([[x, y], p1, p2], { wash: '#FFF3B0', washOp: 70 * k, ink: null });
+  glow(lerp(p1[0], p2[0], .5), lerp(p1[1], p2[1], .5), L * .35, '#FFF3B0', .45 * k);
+}
+// The lampshade (from story 08) and Pumpkin's lampshade hook.
+function lampShade(x, y, s = 1, rot = 0) {
+  push(); translate(x, y); rotate(rot); scale(s, s);
+  paint([[-70, -150], [70, -150], [112, 0], [-112, 0]], { wash: '#F3E3B5', sw: 1.4, shade: true, shadeK: .35 });
+  inkLine([[-112, 0], [112, 0]], 3.4, '#D7C08A', 'ink', 0); inkLine([[-70, -150], [70, -150]], 2.4, '#D7C08A', 'ink', 0);
+  pop();
+}
+const shadeHook = (q = 0) => (u, sw) => lampShade(q * .55 * u, -10.3 * u, u / 40 * 1.75);
