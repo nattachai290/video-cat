@@ -293,7 +293,7 @@ function pumpkin(x, y, u, o = {}) {
   paint(head, { ink: PAL.ink, sw });
   // face
   rs('face');
-  pumpkinFace(u, o, sw, fx, q, { col, lt, C, talk, wet, cu });
+  pumpkinFace(u, o, sw, fx, q, { col, lt, C, talk, wet, cu, hx, hy });
   pop();
   rs('draw'); if (o.draw) o.draw(u, sw);
   pop();
@@ -318,16 +318,23 @@ function pumpkinFace(u, o, sw, fx, q, k) {
   paint([[fx - .32 * u, .42 * u + fy], [fx + .32 * u, .42 * u + fy], [fx, .72 * u + fy]], { wash: C.nose, ink: PAL.ink, sw: sw * .55 });
   push(); translate(fx, .72 * u + fy); castMouth(o.mouth || 'w', k.talk, 1.15 * u, sw); pop();
   for (const s of [-1, 1]) castWhiskers(fx + s * 1.05 * u, .95 * u + fy, s, 3.0 * u * (q && s < 0 ? .7 : 1), sw, k.wet * .8 + (o.mouth === 'frown' ? .3 : 0));
-  castAccessories(u, o, sw, fx, q, fy);
+  castAccessories(u, o, sw, fx, q, fy, k.hx, k.hy);
 }
 // Face accessories that must follow the face (front / 3/4): mustache (true or a colour), headband (a colour, tied at the back).
-function castAccessories(u, o, sw, fx, q, fy) {
+function castAccessories(u, o, sw, fx, q, fy, hx = 3.35 * u, hy = 2.85 * u) {
   if (o.headband) {
-    const c = o.headband === true ? '#262A33' : o.headband, y0 = -1.95 * u, y1 = -1.25 * u, x0 = -3.25 * u + fx * .25, x1 = 3.25 * u + fx * .25;
-    paint([...arcPts(fx * .25, y0 + 2.6 * u, (x1 - x0) / 2, 2.6 * u, Math.PI + .28, TAU - .28, 16), ...arcPts(fx * .25, y1 + 2.6 * u, (x1 - x0) / 2 + .05 * u, 2.6 * u, TAU - .3, Math.PI + .3, 16)], { wash: c, ink: PAL.ink, sw: sw * .8 });
-    const kx = q ? -2.9 * u : 2.9 * u, ky = -1.3 * u, fl = Math.sin(T * 6) * .2 * u;   // the knot and its two tails
-    paint(ellPts(kx, ky, .4 * u, .35 * u, 10), { wash: c, ink: PAL.ink, sw: sw * .7 });
-    for (const d of [-1, 1]) paint(ribbon([[kx, ky], [kx + Math.sign(kx) * .9 * u, ky + .4 * u * d + fl], [kx + Math.sign(kx) * 1.7 * u, ky + .2 * u * d - fl]], .35 * u, .2 * u), { wash: c, ink: PAL.ink, sw: sw * .6 });
+    // A band round the forehead: on a round head it bows DOWN in the middle and its ends hug the head outline (clipped to
+    // the head), tied in a knot at the side (the back side in 3/4 view) with two tails that flap.
+    const c = o.headband === true ? '#262A33' : o.headband, cx = fx * .3, th = .62 * u;
+    const top = x => -2.95 * u + .5 * u * (1 - Math.min(1, ((x - cx) / hx) ** 2));   // centre lower than the ends
+    const P = []; for (let i = 0; i <= 16; i++) { const x = -hx * 1.1 + i / 16 * hx * 2.2; P.push([x, top(x)]); }
+    push(); CTX.beginPath(); ellPts(0, 0, hx * 1.01, hy * 1.01, 32).forEach(([x, y], i) => i ? CTX.lineTo(x, y) : CTX.moveTo(x, y)); CTX.closePath(); CTX.clip();
+    paint([...P, ...P.slice().reverse().map(([x, y]) => [x, y + th])], { wash: c, ink: PAL.ink, sw: sw * .8 });
+    inkLine(P.map(([x, y]) => [x, y + th * .45]), sw * .7, mixCol(c, '#FFFFFF', .25), 'ink', 0);   // a fold line, so it reads as cloth
+    pop();
+    const side = q ? -1 : 1, kx = side * hx * .93, ky = top(kx) + th * .5, fl = Math.sin(T * 6) * .22 * u;
+    for (const d of [-1, 1]) paint(ribbon([[kx, ky], [kx + side * 1.0 * u, ky + .35 * u * d + fl], [kx + side * 1.9 * u, ky + .55 * u * d - fl], [kx + side * 2.4 * u, ky + .35 * u * d + fl]], .42 * u, .18 * u), { wash: c, ink: PAL.ink, sw: sw * .6 });
+    paint(ellPts(kx, ky, .42 * u, .38 * u, 12), { wash: c, ink: PAL.ink, sw: sw * .7 });
   }
   if (o.mustache) {
     const c = o.mustache === true ? '#262A33' : o.mustache, my = .66 * u + (fy || 0);
