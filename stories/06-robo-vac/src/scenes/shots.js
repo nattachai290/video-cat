@@ -87,11 +87,12 @@
     const fall = seg(t, 21.0, 21.55), land = 21.55, sh = t > land && t < land + .2 ? shakeXY(t, 10) : [0, 0];
     cam(540, 1250, 1.0, sh);
     livingRoom6(t); curtain(t, ease(seg(t, 21.0, 21.5)));
+    // Pip sits on the armchair, BEHIND the ride: draw him first so Pumpkin passes in front of him
+    if (t > 22) pip(860, ROOM.chair.seat + 8, U, { ...face('happy', { eyes: 'squeeze', mouth: 'grin' }), view: 'q', flip: true, cracker: true, aR: .3, boilKey: 'pip' });
     const top = vacDraw(t), V = VAC(t);
     if (t < land) { const p = arcPt(CLING, [235, FY - 80], 30, easeIn(fall)); pumpkin(p[0], p[1], U, { ...face('panic'), puff: 1, aL: 1.4, aR: 1.4, noShadow: true, boilKey: 'pk' }); }
     else pumpkin(top[0], top[1], U * V.s, { ...faces(t, [[land, 'dazed'], [22.4, 'panic'], [27.5, 'dazed']]), puff: 1, sq: .15 * Math.exp(-(t - land) * 6) + .05 * Math.sin(t * 30),
       rot: (V.rot || 0) * 2 - Math.cos((t - 21.6) * 1.7) * .15, aL: .2 + .2 * Math.sin(t * 9), aR: .2 - .2 * Math.sin(t * 9), noShadow: true, who: 'pumpkin', boilKey: 'pk' });
-    if (t > 22) pip(860, ROOM.chair.seat + 8, U, { ...face('happy', { eyes: 'squeeze', mouth: 'grin' }), view: 'q', flip: true, cracker: true, aR: .3, boilKey: 'pip' });
     for (let k = 0; k < 3; k++) if (t > 22) inkLine([[top[0] - Math.sign(Math.sin((t - 21.6) * 1.7)) * (190 + k * 30), top[1] + 20 + k * 30], [top[0] - Math.sign(Math.sin((t - 21.6) * 1.7)) * (260 + k * 30), top[1] + 20 + k * 30]], 3, '#FFFFFF', 'ink', 0);   // speed lines
     camEnd();
   }
@@ -113,9 +114,9 @@
   function s07(t, lt) {
     cam(700, 1180, 1.15);
     livingRoom6(t); curtain(t, 1);
+    pip(860, ROOM.chair.seat + 8, U, { ...faces(t, [[40, 'munching'], [41.2, 'smug']]), view: 'q', flip: true, cracker: true, aR: .3, talk: Math.max(say('pip', t), chew(t, t < 41.2 || t > 42.6)), boilKey: 'pip' });
     const top = vacDraw(t);
     loaf(top[0], top[1], t, { extra: { noShadow: true } });
-    pip(860, ROOM.chair.seat + 8, U, { ...faces(t, [[40, 'munching'], [41.2, 'smug']]), view: 'q', flip: true, cracker: true, aR: .3, talk: Math.max(say('pip', t), chew(t, t < 41.2 || t > 42.6)), boilKey: 'pip' });
     camEnd();
   }
 
