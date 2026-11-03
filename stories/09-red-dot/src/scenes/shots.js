@@ -88,7 +88,7 @@
     if (t < crash) {
       if (fast) speedLines(px, FY - 230, dir, t, 5, 200, 260);
       if (skid) { dust(px - dir * 120, FY, (t % .25) / .25, Math.round(t * 4)); legWheel(px, FY + 4, 90, t); }
-      pumpkin(px, FY, U, { ...face(skid ? 'panic' : 'determined', { pupil: 1.1 }), view: 'q', flip: dir < 0, rot: skid ? -dir * .18 : dir * .12, dy: skid ? -.4 : -Math.abs(Math.sin(t * 12)) * .4, aL: skid ? 1.2 : -1.3 + Math.sin(t * 12) * .5, aR: skid ? 1.2 : -1.3 - Math.sin(t * 12) * .5, noShadow: skid, boilKey: 'pk' });
+      pumpkin(px, FY, U, { ...face(skid ? 'panic' : 'determined', { pupil: 1.1 }), view: 'side', flip: dir < 0, walk: skid ? null : t * 5, rot: skid ? -dir * .18 : dir * .1, noShadow: skid, boilKey: 'pk', ...(skid ? { dy: -.4 } : {}) });
     } else {
       const k = Math.exp(-(t - crash) * 5);
       pumpkin(px, FY, U, { ...faces(t, [[crash, 'dazed', { eyes: 'squeeze' }], [9.7, 'dazed', { eyes: 'spiral' }]]), sq: -.2 * k * Math.cos((t - crash) * 20) + .1, aL: -.6, aR: -.6, boilKey: 'pk' });
@@ -107,8 +107,8 @@
     // the dot
     let d; if (t < 10.9) d = [lerp(380, WX, seg(t, 10.5, 10.9)), lerp(1590, 1310, seg(t, 10.5, 10.9))]; else d = [WX, lerp(1310, 640, ease(seg(t, 10.9, 11.9)))];
     redDot(d[0], d[1], 1.2);
-    if (t < 11.0) { const k = seg(t, 10.5, 11.0); pumpkin(lerp(250, WX, k), FY - (FY - 1310) * ease(seg(t, 10.8, 11.0)), U, { ...face('determined', { pupil: 1.1 }), view: 'q', rot: .12, dy: -Math.abs(Math.sin(t * 12)) * .4, boilKey: 'pk' }); speedLines(lerp(250, WX, k), FY - 230, 1, t); }
-    else if (t < stop) { const y = lerp(1310, 1200, ease(seg(t, 11.0, stop))), cl = Math.sin(t * 22); pumpkin(WX, y, U, { ...face('determined', { pupil: 1.1, lookY: -1 }), aL: 1.0 + .5 * cl, aR: 1.0 - .5 * cl, dy: -Math.abs(cl) * .2, noShadow: true, boilKey: 'pk' }); for (let i = 0; i < 3; i++) inkLine([[WX - 120 + i * 120, y + 30], [WX - 120 + i * 120, y + 140]], 3, '#FFFFFF', 'ink', 0); }
+    if (t < 11.0) { const k = seg(t, 10.5, 11.0); pumpkin(lerp(250, WX, k), FY - (FY - 1310) * ease(seg(t, 10.8, 11.0)), U, { ...face('determined', { pupil: 1.1 }), view: 'side', walk: t * 5, boilKey: 'pk' }); speedLines(lerp(250, WX, k), FY - 230, 1, t); }
+    else if (t < stop) { const y = lerp(1300, 1000, ease(seg(t, 11.0, stop))); pumpkin(WX + 160, y, U, { ...face('determined', { pupil: 1.1, lookX: 1 }), view: 'side', rot: -Math.PI / 2, walk: t * 5, noShadow: true, boilKey: 'pk' }); }
     else if (fall <= 0) {   // stuck flat on the wall, looking at camera
       pumpkin(WX, 1200, U, { ...faces(t, [[stop, 'surprised', { eyes: 'wide', pupil: .5 }], [12.5, 'sheepish', { lookX: 0, lookY: 0 }]]), aL: 1.3, aR: 1.3, noShadow: true, boilKey: 'pk' });
     } else {
@@ -172,8 +172,8 @@
     // Pip
     const bob = pRun ? -Math.abs(Math.sin(t * 14)) * .25 : 0, trem = pRun ? 0 : Math.sin(t * 50) * .03;
     if (pRun) speedLines(px, FY - 140, dirP, t, 4, 140, 160);
-    pip(px, FY, U, { ...faces(t, [[22.5, 'panic'], [27.6, 'sheepish', { lookX: 1, eyes: 'wide' }]]), view: 'q', flip: dirP < 0 && pRun, walk: pRun ? t * 4 : null, dy: bob, rot: trem,
-      aR: t > 25.7 && t < 26.0 ? 1.2 : pRun ? .2 : -.5, aL: pRun ? .4 : -.9, scarfWind: pRun ? -dirP : 0, ...laser(), boilKey: 'pip' });
+    pip(px, FY, U, { ...faces(t, [[22.5, 'panic'], [27.6, 'sheepish', { lookX: 1, eyes: 'wide' }]]), view: pRun ? 'side' : 'q', flip: dirP < 0 && pRun, walk: pRun ? t * 4 : null, dy: bob, rot: trem,
+      aR: t > 25.7 && t < 26.0 ? 1.2 : pRun ? .2 : -.5, aL: pRun ? .4 : -.9, scarfWind: pRun ? 1 : 0, ...laser(), boilKey: 'pip' });
     redDot(px + (pRun ? -dirP * 10 : 24), FY - 66 + bob * U, 1.1);
     // the cracker: thrown back over his shoulder at 25.8, snapped up at 26.3
     const throwK = seg(t, 25.8, 26.3);
@@ -181,9 +181,9 @@
     // Pumpkin
     const chomp = t > 26.3 && t < 26.9;
     if (kRun) speedLines(kx, FY - 230, dirP, t, 5, 220, 260);
-    pumpkin(kx, FY, U, { ...faces(t, [[22.5, 'determined', { pupil: 1.1 }], [26.3, 'munching'], [26.9, 'greedy', { pupil: 1.1 }]]), view: kRun ? 'q' : 'front', flip: dirP < 0 && kRun,
-      dy: kRun ? -Math.abs(Math.sin(t * 10)) * .3 : 0, sq: !kRun ? .2 * ease(seg(t, 28.6, 29.0)) : 0, rot: kRun ? dirP * .1 : t > 29 ? Math.sin(t * 26) * .05 : 0, tailWag: !kRun ? 1 : .4,
-      ...(chomp ? { talk: .3 * Math.max(0, Math.sin(t * 25)) } : {}), aL: kRun ? -1.3 + Math.sin(t * 12) * .5 : -1.4, aR: kRun ? -1.3 - Math.sin(t * 12) * .5 : -1.4, boilKey: 'pk' });
+    pumpkin(kx, FY, U, { ...faces(t, [[22.5, 'determined', { pupil: 1.1 }], [26.3, 'munching'], [26.9, 'greedy', { pupil: 1.1 }]]), view: kRun ? 'side' : 'front', flip: dirP < 0 && kRun, walk: kRun ? t * 5 : null,
+      dy: kRun ? -Math.abs(Math.sin(t * 10)) * .3 : 0, sq: !kRun ? .2 * ease(seg(t, 28.6, 29.0)) : 0, rot: !kRun && t > 29 ? Math.sin(t * 26) * .05 : 0, tailWag: !kRun ? 1 : .4,
+      ...(chomp ? { talk: .3 * Math.max(0, Math.sin(t * 25)) } : {}), aL: -1.4, aR: -1.4, boilKey: 'pk' });
     if (chomp) for (let i = 0; i < 4; i++) { const k = frac((t - 26.3) * 2 + i / 4); paint(ellPts(kx - dirP * 80 + i * 10, FY - 300 + k * 260, 6, 5, 6), { wash: '#E6B65F', ink: null }); }
     camEnd();
   }
@@ -197,7 +197,7 @@
     const stage = Math.floor(ph * 2) % 4;   // front, side right, front (flipped), side left
     const dotOnTail = t > 30.6;
     if (spin > .7) { for (let i = 0; i < 6; i++) { const a = t * 20 + i; inkLine(arcPts(KX, FY - 260, 260, 120, a, a + 1, 8), 3, '#FFFFFF', 'ink', 0); } }
-    pumpkin(KX, FY, U, { ...faces(t, [[30, 'greedy', { lookX: -1 }], [31.6, 'surprised', { lookX: 1, eyes: 'wide' }], [32.2, 'determined', { pupil: 1.1 }]]), view: t < 32.2 ? 'front' : (stage % 2 ? 'q' : 'front'),
+    pumpkin(KX, FY, U, { ...faces(t, [[30, 'greedy', { lookX: -1 }], [31.6, 'surprised', { lookX: 1, eyes: 'wide' }], [32.2, 'determined', { pupil: 1.1 }]]), view: t < 32.2 ? 'front' : (stage % 2 ? 'side' : 'front'),
       flip: stage === 3 || stage === 2, sq: t < 30.6 ? .2 : 0, rot: t < 30.6 ? Math.sin(t * 26) * .05 : 0, dy: spin > 0 ? -Math.abs(Math.sin(ph * 6)) * .15 : 0, tailWag: 1, aL: -1.4, aR: -1.4, boilKey: 'pk' });
     if (dotOnTail && t < 33.4) { const tw = Math.sin(t * 7) * 14; redDot(stage % 2 ? KX + (stage === 3 ? 230 : -230) : KX + (stage === 2 ? -180 : 180) + tw, FY - (stage % 2 ? 160 : 270), 1.1); }
     else if (!dotOnTail) redDot(140 + 24, FY - 66, 1.1);

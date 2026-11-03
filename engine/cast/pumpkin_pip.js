@@ -159,6 +159,14 @@ function castWhiskers(mx, my, s, len, sw, droop = 0, col = PAL.ink) {
   }
 }
 
+// Side-view whiskers: a short fan from the muzzle (up, level, down) instead of three long lines pointing ahead.
+function castWhiskersSide(mx, my, len, sw, droop = 0, col = PAL.ink) {
+  [[-.55, .8], [-.12, 1], [.32, .85]].forEach(([a, l], k) => {
+    const ang = a + droop * .6 + .05 * Math.sin(T * 2.3 + k), L = len * l;
+    inkLine([[mx, my], [mx + Math.cos(ang) * L * .5, my + Math.sin(ang) * L * .5 + L * .04], [mx + Math.cos(ang + .12) * L, my + Math.sin(ang + .12) * L + L * .1]], sw * .45, col, 'inkfine', .6);
+  });
+}
+
 // A short paw arm from a shoulder: angle a (0 out, + up), dir -1 left / 1 right, length len (px), width w (px).
 // A bean arm: narrow at the shoulder (sx, sy), round and heavy at the paw. Angle a (0 out, + up, - down), dir -1 left /
 // 1 right, length len (shoulder to paw centre, px), w = paw width (px). Two toe lines on the paw. The hook draws at the paw.
@@ -322,18 +330,21 @@ function pumpkinSide(u, o, sw, k) {
     if (!far) paint([[(ex - .5) * u, -1.8 * u], [lerp((ex + .1) * u, tip[0], .9), lerp(-1.8 * u, tip[1], .8)], [(ex + .55) * u, -1.95 * u]], { wash: C.inner, ink: null });
   }
   const head = furry(ellPts(0, 0, hx, hy, 24, u * .04), 0, 0, puff + wet * .2);
+  const MZ = [2.55 * u, .78 * u, 1.05 * u, .78 * u];   // the muzzle bump that sticks out of the profile
+  paint(ellPts(...MZ, 18), { wash: col, ink: PAL.ink, sw });
   paint(head, { wash: col, ink: null, shade: true, shadeK: .8 });
-  paint(ellPts(2.3 * u, .75 * u, 1.0 * u, .65 * u, 14), { wash: lt, ink: null });   // muzzle
   for (const kx of [-.9, -.4, .1]) inkLine([[kx * u, -2.65 * u], [(kx + .15) * u, -1.95 * u]], sw * 1.1, C.stripe, 'ink', 0);
   paint(head, { ink: PAL.ink, sw });
+  paint(ellPts(MZ[0], MZ[1], MZ[2] - sw * .9, MZ[3] - sw * .9, 18), { wash: col, ink: null });
+  paint(ellPts(2.75 * u, .95 * u, .85 * u, .5 * u, 14), { wash: lt, ink: null });
   rs('face');
   const kinds = Array.isArray(o.eyes) ? o.eyes : [o.eyes || 'open', o.eyes || 'open'];
   push(); translate(1.3 * u, -.4 * u); castEye(kinds[1], 1, .65 * u, .85 * u, { ...o, lookX: (o.lookX ?? .5) }, sw, col, C.iris, 'cat'); pop();
   castBrow(1.3 * u, -.4 * u, 1.1 * u, 1.2 * u, 1, o.brow || 0, (o.browUp || 0) + (o.browR || 0), sw);
   if (o.blush) paint(ellPts(1.6 * u, .7 * u, .7 * u, .38 * u, 12), { wash: '#E8607A', washOp: 150 * clamp(o.blush), ink: null });
-  paint([[2.75 * u, .25 * u], [3.15 * u, .35 * u], [2.9 * u, .65 * u]], { wash: C.nose, ink: PAL.ink, sw: sw * .5 });
-  push(); translate(2.75 * u, .7 * u); scale(.75, 1); castMouth(o.mouth || 'w', talk, .8 * u, sw); pop();
-  castWhiskers(2.4 * u, .95 * u, 1, 2.6 * u, sw, wet * .8);
+  paint([[3.25 * u, .2 * u], [3.68 * u, .32 * u], [3.42 * u, .62 * u]], { wash: C.nose, ink: PAL.ink, sw: sw * .5 });
+  push(); translate(3.2 * u, .85 * u); scale(.75, 1); castMouth(o.mouth || 'w', talk, .8 * u, sw); pop();
+  castWhiskersSide(2.6 * u, .95 * u, 1.8 * u, sw, wet * .8);
   pop();
 }
 
@@ -377,7 +388,7 @@ function pip(x, y, u, o = {}) {
     push(); translate(.45 * u, -.25 * u); castEye(kinds[1], 1, .28 * u, .34 * u, o, sw * .8, C.col, '#3A3045', 'cat'); pop();
     castBrow(.45 * u, -.25 * u, .5 * u, .55 * u, 1, o.brow || 0, (o.browUp || 0) + (o.browR || 0), sw * .6);
     push(); translate(1.45 * u, .42 * u); scale(.7, 1); castMouth(o.mouth || 'w', talk, .6 * u, sw * .8); pop();
-    castWhiskers(1.4 * u, .25 * u, 1, 1.4 * u, sw * .8);
+    castWhiskersSide(1.3 * u, .3 * u, 1.0 * u, sw * .8);
     pop();
     rs('draw'); if (o.draw) o.draw(u, sw);
     pop(); rs('after'); return;
@@ -435,7 +446,7 @@ function pipScarf(u, sw, C, wind, q, view) {
   for (let k = 0; k <= 4; k++) {
     const f = k / 4, hang = [ox + .25 * u * f, cy + .2 * u + 2.0 * u * f], blow = [ox - w * 3.2 * u * f, cy + .1 * u - .3 * u * f];
     const a = clamp(Math.abs(w)), p = [lerp(hang[0], blow[0], a), lerp(hang[1], blow[1], a)];
-    p[1] += fl * .18 * u * f * (.3 + a); p[0] += Math.cos(T * 3 + f * 3) * .06 * u * f;
+    p[1] += fl * .18 * u * f * (.3 + a) * (1 - a) + a * (Math.sin(T * 16 - f * 6) * .4 * u * f + .35 * u * f); p[0] += Math.cos(T * 3 + f * 3) * .06 * u * f;
     end.push(p);
   }
   paint(ribbon(end, .55 * u, .5 * u), { wash: C.scarf, ink: PAL.ink, sw: sw * .7 });
