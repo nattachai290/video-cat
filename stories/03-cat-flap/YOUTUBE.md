@@ -1,6 +1,6 @@
 # YouTube upload: Pumpkin & Pip: The Cat Flap
 
-Video: `out/video.mp4` (1080x1920, 52 s) · Cover: `out/cover.png` (1080x1920; render: `--loop=cover --still=0.6`)
+Video: `out/video.mp4` (1080x1920, 52 s) · Cover: `out/cover.png` (1080x1920, drawn fresh: "TOO MUCH PIE!!"; render: `--loop=cover --still=0.6`)
 
 ## Title (pick one, max 100 characters)
 
