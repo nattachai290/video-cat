@@ -33,5 +33,3 @@ function subs(t) {
     }
   });
 }
-// Short (vertical) version: the 16:9 frame is shown at ~56% size, so render it with bigger subtitles: --query=bigsubs
-if (typeof location !== 'undefined' && /bigsubs/.test(location.search)) { SUBS.size = 108; SUBS.maxW = 1760; SUBS.y = 915; }
