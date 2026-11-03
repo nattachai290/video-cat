@@ -3,6 +3,8 @@
 //   NODE_PATH=$(npm root -g) node ../../engine/flat/render_pw.mjs --out=out/video.mp4 [--audio=out/audio/mix.wav] [--range=0:52] [--fps=24]
 //   NODE_PATH=$(npm root -g) node ../../engine/flat/render_pw.mjs --sheet=0.5,4,9 --cols=3 --w=360 --out=out/check/a.jpg
 //   NODE_PATH=$(npm root -g) node ../../engine/flat/render_pw.mjs --loop=cast --sheet=0.5 --cols=1 --w=1080 --out=out/check/cast.jpg
+//   NODE_PATH=$(npm root -g) node ../../engine/flat/render_pw.mjs --still=0.5 --out=out/still.png       one clean full-size PNG
+//   --page=other.html (instead of studio.html), --query=banner (extra URL query, read by the page's config)
 import { createRequire } from 'module';
 import { spawn } from 'child_process';
 import { mkdirSync, writeFileSync } from 'fs';
@@ -18,11 +20,14 @@ mkdirSync(dirname(resolve(out)), { recursive: true });
 const browser = await chromium.launch();
 const page = await browser.newPage();
 page.on('pageerror', e => console.log('[page error]', e.message));
-await page.goto(pathToFileURL(resolve('studio.html')).href + '?render');
+await page.goto(pathToFileURL(resolve(args.page || 'studio.html')).href + '?render' + (args.query ? '&' + args.query : ''));
 await page.waitForFunction('window.ready === true', null, { timeout: 60000 });
 if (args.loop) await page.evaluate(n => { window.LOOP = LOOPS[n]; }, args.loop);
 
-if (args.sheet || args.strip) {
+if (args.still) {   // one clean full-size PNG (no time label): --still=0.5
+  const url = await page.evaluate(t => window.renderAt(t, 'image/png'), +args.still);
+  writeFileSync(out, Buffer.from(url.split(',')[1], 'base64')); console.log(`wrote ${out}`);
+} else if (args.sheet || args.strip) {
   let ts;
   if (args.sheet) ts = String(args.sheet).split(',').map(Number);
   else { const [a, b] = String(args.strip).split(':').map(Number); ts = []; for (let t = a; t <= b + 1e-6; t += 1 / fps) ts.push(+t.toFixed(4)); }

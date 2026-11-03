@@ -2,6 +2,12 @@
 
 บันทึกความคืบหน้าของโปรเจกต์ video-cat (ล่าสุดอยู่บนสุดของแต่ละหัวข้อ) · วิธีทำตอนใหม่: `.claude/skills/pumpkin-pip-shorts/SKILL.md`
 
+## ช่อง YouTube
+
+- ชื่อช่อง **Snackatoon** · handle **@Snackatoon** (เช็กแล้วว่าว่างเมื่อ 2026-11-03 ต้องยืนยันใน YouTube Studio)
+- ภาพช่อง: `brand/out/profile.png` (800×800) และ `brand/out/banner.png` (2560×1440) สร้างจาก `brand/src/brand.js`
+- สร้างใหม่: `cd brand` แล้วรัน `render_pw.mjs --loop=profile --still=0.3 --out=out/profile.png` และ `--loop=banner --query=banner --still=0.3 --out=out/banner.png`
+
 ## สถานะตอนนี้
 
 | เรื่อง | รูปแบบ | สถานะ |
@@ -25,6 +31,8 @@
 - **RUNBOOK.md**: งานรันพร้อมพรอมต์ให้ Haiku (setup, voices, retake, cast-sheet, preview, check, final)
 
 ## บันทึกการตัดสินใจ
+
+- 2026-11-03 · ตั้งชื่อช่อง Snackatoon (ช่องกว้าง รองรับตัวละครใหม่และหลายแนว) ทำรูปโปรไฟล์ + แบนเนอร์
 
 - 2026-11-03 · เรื่อง 03 เสร็จ: SFX + เพลงสังเคราะห์ (24 ห้อง = 52 s วนลูปได้), มิกซ์ -14 LUFS, ซับคาราโอเกะสีตามคนพูด
 - 2026-11-02 · จัดฉาก 03 ใหม่ให้เป็นไปได้ใน 2D: ติดตอนเข้าบ้าน (หัวในครัว ก้นในสวน), บ่อปลา → ถังม็อบ, ปลาทอง → ฟองสบู่
