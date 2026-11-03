@@ -1,0 +1,14 @@
+[
+  {"id": "d01", "who": "pip", "shot": "1-2", "t": 9.0, "text": "Operation... Cake.", "emo": "whispered, dramatic, flashlight under chin", "exag": 0.6, "cfg": 0.4, "speed": 1.0, "pitch": 1.1},
+  {"id": "d02", "who": "pip", "shot": "1-3", "t": 15.0, "text": "Step one. Sneak. Step two. Climb. Step three... CAKE.", "emo": "excited, slow-motion narration", "exag": 0.7, "cfg": 0.35, "speed": 1.0, "pitch": 1.1},
+  {"id": "d03", "who": "pumpkin", "shot": "1-4", "t": 31.0, "text": "I love this plan.", "emo": "wholehearted, deadpan", "exag": 0.5, "cfg": 0.45, "speed": 1.0, "pitch": 0.97},
+  {"id": "d04", "who": "pumpkin", "shot": "1-6", "t": 57.5, "text": "...Lamp.", "emo": "whispered, frozen, pretending to be a lamp", "exag": 0.45, "cfg": 0.5, "speed": 0.95, "pitch": 0.97},
+  {"id": "d05", "who": "pip", "shot": "2-2", "t": 70.5, "text": "Don't. Chase. The lasers.", "emo": "stern, warning", "exag": 0.6, "cfg": 0.4, "speed": 1.0, "pitch": 1.1},
+  {"id": "d06", "who": "pumpkin", "shot": "2-4", "t": 104.0, "text": "So... cold.", "emo": "shivering, awed", "exag": 0.45, "cfg": 0.5, "speed": 0.95, "pitch": 0.97},
+  {"id": "d07", "who": "pip", "shot": "2-5", "t": 117.5, "text": "...Uh oh.", "emo": "small, dread", "exag": 0.5, "cfg": 0.45, "speed": 0.95, "pitch": 1.1},
+  {"id": "d08", "who": "pumpkin", "shot": "3-3", "t": 152.0, "text": "We did it.", "emo": "triumphant, out of breath", "exag": 0.6, "cfg": 0.4, "speed": 1.0, "pitch": 0.97},
+  {"id": "d09", "who": "pip", "shot": "3-3", "t": 155.0, "text": "Operation Cake... complete.", "emo": "proud, formal", "exag": 0.55, "cfg": 0.45, "speed": 1.0, "pitch": 1.1},
+  {"id": "d10", "who": "pumpkin", "shot": "3-4", "t": 165.0, "text": "...It's a sponge.", "emo": "crushed, deadpan", "exag": 0.5, "cfg": 0.5, "speed": 0.95, "pitch": 0.97},
+  {"id": "d11", "who": "pip", "shot": "E-1", "t": 181.0, "text": "More snacks? Pick one!", "emo": "cheerful, pointing at screen", "exag": 0.55, "cfg": 0.45, "speed": 1.0, "pitch": 1.1},
+  {"id": "d12", "who": "pumpkin", "shot": "E-1", "t": 183.5, "text": "And subscribe!", "emo": "bright, forced cheer", "exag": 0.6, "cfg": 0.4, "speed": 1.05, "pitch": 0.97}
+]
