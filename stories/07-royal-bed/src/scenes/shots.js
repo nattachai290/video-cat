@@ -14,7 +14,7 @@
   // 01 · 0–5 · The box wiggles... a "?" ... the flaps pop, Pip pops up: "Special delivery!"
   function s01(t, lt) {
     cam(...BOX_CAM);
-    room(t); tinyBox(TINY.x, TINY.y);
+    room(t); tinyBox(TINY.x, TINY.y, TINYS);
     const pop = seg(t, 2.05, 2.5), open = backOut(seg(t, 2.0, 2.3));
     bigBox(t, { open, wig: wiggle(t, t < 2.0 ? 1 : 0), inside: () => {
       if (pop > 0) clipRects([[BOX.x - BOX.w / 2, -600, BOX.w + 60, BOX.y - BOX.h + 600]], () =>
@@ -28,7 +28,7 @@
   // Pumpkin hops off the armchair and wanders over.
   function s02(t, lt) {
     cam(470, 1300, 1.05);
-    room(t); tinyBox(TINY.x, TINY.y);
+    room(t); tinyBox(TINY.x, TINY.y, TINYS);
     const out = seg(t, 5.0, 5.6), bedK = seg(t, 6.0, 7.4);
     bigBox(t, { open: 1, inside: () => { if (bedK <= 0) clipRects([[0, -600, 2000, BOX.y - BOX.h + 600]], () => royalBed(BOX.x, BOX.y - BOX.h + 90, .6, t)); } });
     if (bedK > 0) { const p = arcPt([BOX.x, BOX.y - BOX.h], [BED.x, BED.y], 260, ease(bedK)), s = lerp(.6, BED.s, ease(bedK)); royalBed(p[0], p[1], s, t, seg(t, 7.3, 7.6)); }
@@ -49,7 +49,7 @@
   // 03 · 12–20 · He sniffs the bed, one paw on it... then his head snaps to the empty box. "...Box." Into it: "Perfect."
   function s03(t, lt) {
     cam(lerp(330, 470, ease(seg(t, 13.0, 14.0))), 1360, 1.3);
-    room(t); tinyBox(TINY.x, TINY.y);
+    room(t); tinyBox(TINY.x, TINY.y, TINYS);
     royalBed(BED.x, BED.y, BED.s, t, .4);
     const jump = seg(t, 16.3, 16.9);
     const inBox = jump >= 1;
@@ -90,12 +90,13 @@
       if (fly < 1) { const p = arcPt([BOX.x, BOX.y - BOX.h], [640, FY], 160, fly); x = p[0]; y = p[1]; rot = fly * TAU; pf2 = face('panic'); }
       else if (t < 24.4) { x = 640; y = FY; sq = .3 * Math.exp(-(t - yank - .6) * 6); pf2 = face('dazed'); }
       else if (walk < 1) { x = lerp(640, TINY.x, ease(walk)); y = FY; view2 = 'side'; walkp = t * 2.2; pf2 = face('determined'); }
-      else { x = TINY.x; y = FY; pf2 = faces(t, [[25.6, 'determined'], [26.4, 'strain'], [27.6, 'happy', { blush: .5 }]]); sq = .22 * ease(sqz) + .06 * Math.sin(t * 22) * (sqz > 0 && sqz < 1 ? 1 : 0); }
-      pumpkin(x, y, U, { ...pf2, sq, rot, view: view2, flip: flip2, walk: walkp, aL: -1.3, aR: -1.3, noShadow: fly < 1, who: 'pumpkin', boilKey: 'pk' });
-      if (walk >= 1) tinyBox(TINY.x, lerp(TINY.y, TINY.y - 18, ease(sqz)), 1.15);   // the box rides up his belly as he squeezes in
-      else tinyBox(TINY.x, TINY.y);
+      else { x = TINY.x; y = FY; pf2 = faces(t, [[25.6, 'determined'], [26.4, 'strain'], [27.6, 'happy', { blush: .5 }]]); }
+      if (walk < 1) { tinyBox(TINY.x, TINY.y, TINYS); pumpkin(x, y, U, { ...pf2, sq, rot, view: view2, flip: flip2, walk: walkp, aL: -1.3, aR: -1.3, noShadow: fly < 1, who: 'pumpkin', boilKey: 'pk' }); }
+      else { const hop = seg(t, 25.7, 26.1), wig = sqz > 0 && sqz < 1 ? Math.sin(t * 22) * .05 : 0;
+        if (hop < 1) { tinyBox(TINY.x, TINY.y, TINYS); const p = arcPt([TINY.x, FY], [TINY.x, TINY.y - TINY.h * TINYS + 10], 120, ease(hop)); pumpkin(p[0], p[1], U, { ...pf2, aL: .8, aR: .8, noShadow: true, boilKey: 'pk' }); }
+        else crammed(t, ease(sqz), { ...pf2, rot: wig, who: 'pumpkin' }); }
       puffCloud(BOX.x, BOX.y - BOX.h - 20, 120, t - yank);
-    } else tinyBox(TINY.x, TINY.y);
+    } else tinyBox(TINY.x, TINY.y, TINYS);
     camEnd();
   }
 
@@ -105,7 +106,7 @@
     room(t);
     bigBox(t, {});
     // Pumpkin, still in his tiny box (right), half in frame
-    pumpkin(TINY.x, FY, U, { ...face('happy', { blush: .4 }), sq: .22, aL: -1.3, aR: -1.3, boilKey: 'pk' }); tinyBox(TINY.x, TINY.y - 18, 1.15);
+    crammed(t, 1, { ...face('happy', { blush: .4 }) });
     royalBedBack(BED.x, BED.y, BED.s, t);
     const hop = seg(t, 30.2, 30.8), walk = seg(t, 30.8, 32.2), flop = seg(t, 32.4, 33.0);
     if (flop <= 0) {
@@ -115,9 +116,10 @@
       pip(px, py, U, { ...face('sheepish'), view, flip: true, walk: t * 3, noShadow: hop < 1, boilKey: 'pip' });
     } else {
       const sink = ease(flop);
-      pip(BED.x + 10, BED.y - 40 + sink * 70, U, { ...faces(t, [[32.4, 'surprised'], [33.4, 'sheepish', { lid: .3 }], [34.6, 'happy', { blush: .4 }], [36.6, 'proud']]),
+      const py = BED.y - 30 + sink * 26;
+      pip(BED.x + 10, py, U, { rot: -.14 * sink, ...faces(t, [[32.4, 'surprised'], [33.4, 'sheepish', { lid: .3 }], [34.6, 'happy', { blush: .4 }], [36.6, 'proud']]),
         aL: lerp(1.3, -.2, sink), aR: lerp(1.3, -.2, sink), noShadow: true, who: 'pip', boilKey: 'pip' });
-      royalBedCushionOver(BED.x, BED.y, BED.s);   // sunk into the velvet (not cut off by a straight line)
+      if (sink > .05) royalBedBlanket(BED.x, BED.y, BED.s, BED.x + 6, lerp(py - 60, py - 118, sink));   // tucked in up to his chest
     }
     royalBedFront(BED.x, BED.y, BED.s, t);
     if (t > 36.6) zzz(BED.x + 80, BED.y - 260, .7, t);
@@ -128,9 +130,7 @@
   function s06(t, lt) {
     cam(800, 1290, 1.8);
     room(t);
-    pumpkin(TINY.x, FY, U, { ...faces(t, [[39, 'happy'], [40.0, 'neutral', { lookX: -1 }], [41.2, 'annoyed', { lookX: -1 }], [43.0, 'determined', { lookX: -1, brow: 1 }]]),
-      sq: .22, aL: -1.3, aR: -1.3, tailWag: 1, who: 'pumpkin', boilKey: 'pk' });
-    tinyBox(TINY.x, TINY.y - 18, 1.15);
+    crammed(t, 1, { ...faces(t, [[39, 'happy'], [40.0, 'neutral', { lookX: -1 }], [41.2, 'annoyed', { lookX: -1 }], [43.0, 'determined', { lookX: -1, brow: 1 }]]), tailWag: 1, who: 'pumpkin' });
     camEnd();
   }
 
@@ -141,19 +141,19 @@
       cam(470, 1330, 1.0);
       room(t);
       royalBedBack(BED.x, BED.y, BED.s, t);
-      if (t < land) { pip(BED.x + 10, BED.y + 30, U, { ...face('proud'), noShadow: true, boilKey: 'pip' }); royalBedCushionOver(BED.x, BED.y, BED.s); }
+      if (t < land) { pip(BED.x + 10, BED.y - 4, U, { ...face('proud'), rot: -.14, noShadow: true, boilKey: 'pip' }); royalBedBlanket(BED.x, BED.y, BED.s, BED.x + 6, BED.y - 122); }
       if (leap < 1) { const p = arcPt([TINY.x, FY], [BED.x, BED.y - 30], 260, ease(leap)); pumpkin(p[0], p[1], U, { ...face('determined'), sq: -.15, rot: -.3 * leap, aL: 1.2, aR: 1.2, noShadow: true, boilKey: 'pk' }); }
       else pumpkin(BED.x, BED.y - 30, U, { ...face('proud', { blush: .4 }), sq: .22 + .2 * Math.exp(-(t - land) * 6) * Math.cos((t - land) * 22), aL: -1.4, aR: -1.4, noShadow: true, who: 'pumpkin', boilKey: 'pk' });
       royalBedFront(BED.x, BED.y, BED.s, t);
       bigBox(t, { open: t > into - .1 && t < into + .2 ? .6 : 0 });
-      tinyBox(TINY.x, TINY.y);
+      tinyBox(TINY.x, TINY.y, TINYS);
       if (t >= land && fly < 1) { const p = arcPt([BED.x + 170, BED.y - 120], [BOX.x, BOX.y - BOX.h - 30], 520, fly); pip(p[0], p[1], U, { ...face('panic'), rot: fly * TAU * 1.5, aL: 1.4, aR: 1.4, scarfWind: 1, noShadow: true, boilKey: 'pip' }); }
       burst(BED.x, BED.y - 100, 160, (t - land) / .4, 10, '#FFFFFF');
       camEnd();
       return;
     }
     cam(...BOX_CAM);
-    room(t); tinyBox(TINY.x, TINY.y);
+    room(t); tinyBox(TINY.x, TINY.y, TINYS);
     bigBox(t, { wig: wiggle(t, seg(t, 46.9, 47.3)) });
     camEnd();
   }

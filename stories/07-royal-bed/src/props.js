@@ -119,10 +119,14 @@ function royalBedFront(x, y, s = 1, t = 0, glint = 0) {
   inkLine(arcPts(x, y - 26 * s, 172 * s, 62 * s, .1, Math.PI - .1, 18), 3 * s, BC.gold, 'ink', .4);
   if (glint > 0) for (let i = 0; i < 4; i++) { const k = Math.max(0, Math.sin(t * 4 + i * 1.7)); if (k > .3) paint(starPts(x - 150 * s + i * 100 * s, y - 120 * s - (i % 2) * 40 * s, 22 * s * k * glint, .22, 4), { wash: '#FFFFFF', ink: null }); }
 }
-// The cushion's front half, drawn OVER someone lying in the bed so they look sunk into the velvet (then royalBedFront()).
-function royalBedCushionOver(x, y, s = 1) {
-  paint([...arcPts(x, y - 34 * s, 130 * s, 42 * s, 0, Math.PI, 18)], { wash: BC.bedIn, ink: null });
-  inkLine(arcPts(x, y - 30 * s, 110 * s, 30 * s, .35, Math.PI - .35, 14), 1.6 * s, mixCol(BC.bedIn, '#2A1A30', .25), 'ink', .4);   // a soft dent line
+// A velvet blanket tucked over someone in the bed: from rim to rim, its top edge bulging over the sleeper at px, up to
+// chest height (top). Draw it after the sleeper, then royalBedFront().
+function royalBedBlanket(x, y, s, px, top) {
+  const L = [x - 150 * s, y - 34 * s], R = [x + 150 * s, y - 34 * s];
+  const edge = through([L, [px - 95, top + 26], [px - 40, top + 2], [px + 40, top + 2], [px + 95, top + 26], R], 6);
+  paint([...edge, ...arcPts(x, y - 30 * s, 150 * s, 44 * s, 0, Math.PI, 16)], { wash: '#B9A0E6', sw: 1.3, shade: true, shadeK: .4 });
+  inkLine(edge, 3.2 * s, BC.gold, 'ink', .3);
+  inkLine([[px - 30, top + 40], [px - 10, top + 70]], 1.4, '#8E73C4', 'ink', 0); inkLine([[px + 30, top + 42], [px + 12, top + 72]], 1.4, '#8E73C4', 'ink', 0);
 }
 function royalBed(x, y, s = 1, t = 0, glint = 0) { royalBedBack(x, y, s, t); royalBedFront(x, y, s, t, glint); }
 // Pip's tiny cracker box (front face with a cracker picture). at: [x, y] bottom centre.
@@ -134,4 +138,18 @@ function tinyBox(x, y, s = 1, rot = 0) {
   paint(rrPts(x - w * .28, y - h * .78, w * .56, h * .5, 6 * s), { wash: '#F2D08A', sw: .8 });
   for (const [a, b] of [[-.12, -.62], [.12, -.62], [0, -.48]]) paint(ellPts(x + a * w, y + b * h, 3.5 * s, 3.5 * s, 8), { wash: '#B8813A', ink: null });
   pop();
+}
+
+// Pumpkin crammed into the tiny box: his bottom sunk in it (feet hidden), the rest of him spilling over its rim on both
+// sides, with crease marks where the rim bites. sink 0..1 (how far down he's squeezed), o: extra pumpkin() options.
+const TINYS = 1.5;
+function crammed(t, sink, o = {}) {
+  const w = TINY.w * TINYS, h = TINY.h * TINYS, top = TINY.y - h, left = TINY.x - w / 2, right = TINY.x + w / 2;
+  const feet = top + 10 + 55 * sink, bulge = 70 * sink;
+  // the box's open top (dark inside), then him, clipped: above the rim, or spilling out beside the box
+  paint([[left, top], [left + 22 * TINYS, top - 14 * TINYS], [right + 22 * TINYS, top - 14 * TINYS], [right, top]], { wash: '#7A5A36', sw: 1 });
+  clipRects([[-600, -600, 2400, top + 8 + 600], [-600, top, left + 600, bulge], [right, top, 1200, bulge]], () =>
+    pumpkin(TINY.x, feet, 40, { sq: .12 + .1 * sink, aL: -1.3, aR: -1.3, noShadow: true, boilKey: 'pk', ...o }));
+  tinyBox(TINY.x, TINY.y, TINYS);
+  if (sink > .3) for (const d of [-1, 1]) { const x = TINY.x + d * (w / 2 + 14); inkLine([[x, top - 6], [x + d * 12, top + 12], [x + d * 4, top + 30]], 2.2, '#B4572A', 'ink', .5); }
 }
