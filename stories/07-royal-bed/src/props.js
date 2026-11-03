@@ -119,6 +119,11 @@ function royalBedFront(x, y, s = 1, t = 0, glint = 0) {
   inkLine(arcPts(x, y - 26 * s, 172 * s, 62 * s, .1, Math.PI - .1, 18), 3 * s, BC.gold, 'ink', .4);
   if (glint > 0) for (let i = 0; i < 4; i++) { const k = Math.max(0, Math.sin(t * 4 + i * 1.7)); if (k > .3) paint(starPts(x - 150 * s + i * 100 * s, y - 120 * s - (i % 2) * 40 * s, 22 * s * k * glint, .22, 4), { wash: '#FFFFFF', ink: null }); }
 }
+// The cushion's front half, drawn OVER someone lying in the bed so they look sunk into the velvet (then royalBedFront()).
+function royalBedCushionOver(x, y, s = 1) {
+  paint([...arcPts(x, y - 34 * s, 130 * s, 42 * s, 0, Math.PI, 18)], { wash: BC.bedIn, ink: null });
+  inkLine(arcPts(x, y - 30 * s, 110 * s, 30 * s, .35, Math.PI - .35, 14), 1.6 * s, mixCol(BC.bedIn, '#2A1A30', .25), 'ink', .4);   // a soft dent line
+}
 function royalBed(x, y, s = 1, t = 0, glint = 0) { royalBedBack(x, y, s, t); royalBedFront(x, y, s, t, glint); }
 // Pip's tiny cracker box (front face with a cracker picture). at: [x, y] bottom centre.
 function tinyBox(x, y, s = 1, rot = 0) {
