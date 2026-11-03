@@ -1,0 +1,8 @@
+[
+  {"id": "d01", "who": "pip",     "shot": "01", "t": 1.0,  "text": "Bath... time.", "emo": "ominous, slow horror-movie villain", "exag": 0.7, "cfg": 0.4, "speed": 0.95, "pitch": 1.0},
+  {"id": "d02", "who": "pumpkin", "shot": "02", "t": 7.4,  "text": "You can't see me.", "emo": "smug whisper, hiding", "exag": 0.5, "cfg": 0.45, "speed": 1.0, "pitch": 0.97},
+  {"id": "d03", "who": "pip",     "shot": "04", "t": 17.4, "text": "Nice... lamp.", "emo": "dry, sarcastic, unimpressed", "exag": 0.5, "cfg": 0.45, "speed": 1.0, "pitch": 1.0},
+  {"id": "d04", "who": "pumpkin", "shot": "04", "t": 20.9, "text": "YOWCH!", "emo": "sudden pain, shriek", "exag": 1.0, "cfg": 0.3, "speed": 1.0, "pitch": 1.0},
+  {"id": "d05", "who": "pip",     "shot": "05", "t": 28.4, "text": "Fine. More bubbles for me.", "emo": "huffy, then smug and relaxed", "exag": 0.6, "cfg": 0.4, "speed": 1.0, "pitch": 1.02},
+  {"id": "d06", "who": "pumpkin", "shot": "07", "t": 40.8, "text": "...I'm thin now.", "emo": "deadpan, soggy, defeated", "exag": 0.45, "cfg": 0.5, "speed": 1.0, "pitch": 0.96}
+]
