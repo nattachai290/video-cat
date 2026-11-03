@@ -16,9 +16,9 @@
   // riders in cart space: Dusty in front, Pumpkin (+ Pip) behind. o: { d: dusty options, k: pumpkin options, p: pip options, noPip, noPumpkin }
   const riders = (t, o = {}) => (u, L, Hh) => {
     const top = -Hh - .4 * u;
-    if (!o.noPumpkin) duo(-L * .2, top + 5.6 * u + (o.kdy || 0), u, t, { noShadow: true, aL: 1.0, aR: 1.0, ...o.k }, o.p);
-    else if (!o.noPip) pip(-L * .2, top + 2.4 * u, u, { ...face('dazed'), draw: pipSharkHood(0), noShadow: true, ...o.p, boilKey: 'pip' });
-    dusty(L * .2, top + 4.4 * u + (o.ddy || 0), u, { aR: .9, noShadow: true, ...o.d, who: 'dusty', boilKey: 'du' });
+    if (!o.noPumpkin) duo(-L * .25, top + 6.4 * u + (o.kdy || 0), u, t, { noShadow: true, aL: 1.0, aR: 1.0, ...o.k }, o.p);
+    else if (!o.noPip) pip(-L * .25, top + 2.6 * u, u, { ...face('dazed'), draw: pipSharkHood(0), noShadow: true, ...o.p, boilKey: 'pip' });
+    dusty(L * .22, top + 5.0 * u + (o.ddy || 0), u, { aR: .9, noShadow: true, ...o.d, who: 'dusty', boilKey: 'du' });
   };
 
   // ---- the living-room track: down out of the portal and along the floor to the left
@@ -93,7 +93,7 @@
   function s04(t) {
     const [x, y, a] = spaceCart(t);
     space(t, x * 1.2, { planet: [830, 560, 160] });
-    cam(x + 120, y - 150, 1.15, [Math.sin(t * 13) * 4, Math.cos(t * 11) * 4]);
+    cam(x + 20, y - 170, 1.05, [Math.sin(t * 13) * 4, Math.cos(t * 11) * 4]);
     spaceRail(x);
     coasterCart(x, y, U, { rot: a, light: true, bar: 1, seats: riders(t, { k: { ...faces(t, [[11, 'happy', { mouth: 'grin' }], [12.6, 'happy', { mouth: 'O' }], [14, 'happy', { mouth: 'grin', blush: .5 }]]), aL: 1.3, aR: 1.3 },
       p: { ...face('panic', { eyes: 'squeeze' }), aL: 1.2, aR: 1.2 }, d: { lid: .6, aR: .9, mouth: 'flat' } }) });

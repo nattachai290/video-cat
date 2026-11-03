@@ -210,13 +210,14 @@ function dusty(x, y, u, o = {}) {
 }
 
 // ---------- the coaster ----------
-const CART = { len: 13, h: 3.2 };   // in u
+const CART = { len: 16, h: 3.8 };   // in u
 // The cart in side view, facing +x (flip for -x), at (x, y) = rail contact point under its middle, angle rot.
 // seats(): draw the riders (called between the back and front panels). Returns nothing.
 function coasterCart(x, y, u, o = {}) {
   push(); translate(x, y); rotate(o.rot || 0); if (o.flip) scale(-1, 1);
   const L = CART.len * u, Hh = CART.h * u, sw = clamp(u / 15, .5, 3);
   paint(rrPts(-L / 2, -Hh - 1.2 * u, L, Hh, 1.2 * u), { wash: '#B8343C', ink: PAL.ink, sw });   // back panel (inside)
+  for (const sx of [-.25, .22]) paint(rrPts(L * sx - 2.6 * u, -Hh - 3.4 * u, 5.2 * u, 3.0 * u, 1.2 * u), { wash: '#C73E45', ink: PAL.ink, sw: sw * .8, shade: true, shadeK: .4 });
   if (o.seats) clipRects([[-L, -60 * u, 2 * L, 60 * u - 1.2 * u]], () => o.seats(u, L, Hh));   // riders, hidden below the cart floor   // riders, in cart space (front = +x, the panel top at y = -Hh - .4u)
   paint([[-L / 2, -Hh - .4 * u], [L / 2 - 1.6 * u, -Hh - .4 * u], [L / 2 + .6 * u, -Hh * .45 - .8 * u], [L / 2, -1.0 * u], [-L / 2, -1.0 * u]], { wash: '#E2463F', ink: PAL.ink, sw, curv: .3, shade: true, shadeK: .5 });
   inkLine([[-L / 2 + .3 * u, -Hh * .55 - .8 * u], [L / 2 - .6 * u, -Hh * .55 - .8 * u]], 7 * sw, '#F7D154', 'ink', 0);
