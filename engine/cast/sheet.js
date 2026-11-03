@@ -57,4 +57,27 @@
   LOOPS.facesPumpkin.len = 2;
   LOOPS.facesPip = t => grid(t, pip, 1.6);
   LOOPS.facesPip.len = 2;
+
+  // Cuteness dial: the same pose at cute 0 / .6 / 1 (CAST_CUTE turns it on for the whole series).
+  // Render: node ../../engine/flat/render_pw.mjs --loop=cute --still=0.2 --out=out/check/cute.jpg
+  LOOPS.cute = t => {
+    bg();
+    const cw = W / 3, rh = H / 3, cell = i => cw * (i + .5), lv = [0, .6, 1], names = ['before (0)', 'series (.6)', 'max (1)'];
+    const u = Math.min(cw / 11.5, rh / 15.5), say = k => Math.max(0, .5 + .5 * Math.sin(t * TAU * 2.2 + k) - .55);
+    lv.forEach((c, i) => label(names[i], cell(i), 26, 22));
+    let gy = rh * .8;
+    lv.forEach((c, i) => pumpkin(cell(i), gy, u, { ...face('happy'), talk: say(i), cute: c, boilKey: 'cu' + i }));
+    label('Pumpkin', 34, gy - u * 13, 20); floor(gy);
+    gy = rh * 1.8;
+    lv.forEach((c, i) => pip(cell(i), gy, u, { ...face('happy'), talk: say(i + 4), cute: c, boilKey: 'cp' + i }));
+    label('Pip (same u)', 34, gy - u * 7.4, 20); floor(gy);
+    gy = rh * 2.8;
+    const du = u * .8;
+    lv.forEach((c, i) => {
+      pumpkin(cell(i) - cw * .16, gy, du, { ...face('smug'), view: 'q', cute: c, boilKey: 'dup' + i });
+      pip(cell(i) + cw * .27, gy, du, { ...face('teasing'), view: 'q', flip: true, cracker: true, aR: .2, cute: c, boilKey: 'dpp' + i });
+    });
+    label('together', 34, gy - u * 10.5, 20); floor(gy);
+  };
+  LOOPS.cute.len = 2;
 })();

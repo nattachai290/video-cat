@@ -7,6 +7,7 @@ import vm from 'vm';
 
 const args = process.argv.slice(2), loops = args.filter(a => !a.startsWith('--'));
 const tArg = args.find(a => a.startsWith('--times='));
+const cuteArg = args.find(a => a.startsWith('--cute='));   // try the cast at another cuteness level
 const html = fs.readFileSync('studio.html', 'utf8');
 const srcs = [...html.matchAll(/<script src="([^"]+)"><\/script>/g)].map(m => m[1]).filter(s => !s.includes('node_modules'));
 let bad = 0, calls = 0;
@@ -20,7 +21,7 @@ const brush = new Proxy({}, { get: (_, k) => k === 'polygon' ? pts => check('pol
   : k === 'vertex' ? (x, y) => check('vertex', [[x, y]]) : noop });
 const ctx = {
   console, Math, JSON, Array, Object, Number, String, Infinity, NaN, isNaN, performance: { now: () => 0 },
-  location: { search: '?render' }, document: { fonts: { load: async () => {} }, getElementById: () => null, createElement: () => ({ getContext: () => ({}) }) },
+  location: { search: '?render' + (cuteArg ? '&' + cuteArg.slice(2) : '') }, document: { fonts: { load: async () => {} }, getElementById: () => null, createElement: () => ({ getContext: () => ({}) }) },
   window: {}, brush, push: noop, pop: noop, translate: noop, rotate: noop, scale: noop, resetMatrix: noop, image: noop,
   random: (a, b) => b === undefined ? (a === undefined ? rnd() : rnd() * a) : a + rnd() * (b - a), randomSeed: s => { seed = (Math.abs(s | 0) % 2147483646) + 1; },
   noiseSeed: noop, noise: () => .5, createGraphics: () => ({ pixelDensity: noop, drawingContext: {}, clear: noop }), createCanvas: noop, pixelDensity: noop, noLoop: noop,

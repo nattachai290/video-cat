@@ -13,7 +13,9 @@ reusable. Reply to the user in Thai; write code, comments and dialogue in Englis
 - **Format:** YouTube Shorts, vertical 1080x1920, 45-60 s, a self-contained gag that **loops** (last frame = first frame).
 - **Style:** flat cartoon (solid colours, darker-rim outlines, soft shadow side). Engine: `engine/flat/`. Not watercolour.
 - **Cast:** Pumpkin (round orange tabby, red vest one size too small, bean arms) and Pip (tiny grey mouse, big ears,
-  green scarf, cracker). Rig: `engine/cast/pumpkin_pip.js`. Same `u` for both keeps them in scale.
+  green scarf, cracker). Rig: `engine/cast/pumpkin_pip.js`. Same `u` for both keeps them in scale. Chibi look is the
+  `cute` dial (0 old .. 1 max); the series is set to **0.6** in `CAST_CUTE`. Test a level with `?cute=0` /
+  `?cute=1` (`--query=cute=1`) or `drycheck --cute=0`, and compare on the `cute` sheet loop.
 - **Voices:** English, characters talk to each other (no narrator), with emotion (Chatterbox). Subtitles in English.
 - **Everything original:** no game/film characters or plots, no samples. SFX and music are synthesized.
 - **Token thrift:** the user prefers long-running or repetitive jobs to be handed to a cheaper model (Haiku) via
@@ -88,6 +90,8 @@ then replace STORYBOARD, lines.json, props.js, scenes, sfx.mjs, music.mjs.
 - Side views (user feedback, story 09): whiskers sweep BACK from the cheek, no dangling arm on Pumpkin (four legs + arm
   read as six limbs; the arm only shows when a paw is raised or holds something), muzzle/mouth stay inside the head
   outline, Pip has grey legs with small pink paws. The user preferred the original stubby legs to realistic long legs.
+  The `cute` dial changes only scale/blush/sparkle (not shape), so these rules still hold; head-fitted props (story 11's
+  shark hoods) keep working because the hoods enclose a larger head, but check a still before a full render.
 
 - `render.mjs`/p5.brush is the old watercolour engine (slow without a GPU). The flat engine renders ~50-110 ms/frame;
   a whole 52 s Short takes under a minute with `render_pw.mjs` (Playwright, no npm install on the cloud machine).
