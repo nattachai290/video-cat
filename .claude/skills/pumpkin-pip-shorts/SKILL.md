@@ -18,6 +18,8 @@ reusable. Reply to the user in Thai; write code, comments and dialogue in Englis
 - **Everything original:** no game/film characters or plots, no samples. SFX and music are synthesized.
 - **Token thrift:** the user prefers long-running or repetitive jobs to be handed to a cheaper model (Haiku) via
   `RUNBOOK.md` with a copy-paste prompt. Short renders (sheets, a 1-minute MP4) are fine to run directly.
+- **Fixes: stills first.** When the user points out a problem (or you change a shot), send still frames of exactly that
+  spot (`--sheet` around the times involved, `--w=540`) and wait for their OK before rendering the full video.
 - **Branch:** `claude/nice-heisenberg-5vtd6i`. Keep `PROGRESS.md` and the story's `STATUS.md` updated after each step.
 
 ## Folder layout
