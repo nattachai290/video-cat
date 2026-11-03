@@ -217,9 +217,10 @@ function coasterCart(x, y, u, o = {}) {
   push(); translate(x, y); rotate(o.rot || 0); if (o.flip) scale(-1, 1);
   const L = CART.len * u, Hh = CART.h * u, sw = clamp(u / 15, .5, 3);
   paint(rrPts(-L / 2, -Hh - 1.2 * u, L, Hh, 1.2 * u), { wash: '#B8343C', ink: PAL.ink, sw });   // back panel (inside)
-  if (o.seats) { pop(); o.seats(); push(); translate(x, y); rotate(o.rot || 0); if (o.flip) scale(-1, 1); }
+  if (o.seats) clipRects([[-L, -60 * u, 2 * L, 60 * u - 1.2 * u]], () => o.seats(u, L, Hh));   // riders, hidden below the cart floor   // riders, in cart space (front = +x, the panel top at y = -Hh - .4u)
   paint([[-L / 2, -Hh - .4 * u], [L / 2 - 1.6 * u, -Hh - .4 * u], [L / 2 + .6 * u, -Hh * .45 - .8 * u], [L / 2, -1.0 * u], [-L / 2, -1.0 * u]], { wash: '#E2463F', ink: PAL.ink, sw, curv: .3, shade: true, shadeK: .5 });
   inkLine([[-L / 2 + .3 * u, -Hh * .55 - .8 * u], [L / 2 - .6 * u, -Hh * .55 - .8 * u]], 7 * sw, '#F7D154', 'ink', 0);
+  if (o.bar != null) { const by = -Hh - .4 * u - (1 - o.bar) * 2.2 * u; inkLine([[-L * .4, by], [L * .05, by]], 8 * sw, '#F7D154', 'ink', 0); }   // the lap bar
   paint(ellPts(L / 2 - 1.0 * u, -Hh * .75 - .8 * u, .45 * u, .45 * u, 12), { wash: '#FFF3B0', ink: PAL.ink, sw: sw * .6 });   // headlight
   if (o.light) glow(L / 2 + 1.5 * u, -Hh * .75 - .8 * u, 3 * u, '#FFF3B0', .5);
   for (const s of [-1, 1]) { paint(ellPts(s * L * .32, -.55 * u, .75 * u, .75 * u, 14), { wash: '#3B3F4A', ink: PAL.ink, sw: sw * .7 }); paint(ellPts(s * L * .32, -.55 * u, .3 * u, .3 * u, 8), { wash: '#B9C2CC', ink: null }); }

@@ -4,7 +4,7 @@
 // Placement: upper middle (clear of YouTube's bottom caption area and right-hand buttons).
 const SUBS = { y: 430, size: 78, maxW: 900, lead: .12, hold: .5, gap: 18,
                font: s => `800 ${s}px "Baloo 2", "Comic Sans MS", sans-serif`,
-               col: { pumpkin: '#FFB347', pip: '#8EE39B' }, base: '#FFFFFF', stroke: '#2B2233' };
+               col: { pumpkin: '#FFB347', pip: '#8EE39B', dusty: '#C9C3F2' }, base: '#FFFFFF', stroke: '#2B2233' };
 function subs(t) {
   if (typeof LY === 'undefined') return;
   const row = LY.find(([a, b]) => t >= a - SUBS.lead && t < b + SUBS.hold);

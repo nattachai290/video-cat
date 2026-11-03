@@ -13,6 +13,7 @@
 
 | เรื่อง | รูปแบบ | สถานะ |
 |---|---|---|
+| 11 · Pumpkin & Pip: The Space Coaster | Shorts 9:16, 50 s, การ์ตูนแบน | **เสร็จ** · `stories/11-space-coaster/out/video.mp4` + ปก + `YOUTUBE.md` |
 | 10 · Pumpkin & Pip: The Sandwich | Shorts 9:16, 45 s, การ์ตูนแบน | **เสร็จ** · `stories/10-sandwich/out/video.mp4` + ปก + `YOUTUBE.md` |
 | 09 · Pumpkin & Pip: The Red Dot | Shorts 9:16, 45 s, การ์ตูนแบน | **เสร็จ** · `stories/09-red-dot/out/video.mp4` + ปก + `YOUTUBE.md` |
 | 08 · Pumpkin & Pip: Bath Time | Shorts 9:16, 50 s, การ์ตูนแบน | **เสร็จ** · `stories/08-bath-time/out/video.mp4` + ปก + `YOUTUBE.md` |
@@ -35,7 +36,8 @@
 - [x] ตอนที่ 6: Bath Time
 - [x] ตอนที่ 7: The Red Dot (จังหวะเร็ว แอ็กชัน)
 - [x] ตอนที่ 8: The Sandwich
-- [ ] ตอนที่ 9 (ใช้ skill `pumpkin-pip-shorts`)
+- [x] ตอนที่ 9: The Space Coaster (ตัวละครใหม่ Dusty แรคคูน)
+- [ ] ตอนที่ 10 (ใช้ skill `pumpkin-pip-shorts`)
 - [ ] ถ้าจะกลับไปทำเรื่อง 02 ให้ย้ายมาเป็นสไตล์แบนและเลือกรูปแบบ (ยาว 16:9 หรือแบ่งเป็น Shorts)
 
 ## สิ่งที่สร้างไว้ใช้ซ้ำ
@@ -47,6 +49,8 @@
 - **RUNBOOK.md**: งานรันพร้อมพรอมต์ให้ Haiku (setup, voices, retake, cast-sheet, preview, check, final)
 
 ## บันทึกการตัดสินใจ
+
+- 2026-11-03 · ตอนที่ 9 "The Space Coaster" เสร็จ จากโครงเรื่องของผู้ใช้: ตัวละครใหม่ Dusty (แรคคูนพนักงานรถไฟ ไม้เบสบอล, `dusty()` ใน stories/11-space-coaster/src/props.js), ชุดฉลาม, รถไฟเหาะ, ปีศาจ
 
 - 2026-11-03 · ตอนที่ 8 "The Sandwich" เสร็จ (ผู้ใช้เปลี่ยนจาก Prank War): แผนขโมย 3 แผน, กลืนทั้งตึกจนตัวเหลี่ยม, สะอึกคืนทีละชั้น
 - 2026-11-03 · มุมข้างตัวละครแก้ตามผู้ใช้ (หนวดชี้หลัง, ไม่มีแขนห้อย, ปากอยู่ในหน้า, ขาหนูเทา+อุ้งเท้าชมพู) ตอน 7 เรนเดอร์ใหม่แล้ว
