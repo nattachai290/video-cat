@@ -17,7 +17,7 @@ Every frame, voice, sound effect and note of music is made from scratch, with co
 
 Subscribe and grab a snack. 🍩
 
-## Short version (230 characters, e.g. for the channel "tagline" or a link-in-bio)
+## Short version (about 160 characters, for a link-in-bio or a quick intro)
 
 Bite-size original cartoons for your snack break! Pumpkin the cat, Pip the mouse and new friends in short, silly
 stories: comedy, fables and little adventures. 🍪
