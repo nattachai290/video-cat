@@ -5,6 +5,7 @@
 ## ช่อง YouTube
 
 - ชื่อช่อง **Snackatoon** · handle **@Snackatoon** (เช็กแล้วว่าว่างเมื่อ 2026-11-03 ต้องยืนยันใน YouTube Studio)
+- คำอธิบายช่อง + คีย์เวิร์ด: `brand/ABOUT.md`
 - ภาพช่อง: `brand/out/profile.png` (800×800) และ `brand/out/banner.png` (2560×1440) สร้างจาก `brand/src/brand.js`
 - สร้างใหม่: `cd brand` แล้วรัน `render_pw.mjs --loop=profile --still=0.3 --out=out/profile.png` และ `--loop=banner --query=banner --still=0.3 --out=out/banner.png`
 
