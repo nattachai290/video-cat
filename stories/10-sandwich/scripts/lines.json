@@ -1,0 +1,7 @@
+[
+  {"id": "d01", "who": "pumpkin", "shot": "02", "t": 5.2,  "text": "...Sandwich.", "emo": "hypnotised, drooling, longing whisper", "exag": 0.55, "cfg": 0.45, "speed": 1.0, "pitch": 0.97},
+  {"id": "d02", "who": "pip",     "shot": "03", "t": 10.4, "text": "Nope.", "emo": "flat, smug, unbothered", "exag": 0.5, "cfg": 0.45, "speed": 1.0, "pitch": 1.02},
+  {"id": "d03", "who": "pip",     "shot": "04", "t": 15.6, "text": "HEY!", "emo": "outraged, dangling", "exag": 1.0, "cfg": 0.3, "speed": 1.0, "pitch": 1.06},
+  {"id": "d04", "who": "pumpkin", "shot": "06", "t": 27.0, "text": "...Worth it.", "emo": "blissful, stuffed, content", "exag": 0.5, "cfg": 0.45, "speed": 1.0, "pitch": 0.96},
+  {"id": "d05", "who": "pip",     "shot": "08", "t": 39.0, "text": "...You keep it.", "emo": "disgusted, deadpan", "exag": 0.6, "cfg": 0.45, "speed": 1.0, "pitch": 1.0}
+]
