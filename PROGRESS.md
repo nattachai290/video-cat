@@ -9,6 +9,11 @@
 - ภาพช่อง: `brand/out/profile.png` (800×800) และ `brand/out/banner.png` (2560×1440) สร้างจาก `brand/src/brand.js`
 - สร้างใหม่: `cd brand` แล้วรัน `render_pw.mjs --loop=profile --still=0.3 --out=out/profile.png` และ `--loop=banner --query=banner --still=0.3 --out=out/banner.png`
 
+## วิดีโอยาว 16:9 (`long/`)
+
+- แม่แบบ `long/_template` (1920x1080, 200 s, ซับล่างจอ, End Screen ใช้ซ้ำพร้อมช่องว่างสำหรับปุ่ม YouTube) + `long/GUIDE.md` (ขั้นตอน + พรอมต์ก๊อปวางให้ AI ตัวอื่นทำต่อ)
+- สตอรี่บอร์ด 6 เรื่อง: 01 Midnight Fridge, 02 Snow Day, 03 Lost Ticket, 04 Attic Ghost, 05 Beach Day, 06 Big Race · ยังไม่ได้สร้าง (ผู้ใช้จะให้ AI ตัวอื่นทำ)
+
 ## สถานะตอนนี้
 
 | เรื่อง | รูปแบบ | สถานะ |
@@ -50,6 +55,7 @@
 
 ## บันทึกการตัดสินใจ
 
+- 2026-11-03 · เริ่มวิดีโอยาว 16:9 ~3 นาที ทำทีละ 3 ส่วน ส่วนละ 60 วิ + End Screen 20 วิ (ผู้ใช้เลือก) แยกโฟลเดอร์ `long/` จาก Shorts · ทำแค่สตอรี่บอร์ด + แนวทาง ให้ AI ตัวอื่นรันต่อ
 - 2026-11-03 · ผู้ใช้ขอให้ Pumpkin & Pip น่ารักขึ้น → เพิ่ม `cute` dial ใน `engine/cast/pumpkin_pip.js` (หัวโตขึ้น, ตาโต+ต่ำลง, หู Pip ใหญ่ขึ้น, แก้มชมพูถาวร, ประกายตา, เส้นบางลง) ล็อกค่าซีรีส์ที่ **0.6** · โมเดลชีตเทียบ 3 ระดับ: `stories/11-space-coaster/out/check/cute.jpg` · ยังไม่ได้เรนเดอร์วิดีโอตอนเก่าใหม่ (ตอน 11 ยังใส่ฮู้ดฉลามได้พอดี)
 
 - 2026-11-03 · ตอนที่ 9 "The Space Coaster" เสร็จ จากโครงเรื่องของผู้ใช้: ตัวละครใหม่ Dusty (แรคคูนพนักงานรถไฟ ไม้เบสบอล, `dusty()` ใน stories/11-space-coaster/src/props.js), ชุดฉลาม, รถไฟเหาะ, ปีศาจ

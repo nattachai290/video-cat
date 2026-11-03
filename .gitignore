@@ -9,3 +9,7 @@ stories/*/out/voice/
 .venv/
 stories/*/out/check/
 stories/*/out/*.log
+long/*/out/audio/
+long/*/out/voice/
+long/*/out/check/
+long/*/out/*.log
