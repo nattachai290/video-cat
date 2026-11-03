@@ -85,6 +85,10 @@ then replace STORYBOARD, lines.json, props.js, scenes, sfx.mjs, music.mjs.
 
 ## Gotchas learned
 
+- Side views (user feedback, story 09): whiskers sweep BACK from the cheek, no dangling arm on Pumpkin (four legs + arm
+  read as six limbs; the arm only shows when a paw is raised or holds something), muzzle/mouth stay inside the head
+  outline, Pip has grey legs with small pink paws. The user preferred the original stubby legs to realistic long legs.
+
 - `render.mjs`/p5.brush is the old watercolour engine (slow without a GPU). The flat engine renders ~50-110 ms/frame;
   a whole 52 s Short takes under a minute with `render_pw.mjs` (Playwright, no npm install on the cloud machine).
 - `drycheck.mjs` catches NaN geometry and runtime errors without a browser; run it before every render.
