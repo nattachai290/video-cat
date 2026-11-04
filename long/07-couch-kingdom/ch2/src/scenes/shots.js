@@ -42,9 +42,10 @@
     oracleCookie(1010, oy + 330 - 330, U * 1.2, { ...faces(t, [[14, 'neutral'], [33.6, 'surprised', { eyes: 'wide' }]]), lid: t > 33.6 ? 0 : .45, paper, who: 'oracle', noShadow: true, boilKey: 'oc' });
     // the arrow on the fortune (drawn big when Pip reads it), then flipped: blank
     if (t > 26.8 && t < 29.6) { const flip = Math.abs(Math.cos(seg(t, 28.2, 28.8) * Math.PI)); paint(rrPts(1060, oy - 30, 320 * flip, 90, 8), { wash: '#FFFDF6', ink: PAL.ink, sw: 1.6 }); if (t < 28.5) letter('→', 1060 + 160 * flip, oy + 15, 80, '#C8363F', { font: '800 80px "Baloo 2", sans-serif', ink: false }); }
-    const lunge = seg(t, 33.4, 34.8), chomp = t > 34.6 && t < 35.2;
-    hero(700 + lunge * 80, TFY, { ...faces(t, [[14, 'surprised', { lookX: 1, lookY: -.5 }], [19.4, 'happy', { blush: .5 }], [22, 'neutral', { lookX: 1, lookY: -.5 }], [32.4, 'greedy', { lookX: 1, lookY: -.5 }], [34.4, 'surprised', { mouth: 'O', lookY: -1 }], [35.4, 'sheepish', { lookY: -1 }]]),
-      view: 'q', aR: -1.1, aL: -1.1, rot: lunge * .15 * (1 - seg(t, 35, 35.6)), who: chomp ? undefined : 'pumpkin', talk: chomp ? 1 : undefined }, t);
+    const lunge = seg(t, 33.4, 34.8), chomp = t > 34.6 && t < 35.2, crumbK = seg(t, 35.9, 36.6), fed = t > 36.6;
+    if (crumbK > 0 && crumbK < 1) crackerP(lerp(1000, 760, crumbK), lerp(TFY - 900, HEAD + 170, easeIn(crumbK)), crumbK * 9, 1.1);   // a crumb falls from the cookie... into his open mouth
+    hero(700 + lunge * 80, TFY, { ...faces(t, [[14, 'surprised', { lookX: 1, lookY: -.5 }], [19.4, 'happy', { blush: .5 }], [22, 'neutral', { lookX: 1, lookY: -.5 }], [32.4, 'greedy', { lookX: 1, lookY: -.5 }], [34.4, 'surprised', { mouth: 'O', lookY: -1 }], [35.4, 'sheepish', { lookY: -1, mouth: 'O' }], [36.6, 'munching'], [37.4, 'happy', { blush: .5 }]]),
+      view: 'q', aR: -1.1, aL: -1.1, rot: lunge * .15 * (1 - seg(t, 35, 35.6)), who: chomp || fed ? undefined : 'pumpkin', talk: chomp ? 1 : fed && t < 37.4 ? .3 * Math.max(0, Math.sin(t * 22)) : undefined }, t);
     mouse(1200, TFY, { ...faces(t, [[14, 'neutral', { lookX: -1, lookY: -.5 }], [22, 'neutral', { lookX: -1, lookY: -1 }], [27.4, 'annoyed', { lookX: -1 }], [30, 'deadpan', { lookX: -1 }]]), view: 'q', flip: true, aL: t > 27.8 && t < 29.6 ? 1.0 : -.6, aR: -.6, who: 'pip' });
     sirLint(1470, TFY, U * 1.1, { ...face('surprised', { lookY: -1, lookX: -1 }), view: 'q', flip: true, sq: .2, rot: -.2, boilKey: 'lint' });
     camEnd();
@@ -60,16 +61,20 @@
     for (const [x0, left] of [[1300, false], [2300, true], [3300, false]]) { const x = x0 - sc; if (x > -300 && x < 2300) roadSign(x, TFY, 'RIGHT', left); }
     // the car: winds at 39.4 / 45 / 50.8; zooms ahead; the third time it shoots backwards (51.2) into Pumpkin (52.0)
     const lapX = tt => tt < 39.4 ? lerp(1300, 1250, seg(tt, 38, 39.4)) : tt < 41 ? 1250 : tt < 45 ? lerp(1250, 1500, ease(seg(tt, 41, 42.2))) - (tt - 42.2 > 0 ? (tt - 42.2) * 40 : 0) : tt < 46.8 ? 1390 : tt < 50.8 ? lerp(1390, 1600, ease(seg(tt, 46.8, 48))) - (tt - 48 > 0 ? (tt - 48) * 50 : 0) : tt < 51.4 ? 1460 : lerp(1460, 980, easeIn(seg(tt, 51.4, 52.0)));
+    const pipWind = t > 54.6 && t < 55.6, zipOff = seg(t, 55.6, 57.0);
     const carX = lapX(t), winding = (t > 39.4 && t < 41) || (t > 45 && t < 46.8) || (t > 50.8 && t < 51.4), moving = !winding && !(t > 52.0);
     const hit = 52.0, crashed = t > hit;
-    windupCar(crashed ? 1000 : carX, TFY, .9, t, { key: winding ? t * (t > 50.8 ? -9 : 9) : t * 2, moving, back: t > 51.4 && !crashed, wheel: moving ? t * (t > 51.4 ? -12 : 12) : 0 });
+    const cX = crashed ? 1000 + easeIn(zipOff) * 1300 : carX;
+    windupCar(cX, TFY, .9, t, { key: pipWind ? t * 9 : winding ? t * (t > 50.8 ? -9 : 9) : t * 2, moving: moving || zipOff > 0, back: t > 51.4 && !crashed, wheel: moving || zipOff > 0 ? t * (t > 51.4 && !crashed ? -12 : 12) : 0 });
+    if (zipOff > 0) speedLines(cX - 140, TFY - 120, 1, t, 4, 200, 160);
     if (winding) sirLint(carX - 200, TFY, U * 1.0, { ...faces(t, [[38, 'strain', { eyes: 'squeeze' }]]), view: 'side', aR: .3, sq: .1, boilKey: 'lint' });
-    else sirLint((crashed ? 1000 : carX), TFY - 130 - (crashed ? 0 : 0), U * .9, { ...faces(t, [[38, 'determined', { mouth: 'grin' }], [51.4, 'surprised', { eyes: 'wide' }], [hit, 'dazed', { eyes: 'spiral' }]]), view: 'side', flip: t > 51.4 && !crashed, lance: .6, rot: crashed ? -.4 : 0, noShadow: true, who: 'lint', boilKey: 'lint' });
+    else sirLint(cX, TFY - 130, U * .9, { ...faces(t, [[38, 'determined', { mouth: 'grin' }], [51.4, 'surprised', { eyes: 'wide' }], [hit, 'dazed', { eyes: 'spiral' }], [55.6, 'happy', { mouth: 'grin' }]]), view: 'side', flip: t > 51.4 && !crashed, lance: .6, rot: crashed && zipOff <= 0 ? -.4 : 0, aR: zipOff > 0 ? 1.2 + Math.sin(t * 12) * .3 : undefined, noShadow: true, who: 'lint', boilKey: 'lint' });
     burst(990, TFY - 60, 160, (t - hit) / .35, 10, '#FFFFFF', 2);
     // Pumpkin and Pip walking (side view, in place: the world scrolls); Pumpkin hops on one foot after the hit
     const hop = crashed && t < 56 ? Math.abs(Math.sin((t - hit) * 9)) * .6 : 0;
     hero(820, TFY, { ...faces(t, [[38, 'happy'], [hit, 'strain', { eyes: 'squeeze', mouth: 'O' }], [55.4, 'sheepish']]), view: 'side', walk: crashed ? undefined : t * 4, dy: -hop, rot: hop * .1 }, t);
-    mouse(560, TFY, { ...faces(t, [[38, 'neutral'], [48, 'deadpan', { lookX: 1 }], [hit, 'deadpan', { lookX: 1, browUp: .5 }]]), view: 'side', walk: crashed ? undefined : t * 5 });
+    const pipX = t < 53.6 ? 560 : t < 54.6 ? lerp(560, 760, ease(seg(t, 53.6, 54.6))) : t < 55.6 ? 760 : lerp(760, 560, ease(seg(t, 55.6, 56.4)));
+    mouse(pipX, TFY, { ...faces(t, [[38, 'neutral'], [48, 'deadpan', { lookX: 1 }], [hit, 'deadpan', { lookX: 1, browUp: .5 }], [54.6, 'strain', { eyes: 'squeeze' }], [55.6, 'deadpan', { lookX: 1 }]]), view: 'side', aR: pipWind ? .1 + Math.sin(t * 20) * .3 : undefined, walk: crashed && !(t > 53.6 && t < 54.6) && !(t > 55.6 && t < 56.4) ? undefined : t * 5 });
     camEnd();
   }
 
@@ -81,10 +86,16 @@
     const rise = backOut(seg(t, 59.6, 60.6));
     camC(lerp(820, 900, ease(seg(t, 58, 60))), lerp(1.1, 1.3, ease(seg(t, 58, 60))), shake(t, 59.6, 10));
     canyon(t);
-    if (rise > 0) push(), clipRects([[-900, -600, 3800, BR.deck + 30 + 600]], () => troll(t, { ...faces(t, [[59.6, 'surprised'], [60.6, 'smug', { mouth: 'grin' }]]), dy: (1 - rise) * 7, who: 'troll' })), pop();
+    if (rise > 0) push(), clipRects([[-900, -600, 3800, BR.deck + 30 + 600]], () => troll(t, { ...faces(t, [[59.6, 'surprised'], [60.6, 'smug', { mouth: 'grin' }], [64.6, 'annoyed'], [65.4, 'smug', { mouth: 'smirk' }]]), dy: (1 - rise) * 7, bend: t > 64.8 && t < 65.2 ? 1.5 : undefined, who: 'troll' })), pop();
     hero(420, TFY, { ...faces(t, [[58, 'happy'], [59.8, 'surprised', { eyes: 'wide' }], [63, 'neutral', { lookX: 1 }]]), view: 'q' }, t);
     mouse(260, TFY, { ...faces(t, [[58, 'neutral', { lookX: 1 }], [60, 'surprised'], [63, 'deadpan', { lookX: 1 }]]), view: 'q' });
-    sirLint(100, TFY, U * 1.1, { ...face('panic'), view: 'q', sq: .1, boilKey: 'lint' });
+    { const charge = seg(t, 64.2, 65.0), fly = seg(t, 65.0, 66.4), landed = t > 66.4;
+      let lx = 100, ly = TFY, rot = 0, sc = 1.1;
+      if (charge > 0) lx = lerp(100, TX - 160, easeIn(charge));
+      if (fly > 0) { const p = arcPt([TX - 160, TFY], [420 + .3 * U, HEAD + 10], 380, ease(fly)); lx = p[0]; ly = p[1]; rot = -fly * TAU; }
+      if (landed) { lx = 420 + .3 * U; ly = HEAD + 30; sc = .7; }
+      sirLint(lx, ly, U * sc, { ...faces(t, [[58, 'panic'], [64.0, 'determined', { mouth: 'grin' }], [65.0, 'surprised', { eyes: 'wide' }], [66.4, 'dazed', { eyes: 'spiral' }]]), view: charge > 0 && fly <= 0 ? 'side' : 'q', walk: charge > 0 && fly <= 0 ? t * 8 : undefined, lance: charge > 0 && fly <= 0 ? 1.4 : undefined, rot, noShadow: fly > 0 || landed, boilKey: 'lint' });
+      burst(TX - 140, TFY - 160, 120, (t - 65.0) / .3, 8, '#FFFFFF', 7); }
     camEnd();
   }
 
@@ -107,8 +118,8 @@
   // "No. It's my cape. I look heroic." "You look like laundry." He gives it up: the cape flutters to the troll, opens two button
   // eyes: the two socks run to each other in slow motion, hearts. Pumpkin, cape-less, shivers: "I miss my laundry."
   function s06(t) {
-    const give = seg(t, 114.0, 115.4), slow = t > 115.4 && t < 123.5;
-    if (t > 104.6 && t < 108) camC(560, 2.0); else if (t > 108 && t < 114) camC(640, 1.6); else if (slow) camC(TX - 60, 1.5); else if (t > 123.5) camC(600, 1.8); else camC(TX, 1.5);
+    const give = seg(t, 114.0, 115.4), slow = t > 115.4 && t < 119.6;
+    if (t > 104.6 && t < 108) camC(560, 2.0); else if (t > 108 && t < 114) camC(640, 1.6); else if (slow) camC(TX - 60, 1.5); else if (t > 119.6 && t < 123.5) camC(420, 1.9); else if (t > 123.5) camC(560, 1.7); else camC(TX, 1.5);
     canyon(t);
     const tears = t < 115 ? 1 : 0;
     // the troll and, from 115.4, his twin (the cape) running to him and hugging
@@ -118,11 +129,15 @@
     if (t > 120.6 && t < 126) for (let i = 0; i < 5; i++) { const k = frac(t * .6 + i / 5); paint(heartPts(TX - 190 + Math.sin(k * 6 + i) * 40, BR.deck - 260 - k * 260, 22 * (1 - k * .4)), { wash: '#E2848C', washOp: 255 * (1 - k), ink: PAL.ink, sw: 1 }); }
     // the cape flies off Pumpkin to the troll (114-115.4), as a flat sock
     if (give > 0 && give < 1) { const p = arcPt([600, HEAD + 120], [TX - 320, BR.deck - 60], 200, ease(give)); push(); translate(p[0], p[1]); rotate(give * 6); sockFlat(0, 0, 0); pop(); }
-    const cape = t < 114.0, shiver = t > 123.5 ? Math.sin(t * 60) * .02 : 0;
-    hero(600, TFY, { ...faces(t, [[100, 'sheepish', { lookX: 1 }], [106.4, 'neutral', { lookX: 1 }], [107, 'surprised', { lookX: -1 }], [108.4, 'determined', { mouth: 'flat' }], [112.6, 'embarrassed'], [114, 'sheepish', { lookX: 1 }], [116, 'happy', { blush: .6 }], [123.5, 'soggy', { lid: .4 }]]),
+    const cape = t < 114.0, shiver = t > 123.5 && t < 127.4 ? Math.sin(t * 60) * .02 : 0;
+    hero(600, TFY, { ...faces(t, [[100, 'sheepish', { lookX: 1 }], [106.4, 'neutral', { lookX: 1 }], [107, 'surprised', { lookX: -1 }], [108.4, 'determined', { mouth: 'flat' }], [112.6, 'embarrassed'], [114, 'sheepish', { lookX: 1 }], [116, 'happy', { blush: .6 }], [123.5, 'soggy', { lid: .4 }], [127.4, 'happy', { blush: .7 }]]),
       view: 'q', aL: t > 108.2 && t < 112.4 ? .4 : -1.1, aR: t > 123.5 ? -.2 + Math.sin(t * 50) * .05 : .4, rot: shiver, who: 'pumpkin' }, t, cape);
-    if (t > 123.5) for (let i = 0; i < 3; i++) inkLine([[560 + i * 40, HEAD + 40], [565 + i * 40, HEAD + 10]], 2.5, '#BFE4F2', 'ink', 0);   // shiver lines
-    mouse(360, TFY, { ...faces(t, [[100, 'sheepish', { lookX: 1 }], [106, 'deadpan', { lookX: 1 }], [112.4, 'deadpan', { lookX: 1, lid: .6 }], [116, 'happy', { eyes: 'happy' }], [123.5, 'deadpan', { lookX: 1 }]]), view: 'q', aR: t > 106 && t < 108 ? 1.0 : -.6, who: 'pip' });
+    if (t > 123.5 && t < 127.4) for (let i = 0; i < 3; i++) inkLine([[560 + i * 40, HEAD + 40], [565 + i * 40, HEAD + 10]], 2.5, '#BFE4F2', 'ink', 0);   // shiver lines
+    const honk = t > 120.4 && t < 121.4, wipe = t > 119.6 && t < 120.4, giveBunny = seg(t, 126.4, 127.4);
+    mouse(360, TFY, { ...faces(t, [[100, 'sheepish', { lookX: 1 }], [106, 'deadpan', { lookX: 1 }], [112.4, 'deadpan', { lookX: 1, lid: .6 }], [116, 'happy', { eyes: 'happy' }], [119.6, 'sheepish', { eyes: 'squeeze', mouth: 'wobble' }], [121.6, 'happy', { eyes: 'happy' }], [123.5, 'deadpan', { lookX: 1 }], [126.2, 'happy']]), view: 'q',
+      aR: t > 106 && t < 108 ? 1.0 : wipe || honk ? 1.3 : giveBunny > 0 && giveBunny < 1 ? .6 : -.6, aL: honk ? 1.3 : -.6, sq: honk ? .1 * Math.abs(Math.sin(t * 20)) : 0, scarfWind: honk ? .8 : 0, who: 'pip' });
+    if (honk) for (let i = 0; i < 3; i++) { const k = frac((t - 120.4) * 2 + i / 3); inkLine([[420 + k * 80, HEAD + 150 - i * 20], [450 + k * 110, HEAD + 140 - i * 20]], 3, '#FFFFFF', 'ink', 0); }   // the HONK
+    if (t > 126.2) { const p = giveBunny < 1 ? arcPt([420, TFY], [600, HEAD + 210], 160, ease(giveBunny)) : [600, HEAD + 210]; dustBunny(p[0], p[1], U * (giveBunny < 1 ? .9 : 1.1), { ...face('happy', { eyes: 'happy' }), seed: 3, sq: giveBunny >= 1 ? .45 : 0, noShadow: true, boilKey: 'scarfb' }); }   // the dust-bunny scarf
     camEnd();
   }
 
@@ -171,7 +186,10 @@
       for (let i = 0; i < 14; i++) { const y = ((i * 180 - wall) % 2520 + 2520) % 2520 - 720; paint(rectPts(0, y, 260, 90), { wash: '#2A2440', ink: null }); paint(rectPts(W - 260, y + 90, 260, 90), { wash: '#2A2440', ink: null }); }
       for (let i = 0; i < 10; i++) { const x = 300 + hash(i) * 1320, y = frac(hash(i + 3) + t * 2.5) * 1400 - 200; inkLine([[x, y], [x, y - 220]], 3, '#FFFFFF', 'ink', 0); }
       glow(960, 1200, 700, SODA, .4 * k);
-      pumpkin(960, 700 + Math.sin(t * 3) * 30, U * 1.1, { ...faces(t, [[163.4, 'panic', { mouth: 'O' }]]), crown: true, rot: Math.sin(t * 2) * .3, aL: 1.3 + Math.sin(t * 20) * .2, aR: 1.3 + Math.cos(t * 20) * .2, talk: .8, noShadow: true, boilKey: 'pk' });
+      const calm = t > 165.6 && t < 167.6, eat = t > 165.6 && t < 166.4;
+      if (t > 164.6 && t < 165.6) crackerP(lerp(1500, 1000, seg(t, 164.6, 165.6)), lerp(1100, 560, seg(t, 164.6, 165.6)), t * 6, 1.2);
+      pumpkin(960, 700 + Math.sin(t * 3) * 30, U * 1.1, { ...faces(t, [[163.4, 'panic', { mouth: 'O' }], [165.4, 'greedy', { lookX: 1 }], [165.6, 'munching'], [166.4, 'happy', { blush: .4 }], [167.6, 'surprised', { eyes: 'wide', pupil: 0 }], [168.0, 'panic', { mouth: 'O' }]]), crown: true, rot: calm ? 0 : Math.sin(t * 2) * .3,
+        aL: calm ? -.9 : 1.3 + Math.sin(t * 20) * .2, aR: calm ? (t > 166.4 ? .9 : .3) : 1.3 + Math.cos(t * 20) * .2, armR: t > 166.4 && t < 167.6 ? thumbUp : undefined, talk: eat ? .3 * Math.max(0, Math.sin(t * 22)) : calm ? 0 : .8, noShadow: true, boilKey: 'pk' });
       camEnd(); return;
     }
     // the swamp
@@ -188,6 +206,7 @@
     if (t > 174.6) { const k = backOut(seg(t, 174.6, 175.0)); push(); translate(1500, 70 - (1 - k) * 80); scale(.5, .5); pip(0, 0, 40, { ...face('surprised', { lookY: 1 }), noShadow: true, boilKey: 'pipt' }); pop(); }
   }
 
+  const thumbUp = (u, sw) => { paint(rrPts(-.1 * u, -.55 * u, .9 * u, .5 * u, .25 * u), { wash: PUMPKIN_COL.col, ink: PAL.ink, sw: sw * .7 }); };
   const heartPts = (x, y, r) => { const P = []; for (let i = 0; i < 24; i++) { const a = i / 24 * TAU; P.push([x + r * 16 * Math.pow(Math.sin(a), 3) / 16, y - r * (13 * Math.cos(a) - 5 * Math.cos(2 * a) - 2 * Math.cos(3 * a) - Math.cos(4 * a)) / 16]); } return P; };
   const at = fn => t => fn(t - INTRO);
   shots([[0, t => introTitles(t, 'CHAPTER 2', 'THE SOCK BRIDGE')], [5, at(s01)], [19, at(s02)], [43, at(s03)], [63, at(s04)], [73, at(s05)], [105, at(s06)], [135, at(s07)], [165, at(s08)],

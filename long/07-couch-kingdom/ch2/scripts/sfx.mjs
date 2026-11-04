@@ -57,6 +57,12 @@ P(169.4, 1.2, splash(36), { gain: 1.2 }); P(169.45, .8, thud(70, .2, 37), { gain
 for (let t = 170.6; t < 176; t += .5) P(t, .08, sweep(x => 1200 + 2000 * x, x => env(x, .001, .03) * .3), { gain: .3 });
 P(174.4, .1, pop(1400, 38), { gain: .5 });
 P(176.4, .8, thud(50, .4, 39), { gain: .6 });
+P(36.6, .3, chomp(70), { gain: .7 });
+P(54.6, 1.0, ratchet(1.0, 71), { gain: .5 }); P(55.6, 1.4, motor(1.4, 320), { gain: .6 });
+for (let t = 64.2; t < 65.0; t += .12) P(t, .05, tap(1800, 120, t * 10), { gain: .3 }); P(65.0, .3, (() => { const c = clang(1300); return x => c(x) * .5; })(), { gain: .7 }); P(65.0, 1.4, whoosh(1.4, 600, 2200, 72), { gain: .5 }); P(66.4, .3, (() => { const c = clang(900); return x => c(x) * .5; })(), { gain: .6 });
+P(120.4, 1.0, (() => { const n = noise(73); return t => (Math.sign(Math.sin(TAU * 140 * t)) * .4 + n() * .2) * fade(t, 1.0, .02, .2) * .5; })(), { gain: .6 });
+P(126.4, .3, boing(300, .3), { gain: .4 }); P(127.4, .15, eep(2800), { gain: .4 });
+P(165.6, .4, chomp(74), { gain: .7 }); P(166.4, .3, sparkle(75), { gain: .4 }); P(167.6, .3, sweep(t => 600 + 1500 * t, t => env(t, .005, .1) * .3), { gain: .5 });
 put(186.0, .4, boing(200, .4), { gain: .4 });
 tr.reverb(.16, .9);
 tr.write('out/audio/sfx.wav');
