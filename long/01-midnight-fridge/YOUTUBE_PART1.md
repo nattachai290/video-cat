@@ -1,6 +1,6 @@
 # YouTube upload: The Midnight Fridge · Part 1
 
-Video for the **Short**: `out/short_58.mp4` (vertical 1080x1920, 58 s, NEXT: PART 2 badge). 16:9 version: `out/part1_next_58.mp4` (not a Short) · Cover: `out/cover.png` (1280x720, for the 16:9 upload)
+Video for the **Short**: `out/short_58.mp4` (vertical 1080x1920, 58 s, NEXT: PART 2 badge). 16:9 version: `out/part1_next_58.mp4` (not a Short) · Short cover: `out/cover_short.png` (1080x1920; `--page=short.html --loop=coverV --still=0.6`) · 16:9 cover: `out/cover.png` (1280x720)
 
 Note: a horizontal (16:9) video does not count as a Short on YouTube; it is posted as a normal video (Shorts must be vertical or square).
 

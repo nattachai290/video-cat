@@ -32,6 +32,7 @@ letter = (txt, x, y, size, col, o = {}) => {
 subs = () => {};                         // the 16:9 subtitles are replaced by vsubs() below
 const _frame = frame;
 frame = t => {
+  if (window.LOOP === LOOPS.coverV) { VRAW = true; _frame(t); VRAW = false; return; }
   VCX = clamp(vcx(t), 400, 1520);
   _frame(t);
   VRAW = true; CTX.save(); CTX.setTransform(1, 0, 0, 1, 0, 0);
@@ -98,3 +99,33 @@ function vteaser(t) {
   CTX.fillStyle = '#2B2233'; CTX.font = '800 64px "Baloo 2", sans-serif'; CTX.textAlign = 'center'; CTX.textBaseline = 'middle';
   CTX.fillText('NEXT: PART 2 ▶', 0, 4); CTX.restore();
 }
+// Vertical cover for the Short (1080x1920), drawn straight onto the tall canvas (no crop, no bands).
+// Render: --page=short.html --loop=coverV --still=0.6 --out=out/cover_short.png
+LOOPS.coverV = t => {
+  paint(rectPts(-10, -10, VW + 20, VH + 20), { wash: '#1B1A40', ink: null });
+  for (let i = 0; i < 90; i++) paint(ellPts(hash(i) * VW, hash(i + 3) * 1300, 2 + 2.5 * hash(i + 5), 2 + 2.5 * hash(i + 5), 6), { wash: '#FFFFFF', washOp: 110, ink: null });
+  paint(rectPts(-10, 1560, VW + 20, 400), { wash: '#3A3560', ink: null });
+  // the open fridge and its glowing cake, top right, behind
+  paint(rrPts(760, 560, 360, 700, 30), { wash: '#E9EEF4', sw: 3 });
+  paint(rrPts(780, 760, 320, 460, 18), { wash: '#EAF6FF', sw: 2 });
+  glow(930, 900, 330, '#DDF2FF', .65);
+  cakeSlice(915, 960, 1.15, true, 1);
+  // Pumpkin, the "lamp", big in the middle
+  glow(540, 1090, 330, '#FFF3B0', .5);
+  pumpkin(540, 1600, 60, { ...face('neutral', { eyes: 'wide', lid: 0, pupil: .3, lookX: 1, mouth: 'wobble' }), aL: -1.5, aR: -1.5, mustache: true, boilKey: 'cv',
+    draw: (u, sw) => shadeHook(0)(u, sw) });
+  // the vacuum's searchlight from bottom right onto his face
+  robotVac(910, 1660, 1.15, .6, { led: 'red' });
+  glow(1000, 1625, 60, '#FF4A4A', .7);
+  // the beam ends in a round pool of light over his face (no hard straight edge)
+  { const pts = [[890, 1615]]; for (let d = 326; d >= 146; d -= 6) { const a = d * Math.PI / 180; pts.push([540 + 205 * Math.cos(a), 1100 + 170 * Math.sin(a)]); }
+    paint(pts, { wash: '#FFF3B0', washOp: 55, ink: null }); } glow(540, 1090, 260, '#FFF3B0', .45);
+  paint([[790, 1050], [810, 1005], [830, 1050], [810, 1075]], { wash: '#9CD6F5', sw: 2 });   // sweat drop
+  // Pip behind a tiny plant, bottom left
+  pip(140, 1620, 54, { ...face('panic', { eyes: 'squeeze' }), view: 'q', aL: 1.2, aR: 1.2, boilKey: 'cpv', draw: ninjaMask(1) });
+  pottedPlant(170, 1640, .85);
+  letter("I'M A LAMP.", VW / 2, 250, 160, '#FFFFFF', { font: '800 160px "Baloo 2", sans-serif', stroke: '#2B2233', rot: -.04, screen: true });
+  paint(rrPts(VW / 2 - 150, 380, 300, 96, 48), { wash: '#F2C14E', sw: 3 });
+  letter('PART 1', VW / 2, 430, 64, '#2B2233', { font: '800 64px "Baloo 2", sans-serif', screen: true });
+};
+LOOPS.coverV.len = 2;
