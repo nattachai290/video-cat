@@ -37,6 +37,8 @@ P(46.2, .5, boing(240, .5), { gain: .5 });
 for (let t = 51; t < 52.6; t += .18) P(t, .05, tap(1800, 120, t * 10), { gain: .35 });
 P(56.1, .5, sweep(t => 900 + 600 * t, t => fade(t, .5, .1, .02) * .15), { gain: .5 }); P(56.5, .5, poof(16), { gain: .8 });
 P(60.2, .15, pop(1500, 17), { gain: .7 }); P(60.3, .5, squeak(1100, .4, 18), { gain: .3 });
+P(62.2, 1.2, sweep(t => 400 + 900 * t / 1.2, t => fade(t, 1.2, .05, .1) * .12), { gain: .5 });   // the tilt up: a rising whistle
+P(64.6, .5, (() => { const c = clang(1100); return t => c(t) * .5; })(), { gain: .7 }); P(64.6, .3, thud(120, .08, 60), { gain: .6 }); P(65.1, .4, boing(260, .4), { gain: .5 });   // CLONK, boing up
 // the town pops out & kneels (a cascade of eeps), the lance drops
 P(65.6, .3, (() => { const c = clang(900); return t => c(t) * .4; })(), { gain: .5 });
 for (let i = 0; i < 11; i++) P(66.6 + i * .2, .1, eep(2400 + (i % 4) * 300), { gain: .2 });

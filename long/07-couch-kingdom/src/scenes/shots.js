@@ -162,7 +162,8 @@
   function s07(t) {
     const drop = 65.6;
     const z = t < 66.4 ? 1.9 : lerp(1.9, 1.15, ease(seg(t, 66.4, 67.6))), cx0 = t < 66.4 ? 760 : lerp(760, 960, ease(seg(t, 66.4, 67.6)));
-    if (t > 72.4 && t < 75.4) camT(1110, 2.0); else if (t >= 75.4) camT(1000, 1.7); else camT(cx0, z);
+    const tilt = t < 64.0 ? ease(seg(t, 62.2, 63.4)) * (1 - ease(seg(t, 63.6, 64.0))) : 0;
+    if (t > 72.4 && t < 75.4) camT(1110, 2.0); else if (t >= 75.4) camT(1000, 1.7); else if (t < 64.0) camT(lerp(700, 930, tilt), 2.0, [0, 0], -40 + tilt * 190); else camT(cx0, z);
     townSquare(t, { squash: 1 });
     crowd(t, { kneel: true });
     const turn = t > 70.4 && t < 72.2;
@@ -179,7 +180,8 @@
       if (off > 0 && off < 1) { const p = arcPt([890, TFY - 20], [PIPX - 4, TFY - 4.2 * U], 40, off); paint(rrPts(p[0] - 40, p[1] - 14, 80, 28, 8), { wash: '#C8363F', ink: PAL.ink, sw: 1.2 }); }
     }
     const kneel = seg(t, 67.0, 67.4);
-    sirLint(640, TFY, U * 1.1, { ...faces(t, [[62, 'surprised', { lookY: -1, lookX: 1 }], [64.4, 'surprised', { lookY: -1, eyes: 'wide', pupil: .2 }], [66.2, 'happy', { blush: .6 }]]), view: 'q', sq: .2 * kneel, rot: .25 * kneel, lance: t < drop ? 1.5 : 1.5 + 1.4 * easeIn(seg(t, drop, drop + .4)), who: 'lint', boilKey: 'lint' });
+    const lean = t < 64.6 ? -.9 * easeIn(seg(t, 62.2, 64.6)) - .7 * easeIn(seg(t, 64.2, 64.6)) : t < 65.1 ? -1.6 : -1.6 * (1 - backOut(seg(t, 65.1, 65.4)));
+    sirLint(640, TFY, U * 1.1, { ...faces(t, [[62, 'surprised', { lookY: -1, lookX: 1 }], [64.6, 'dazed', { eyes: 'squeeze' }], [65.2, 'surprised', { lookY: -1, eyes: 'wide', pupil: .2 }], [66.2, 'happy', { blush: .6 }]]), view: 'q', sq: .2 * kneel, rot: .25 * kneel + lean, lance: t < drop ? 1.5 : 1.5 + 1.4 * easeIn(seg(t, drop, drop + .4)), who: 'lint', boilKey: 'lint' });
     camEnd();
   }
 
