@@ -228,7 +228,7 @@ function pumpkin(x, y, u, o = {}) {
     const dx = px - cx, dy2 = py - cy, k = 1 + amt * (i % 2 ? .1 : -.04) * (1 + .5 * hash(i * 7.3)); return [cx + dx * k, cy + dy2 * k];
   });
 
-  if (side) { pumpkinSide(u, o, sw, { col, dk, lt, C, fat, wet, puff, belly, talk, rs, furry }); pop(); rs('after'); return; }
+  if (side) { pumpkinSide(u, o, sw, { col, dk, lt, C, fat, wet, puff, belly, talk, rs, furry, cu }); pop(); rs('after'); return; }
 
   const tw = (o.tailWag ?? .4), ts = Math.sin(T * (1.4 + tw * 3)) * (.25 + tw * .5);
   // tail (behind): one ribbon curling up on the far side
