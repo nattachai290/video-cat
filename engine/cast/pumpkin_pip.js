@@ -245,7 +245,7 @@ function pumpkin(x, y, u, o = {}) {
   // far arm (3/4 view hides most of it behind the body)
   rs('armFar');
   const shY = -6.4 * u, shX = 3.15 * u * fat;
-  if (q) castArm(-shX + q * .9 * u, shY, o.aL ?? -1.14, -1, 3.0 * u, 1.4 * u, mixCol(col, dk, .35), sw, o.armL, u);
+  if (q) castArm(-shX + q * .35 * u, shY, o.aL ?? -1.14, -1, 3.0 * u, 1.4 * u, mixCol(col, dk, .35), sw, o.armL, u);   // the far arm: rooted far enough out that its paw shows past the body
   // body
   rs('body');
   const bcx = q * .4 * u, bcy = -3.9 * u, brx = 4.3 * u * fat, bry = 3.7 * u * (1 - belly * .02);
@@ -268,9 +268,13 @@ function pumpkin(x, y, u, o = {}) {
     if (s < 0) for (const by of [-6.3, -5.0]) paint(ellPts((s * (gap * .55 + .5) + off) * u, by * u, .28 * u, .28 * u, 10), { wash: C.button, ink: PAL.ink, sw: sw * .5 });
   }
   // near arm(s)
+  // near arms. A raised arm (angle > .8) would vanish behind the big head, so it is drawn after the head instead.
   rs('arms');
-  if (!q) castArm(-shX, shY, o.aL ?? -1.14, -1, 3.0 * u, 1.4 * u, col, sw, o.armL, u);
-  castArm(shX + q * .5 * u, shY, o.aR ?? -1.14, 1, 3.0 * u, 1.4 * u, col, sw, o.armR, u);
+  const upL = !q && (o.aL ?? -1.14) > .8, upR = (o.aR ?? -1.14) > .8;
+  const armL = () => castArm(-shX, shY, o.aL ?? -1.14, -1, 3.0 * u, 1.4 * u, col, sw, o.armL, u);
+  const armR = () => castArm(shX + q * .5 * u, shY, o.aR ?? -1.14, 1, 3.0 * u, 1.4 * u, col, sw, o.armR, u);
+  if (!q && !upL) armL();
+  if (!upR) armR();
   // head
   rs('head');
   push(); translate(q * .55 * u, -8.5 * u + puff * -.4 * u);
@@ -297,6 +301,7 @@ function pumpkin(x, y, u, o = {}) {
   rs('face');
   pumpkinFace(u, o, sw, fx, q, { col, lt, C, talk, wet, cu, hx, hy });
   pop();
+  rs('armsUp'); if (upL) armL(); if (upR) armR();
   rs('draw'); if (o.draw) o.draw(u, sw);
   pop();
   rs('emote'); if (o.emote && typeof emote === 'function') emote(o.emote, x + (o.flip ? -1 : 1) * 3.8 * u, y + dy - 12.6 * u, u * .9, o.emoteK ?? 1, o.emoteAge ?? T);

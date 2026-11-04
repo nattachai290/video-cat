@@ -324,6 +324,7 @@
     puffCloud(PKX, TFY - 60, 260, t - 153.1);
     pip(PIPX + 120, TFY, U, { ...faces(t, [[130, 'deadpan', { lookX: -1 }], [132.9, 'surprised', { eyes: 'wide' }], [133.4, 'deadpan', { lid: .7 }], [139, 'deadpan', { lookX: -1, browUp: .5 }], [153.8, 'deadpan', { lookX: 0, lookY: 0 }]]), view: t > 153.8 ? 'front' : 'q', flip: t < 153.8, aL: -.6, aR: -.6, boilKey: 'pip' });
     camEnd();
+    if (t > 154.7) brushWipe((t - 154.7) / .6);   // wipe to the town gate
   }
 
   // 1-11 · 155–180 · BOOM... BOOM. The lamps sway. A rumbling, sucking roar. Two huge red eyes far off in the dark. "The Dragon
@@ -331,14 +332,19 @@
   // snack one." The red glare sweeps over them... and turns away. Title card: CHAPTER 2 · THE SOCK BRIDGE.
   function s11(t) {
     if (t > 176.4) { titleCard(t, 'CHAPTER 2', 'THE SOCK BRIDGE', ease(seg(t, 176.6, 177.2))); return; }
-    const thumps = [155.4, 156.8, 158.0], sh = thumps.reduce((a, b) => { const v = shake(t, b, 16, .4); return [a[0] + v[0], a[1] + v[1]]; }, [0, 0]);
+    const thumps = [157.0, 157.9, 158.6], sh = thumps.reduce((a, b) => { const v = shake(t, b, 16, .4); return [a[0] + v[0], a[1] + v[1]]; }, [0, 0]);
     const close = t > 165.4;
-    if (close) camT(1230, 1.9, sh); else camT(1000, 1.15, sh, 60);
+    // 155-156.8: the victory parade marches everyone from the palace to the town gate (camera tracks with them), cheering
+    const walk = 1 - ease(seg(t, 155, 156.8)), off = -900 * walk;
+    if (close) camT(1230, 1.9, sh); else camT(1000 + off, 1.15, sh, 60);
+    if (walk > 0) { push(); translate(off, 0); }
     const sweep = t > 171.2 && t < 174.2 ? Math.sin(seg(t, 171.2, 174.2) * Math.PI) : 0;
     townGate(t, { dark: .55 * seg(t, 158, 160) * (1 - sweep * .6) });
     dragonEyes(1700 - (t > 174.5 ? (t - 174.5) * 600 : 0), TFY - 330, seg(t, 158.6, 159.4) * (t > 175 ? 1 - seg(t, 175, 176) : 1), t);
     if (sweep > 0) paint([[1700, TFY - 330], [600 + sweep * 300, 1100], [1300 + sweep * 300, 1100]], { wash: '#FF4A4A', washOp: 70 * sweep, ink: null });
-    crowd(t, { flee: 160.8 });
+    const marching = walk > 0, bob = i => marching ? -Math.abs(Math.sin(t * 10 + i)) * 12 : 0;
+    if (marching) speedLines(800, TFY - 300, 1, t, 4, 160, 300);
+    crowd(t, { flee: 160.8, cheer: marching });
     queenButton(560 - 900 * easeIn(seg(t, 161, 161.8)), TFY, U, { ...faces(t, [[155, 'surprised'], [160.3, 'panic', { mouth: 'O' }]]), who: 'queen', boilKey: 'queen' });
     sirLint(700 - 900 * easeIn(seg(t, 161.3, 162.1)), TFY, U * 1.1, { ...face('panic'), view: 'q', flip: true, noShield: true, boilKey: 'lint' });
     // the dive: Pumpkin hides behind Pip (Pip in front, tiny; Pumpkin crouched behind, peeking over)
@@ -349,10 +355,12 @@
       sockCape(X, TFY, U, { wind: .3 }); pumpkin(X, TFY, U, { ...face(one ? 'panic' : 'sheepish', { lookX: -1 }), crown: true, aL: one ? -1.2 : 1.3, aR: one ? -1.2 : 1.3, armR: excalifork(0), sq: .05 + Math.sin(t * 40) * .02, boilKey: 'pk' });
       if (one) for (let k = 0; k < 14; k++) paint(ellPts(1420, TFY - 20 - k * 38, 70, 20, 18), { wash: CK.coin, ink: PAL.ink, sw: 1.3 });
       else dustBunny(X + 20, HEAD + 70, U * 1.1, { ...face('surprised'), seed: 3, noShadow: true, boilKey: 'hb' });
-    } else if (!hid) { const p = arcPt(t < 162.4 ? [PKX, TFY] : [1250, TFY], [px + 170, TFY], 160, ease(dive)); sockCape(p[0], p[1], U, { wind: .6 }); pumpkin(p[0], p[1], U, { ...faces(t, [[155, 'surprised', { lookX: 1 }], [158.6, 'panic', { lookX: 1 }]]), crown: true, aR: 1.2, armR: excalifork(0), aL: 1.2, sq: dive > 0 ? -.2 : 0, noShadow: dive > 0, boilKey: 'pk' }); }
+    } else if (!hid) { const p = arcPt(t < 162.4 ? [PKX, TFY] : [1250, TFY], [px + 170, TFY], 160, ease(dive)); sockCape(p[0], p[1], U, { wind: .6 }); pumpkin(p[0], p[1] + bob(1), U, { ...faces(t, [[155, 'happy', { mouth: 'grin' }], [157, 'surprised', { lookX: 1 }], [158.6, 'panic', { lookX: 1 }]]), crown: true, aR: 1.2, armR: excalifork(0), aL: 1.2, sq: dive > 0 ? -.2 : 0, noShadow: dive > 0, boilKey: 'pk' }); }
     else { sockCape(px + 170, TFY, U, { wind: .2 }); pumpkin(px + 170, TFY, U, { ...faces(t, [[165.5, 'panic', { lookX: 1 }], [167.6, 'sheepish', { lookX: -1, lookY: .6 }], [174.6, 'surprised', { lookX: 1 }], [176.4, 'sheepish', { lookX: 1 }]]), crown: true, sq: .2 + Math.sin(t * 40) * .02, aL: .4, aR: .4, armR: excalifork(0), who: 'pumpkin', boilKey: 'pk' }); }
-    pip(px, TFY, U, { ...faces(t, [[155, 'surprised', { lookX: 1 }], [163.4, 'deadpan', { lookX: 1, lookY: -.5 }], [164.6, 'annoyed', { lookY: -1, lookX: 1 }], [169.4, 'deadpan', { lookY: -1 }]]), view: t > 164 ? 'q' : 'front', flip: true, aL: -.6, aR: -.6, who: 'pip', boilKey: 'pip' });
+    pip(px, TFY + bob(3), U, { ...faces(t, [[155, 'happy'], [157, 'surprised', { lookX: 1 }], [163.4, 'deadpan', { lookX: 1, lookY: -.5 }], [164.6, 'annoyed', { lookY: -1, lookX: 1 }], [169.4, 'deadpan', { lookY: -1 }]]), view: t > 164 ? 'q' : 'front', flip: true, aL: -.6, aR: -.6, who: 'pip', boilKey: 'pip' });
+    if (walk > 0) pop();
     camEnd();
+    if (t < 155.3) brushWipe(.5 + (t - 155) / .6);
   }
 
   // every shot is written in chapter time (0 = the cold open); the 5-second opening titles come first, so shift by INTRO

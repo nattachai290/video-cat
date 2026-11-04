@@ -67,7 +67,8 @@ P(142.0, 1.4, sparkle(40), { gain: .4 }); P(143.3, .4, pop(1100, 41), { gain: .8
 P(150.0, 2.4, (() => { const n = noise(43), bp = new Biquad().set('bp', 1200, 1); return t => bp.run(n()) * fade(t, 2.4, .1, .3) * .7; })(), { gain: .5 });
 P(152.6, .5, sweep(t => 600 - 400 * t / .5, t => fade(t, .5, .02, .05) * .2), { gain: .5 }); P(153.1, .6, poof(44), { gain: .9 }); P(153.25, .4, thud(80, .15, 45), { gain: .9 });
 // the Dragon: BOOM... BOOM... the sucking roar, everyone flees, the hides, the sweep
-for (const t of [155.4, 156.8, 158.0]) P(t, .9, thud(42, .45, Math.round(t)), { gain: 1.2 });
+P(155.0, 1.8, (() => { const n = noise(50), bp = new Biquad().set('bp', 1200, 1); return t => bp.run(n()) * fade(t, 1.8, .1, .3) * .7; })(), { gain: .5 }); for (let t = 155.0; t < 156.8; t += .25) P(t, .05, tap(1800, 120, t * 10), { gain: .25 });   // the parade
+for (const t of [157.0, 157.9, 158.6]) P(t, .9, thud(42, .45, Math.round(t)), { gain: 1.2 });
 P(158.6, 18, (() => { const r = rumble(18), s = suck(18); return t => r(t) + s(t) * .6; })(), { gain: .7 });
 for (let i = 0; i < 10; i++) P(160.8 + i * .08, .12, eep(2600 + (i % 3) * 400), { gain: .2 });
 P(162.4, .3, whoosh(.3, 600, 2000, 46), { gain: .5 }); P(163.9, .3, whoosh(.3, 600, 2000, 47), { gain: .5 }); P(165.0, .4, whoosh(.4, 500, 1800, 48), { gain: .5 });

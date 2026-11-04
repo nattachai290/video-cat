@@ -41,8 +41,9 @@ bars(C + 80, C + 94.6, 'fanfare', 0);       // the parade, the palace   (silence
 bars(C + 97.6, C + 106, 'town', 0);
 bars(C + 108, C + 119.6, 'march', 0);       // the ceremony
 bars(C + 124.4, C + 127.2, 'march', 0);     // (silence for the crown gag and the trip)
-bars(C + 130, C + 152.4, 'fanfare', 5);     // magic, cheers   (silence at the buckle)
-bars(C + 155, C + 176, 'dark', 0);          // the Dragon
+bars(C + 130, C + 152.4, 'fanfare', 5);
+bars(C + 154.4, C + 156.8, 'march', 5);     // the victory parade (cut off by the first BOOM)     // magic, cheers   (silence at the buckle)
+bars(C + 157, C + 176, 'dark', 0);          // the Dragon
 bars(185, 205, 'town', 0);                  // End Screen
 tr.reverb(.22, 1);
 tr.write('out/audio/music.wav');
