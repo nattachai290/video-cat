@@ -4,7 +4,7 @@
 Run from a story folder after voice.py:
     python3 ../../engine/timing.py
 
-Reads STORYBOARD.md (shot rows "| 03 | 16–23 | ..."), scripts/lines.json (id, who, shot, t) and the takes in
+Reads STORYBOARD.md (shot rows "| 03 | 16–23 | ..." for Shorts, "| 1-2 | 6–14 | ..." / "| E-1 | 180–200 | ..." for long videos), scripts/lines.json (id, who, shot, t) and the takes in
 out/voice/raw/. Speech length is measured without the silence Piper adds at the start and end.
 For each line it prints: start, speech length, end, the shot's end, and the gap before the next line starts.
 Flags: OVER (runs past its shot or into the next line), TIGHT (less than 0.4 s to breathe or react after it).
@@ -32,7 +32,7 @@ def speech_span(path, thresh=0.02):
 
 def shots():
     out = {}
-    for m in re.finditer(r"^\|\s*(\d{2})\s*\|\s*([\d.]+)\s*[–-]\s*([\d.]+)\s*\|", (ROOT / "STORYBOARD.md").read_text(), re.M):
+    for m in re.finditer(r"^\|\s*(\d{2}|[0-9E]-\d+)\s*\|\s*([\d.]+)\s*[–-]\s*([\d.]+)\s*\|", (ROOT / "STORYBOARD.md").read_text(), re.M):
         out[m[1]] = (float(m[2]), float(m[3]))
     return out
 

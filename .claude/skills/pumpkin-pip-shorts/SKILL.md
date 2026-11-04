@@ -22,6 +22,19 @@ reusable. Reply to the user in Thai; write code, comments and dialogue in Englis
   `RUNBOOK.md` with a copy-paste prompt. Short renders (sheets, a 1-minute MP4) are fine to run directly.
 - **Fixes: stills first.** When the user points out a problem (or you change a shot), send still frames of exactly that
   spot (`--sheet` around the times involved, `--w=540`) and wait for their OK before rendering the full video.
+- **USER RULE: check it yourself before sending; the user should never be the one to find the mistake.** Past misses:
+  the moustache stayed still when the head turned, and the headband looked like a unibrow. Before any still or video
+  goes to the user, go through:
+  1. Zoom in (crop, at least 2x) on every new prop or costume: does it really look like the thing it's meant to be?
+  2. Look at it in every view used in the story (front / q / side): does it move with the head or body?
+  3. Watch the motion in a `--sheet` every ~0.1 s: does anything float, drift away, poke through or disappear?
+  4. Do the faces and subtitles read at phone size?
+  If any answer is "not sure", fix it first and check again. Only then send it.
+- **USER RULE: never drag the story out; boring is the worst outcome.** Every shot needs something new: a gag, a
+  reaction, a strong sound. No walking in, no waiting, no explaining, nothing held over 3 s. Cut every line or shot that
+  isn't funny or doesn't move the story. Before sending, watch it as a viewer: where would you swipe away? Cut there.
+- **Zoom in before sending.** Crop and enlarge any new costume or prop (`--still` at full width, then crop) and check it
+  really reads as the thing (a headband once looked like a unibrow). Don't send a still you haven't looked at closely.
 - **Branch:** `claude/nice-heisenberg-5vtd6i`. Keep `PROGRESS.md` and the story's `STATUS.md` updated after each step.
 
 ## Folder layout
@@ -93,6 +106,16 @@ then replace STORYBOARD, lines.json, props.js, scenes, sfx.mjs, music.mjs.
   The `cute` dial changes only scale/blush/sparkle (not shape), so these rules still hold; head-fitted props (story 11's
   shark hoods) keep working because the hoods enclose a larger head, but check a still before a full render.
 
+- Costumes that sit on the face or head (moustache, headband) belong in the rig (`mustache`, `headband` options in
+  `pumpkin_pip.js`) so they turn with the head in front / q / side views. Never draw them in body space in a story.
+- `letter()` draws in world coordinates (it ignores a local push/translate): place text by hand.
+- Never run two renders that write to the same output file (the MP4 gets corrupted). Kill a stray render with
+  `ps aux | awk '/render_pw/ && !/awk/ {print $2}' | xargs kill`, not `pkill -f` (it can match and kill your own shell).
+- `render_pw.mjs` arguments cut at the second `=`: `--query=bigsubs=1` arrives as `bigsubs`, so use bare words.
+- A horizontal 16:9 clip is never a YouTube Short, even under 60 s: say so when the user wants one posted as a Short.
+  Shorts can't have End Screens; for "there's more", use a small "NEXT: PART 2" badge plus the Related video link.
+- Covers: `src/cover.js` with `LOOPS.cover`, render `--loop=cover --still=...`, then scale with ffmpeg (1280x720
+  long, 1080x1920 Shorts). One big readable joke line plus the characters' faces large; force-add `out/cover.png`.
 - `render.mjs`/p5.brush is the old watercolour engine (slow without a GPU). The flat engine renders ~50-110 ms/frame;
   a whole 52 s Short takes under a minute with `render_pw.mjs` (Playwright, no npm install on the cloud machine).
 - `drycheck.mjs` catches NaN geometry and runtime errors without a browser; run it before every render.

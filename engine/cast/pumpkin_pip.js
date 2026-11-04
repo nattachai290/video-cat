@@ -17,6 +17,7 @@
 //   who     'pumpkin' / 'pip': if src/dialog.js is loaded, the mouth opens with that character's voice (SPEAK)
 //   states  Pumpkin: belly 0..1 (full of pie), wet 0..1 (soaked, thin, fur flat), puff 0..1 (fur dried into a ball)
 //           Pip: scarfWind -1..1 (blows the scarf end), cracker (true: holds a cracker in the right paw)
+//   extras  Pumpkin: mustache (true | colour), headband (true | colour): face accessories that follow the view
 //   hooks   armL(u, sw), armR(u, sw): drawn at the paw, in arm space (+x along the arm); draw(u, sw): body space
 //   boil    boilKey: a stable id for this character's boil seeds (set it if characters come and go mid-shot)
 //   cute    0 (the old series look) .. 1 (chibi: bigger head and eyes, lower eyes, bigger ears, permanent soft blush,
@@ -292,7 +293,7 @@ function pumpkin(x, y, u, o = {}) {
   paint(head, { ink: PAL.ink, sw });
   // face
   rs('face');
-  pumpkinFace(u, o, sw, fx, q, { col, lt, C, talk, wet, cu });
+  pumpkinFace(u, o, sw, fx, q, { col, lt, C, talk, wet, cu, hx, hy });
   pop();
   rs('draw'); if (o.draw) o.draw(u, sw);
   pop();
@@ -317,6 +318,28 @@ function pumpkinFace(u, o, sw, fx, q, k) {
   paint([[fx - .32 * u, .42 * u + fy], [fx + .32 * u, .42 * u + fy], [fx, .72 * u + fy]], { wash: C.nose, ink: PAL.ink, sw: sw * .55 });
   push(); translate(fx, .72 * u + fy); castMouth(o.mouth || 'w', k.talk, 1.15 * u, sw); pop();
   for (const s of [-1, 1]) castWhiskers(fx + s * 1.05 * u, .95 * u + fy, s, 3.0 * u * (q && s < 0 ? .7 : 1), sw, k.wet * .8 + (o.mouth === 'frown' ? .3 : 0));
+  castAccessories(u, o, sw, fx, q, fy, k.hx, k.hy);
+}
+// Face accessories that must follow the face (front / 3/4): mustache (true or a colour), headband (a colour, tied at the back).
+function castAccessories(u, o, sw, fx, q, fy, hx = 3.35 * u, hy = 2.85 * u) {
+  if (o.headband) {
+    // A band round the forehead: on a round head it bows DOWN in the middle and its ends hug the head outline (clipped to
+    // the head), tied in a knot at the side (the back side in 3/4 view) with two tails that flap.
+    const c = o.headband === true ? '#262A33' : o.headband, cx = fx * .3, th = .62 * u;
+    const top = x => -2.95 * u + .5 * u * (1 - Math.min(1, ((x - cx) / hx) ** 2));   // centre lower than the ends
+    const P = []; for (let i = 0; i <= 16; i++) { const x = -hx * 1.1 + i / 16 * hx * 2.2; P.push([x, top(x)]); }
+    push(); CTX.beginPath(); ellPts(0, 0, hx * 1.01, hy * 1.01, 32).forEach(([x, y], i) => i ? CTX.lineTo(x, y) : CTX.moveTo(x, y)); CTX.closePath(); CTX.clip();
+    paint([...P, ...P.slice().reverse().map(([x, y]) => [x, y + th])], { wash: c, ink: PAL.ink, sw: sw * .8 });
+    inkLine(P.map(([x, y]) => [x, y + th * .45]), sw * .7, mixCol(c, '#FFFFFF', .25), 'ink', 0);   // a fold line, so it reads as cloth
+    pop();
+    const side = q ? -1 : 1, kx = side * hx * .93, ky = top(kx) + th * .5, fl = Math.sin(T * 6) * .22 * u;
+    for (const d of [-1, 1]) paint(ribbon([[kx, ky], [kx + side * 1.0 * u, ky + .35 * u * d + fl], [kx + side * 1.9 * u, ky + .55 * u * d - fl], [kx + side * 2.4 * u, ky + .35 * u * d + fl]], .42 * u, .18 * u), { wash: c, ink: PAL.ink, sw: sw * .6 });
+    paint(ellPts(kx, ky, .42 * u, .38 * u, 12), { wash: c, ink: PAL.ink, sw: sw * .7 });
+  }
+  if (o.mustache) {
+    const c = o.mustache === true ? '#262A33' : o.mustache, my = .66 * u + (fy || 0);
+    for (const s of [-1, 1]) paint(ribbon([[fx, my], [fx + s * .7 * u, my + .12 * u], [fx + s * 1.35 * u, my - .1 * u], [fx + s * 1.5 * u, my - .45 * u]], .42 * u, .16 * u), { wash: c, ink: PAL.ink, sw: sw * .5 });
+  }
 }
 
 // Pumpkin in profile, facing right: a long round body, the head at the front, four stubby legs (walk), the tail behind.
@@ -368,6 +391,8 @@ function pumpkinSide(u, o, sw, k) {
   paint([[2.5 * u, .2 * u], [2.85 * u, .3 * u], [2.62 * u, .55 * u]], { wash: C.nose, ink: PAL.ink, sw: sw * .5 });
   push(); translate(2.3 * u, .85 * u); scale(.6, 1); castMouth(o.mouth || 'w', talk, .7 * u, sw); pop();
   castWhiskersSide(1.55 * u, 1.1 * u, -1.6 * u, sw, wet * .8);   // whiskers sweep back
+  if (o.mustache) { const c = o.mustache === true ? '#262A33' : o.mustache; paint(ribbon([[2.45 * u, .7 * u], [2.0 * u, .82 * u], [1.55 * u, .6 * u], [1.45 * u, .25 * u]], .38 * u, .14 * u), { wash: c, ink: PAL.ink, sw: sw * .5 }); }
+  if (o.headband) { const c = o.headband === true ? '#262A33' : o.headband; paint([[-2.6 * u, -1.0 * u], [2.2 * u, -1.9 * u], [2.45 * u, -1.25 * u], [-2.4 * u, -.35 * u]], { wash: c, ink: PAL.ink, sw: sw * .8 }); for (const d of [-1, 1]) paint(ribbon([[-2.5 * u, -.7 * u], [-3.4 * u, -.5 * u + d * .3 * u], [-4.1 * u, -.8 * u + d * .4 * u + Math.sin(T * 6) * .2 * u]], .35 * u, .2 * u), { wash: c, ink: PAL.ink, sw: sw * .6 }); }
   pop();
   pop();
 }
