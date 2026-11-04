@@ -28,6 +28,9 @@ P(24.2, .4, sweep(t => 1800 - 1500 * t / .4, t => fade(t, .4, .01, .05) * .25), 
 P(26.5, .3, pop(1200, 9), { gain: .5 });
 // the slide: wind, a chip CRUNCH, the remote BEEP, TURBO
 P(28, 17, (() => { const n = noise(10), bp = new Biquad(); return t => { bp.set('bp', 500 + 200 * Math.sin(t * 2), .8); return bp.run(n()) * fade(t, 17, .5, .5) * 1.5; }; })(), { gain: .5 });
+P(30.0, .6, boing(150, .6), { gain: .9 }); P(30.0, .7, whoosh(.7, 500, 1800, 61), { gain: .4 });   // the slipper
+P(37.0, .3, (() => { const th = thud(130, .06, 62), c = clang(600); return t => th(t) + c(t) * .3; })(), { gain: 1 }); P(37.05, .5, (() => { const c = crunch(63); return t => c(t); })(), { gain: .5 });   // WHACK, the sign snaps
+P(43.0, 1.9, (() => { const n = noise(64), bp = new Biquad().set('bp', 3200, 3); return t => bp.run(n()) * fade(t, 1.9, .05, .2) * (1 + .4 * Math.sin(t * 70)) * 1.2; })(), { gain: .5 });   // claws screech
 P(33.8, .5, crunch(11), { gain: .9 }); P(34.3, .5, crunch(12), { gain: .7 });
 P(41.6, .15, sweep(t => 2000, t => fade(t, .15, .005, .02) * .3), { gain: .6 }); P(41.65, 1.2, sweep(t => 300 + 2400 * t, t => fade(t, 1.2, .05, .2) * .25), { gain: .6 });
 // Lostland: SQUASH, boing, squeak lines

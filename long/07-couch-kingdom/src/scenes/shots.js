@@ -106,16 +106,31 @@
     slideTunnel(t, s);
     slideJunk(t, s);
     // the sign
-    const sy = 1300 - (t - 36.2) * 520; if (t > 36 && t < 40) { paint(rectPts(1440, sy - 10, 14, 320), { wash: '#B98157', ink: PAL.ink, sw: 1.2 }); paint(rrPts(1320, sy - 120, 360, 120, 12), { wash: '#F6EBDA', ink: PAL.ink, sw: 1.6 }); letter('LOST PENS', 1500, sy - 82, 40, '#2B2233', { font: '800 40px "Baloo 2", sans-serif', ink: false }); letter('40 KM  ↓', 1500, sy - 36, 36, '#C8363F', { font: '800 36px "Baloo 2", sans-serif', ink: false }); }
+    const WH = 37.0, sx = 960 + Math.sin(WH * 2.2) * 120, sy = (560 + Math.sin(WH * 1.3) * 40 + 300) + (WH - t) * 420;   // the board meets his head at WH
+    if (t > 36 && t < 40) {
+      paint(rectPts(sx - 7, sy - 10, 14, 320), { wash: '#B98157', ink: PAL.ink, sw: 1.2 });
+      const off = seg(t, WH, WH + 1.2), bx = sx + off * 700, by = sy - 60 - off * 500, br = off * 9;
+      push(); translate(bx, by); rotate(br); paint(rrPts(-180, -60, 360, 120, 12), { wash: '#F6EBDA', ink: PAL.ink, sw: 1.6 }); pop();
+      const tx = (dx, dy) => [bx + dx * Math.cos(br) - dy * Math.sin(br), by + dx * Math.sin(br) + dy * Math.cos(br)];   // letter() draws in world space: place the words by hand
+      const [ax, ay] = tx(0, -22), [cx2, cy2] = tx(0, 24);
+      if (off < .02) letter('LOST PENS', ax, ay, 40, '#2B2233', { font: '800 40px "Baloo 2", sans-serif', ink: false, rot: br }); if (off < .02) letter('40 KM  ↓', cx2, cy2, 36, '#C8363F', { font: '800 36px "Baloo 2", sans-serif', ink: false, rot: br });
+    }
     // Pumpkin, head first down the chute (rotated), wobbling
     const chomp = t > 33.8 && t < 35.4;
     const cx = 960 + Math.sin(t * 2.2) * 120, cy = 560 + Math.sin(t * 1.3) * 40;
+    const bump = seg(t, 30.0, 30.7), spin = TAU * ease(bump), whack = t > 37.0 && t < 37.7, brake = t > 43.0 && t < 44.9;
+    // 30.0: a lost slipper lying in the chute: BOING, he bounces off it and spins
+    if (t > 29.2 && t < 30.6) { const y = lerp(1400, cy + 330, seg(t, 29.2, 30.0)) - (t > 30 ? (t - 30) * 900 : 0); push(); translate(cx + 20, y); rotate(.2); paint(rrPts(-120, -40, 240, 80, 40), { wash: '#E2848C', ink: PAL.ink, sw: 1.6 }); paint(rrPts(-60, -48, 120, 30, 14), { wash: '#F5B5BA', ink: PAL.ink, sw: 1.2 }); pop(); }
+    burst(cx, cy + 320, 150, (t - 30.0) / .35, 10, '#FFFFFF', 11);
     if (t > 33.2 && t < 33.9) chip(lerp(1500, cx + 40, seg(t, 33.2, 33.85)), lerp(260, cy + 120, seg(t, 33.2, 33.85)), t * 6, 1.6);
-    pumpkin(cx, cy - 250 + turbo * 40, U * 1.1, { ...faces(t, [[28, 'panic', { mouth: 'O' }], [33.8, 'munching'], [35.4, 'panic', { mouth: 'O' }], [41.3, 'greedy', { lookX: 1 }], [41.7, 'surprised', { eyes: 'wide', pupil: 0 }]]), sq: -.15 * turbo, rot: Math.PI + Math.sin(t * 4) * .2, aL: 1.3 + Math.sin(t * 20) * .2, aR: 1.3 + Math.cos(t * 20) * .2,
+    pumpkin(cx, cy - 250 + turbo * 40, U * 1.1, { ...faces(t, [[28, 'panic', { mouth: 'O' }], [33.8, 'munching'], [35.4, 'panic', { mouth: 'O' }], [37.0, 'strain', { eyes: 'squeeze' }], [37.7, 'dazed', { eyes: 'spiral' }], [38.8, 'panic', { mouth: 'O' }], [41.3, 'greedy', { lookX: 1 }], [41.7, 'surprised', { eyes: 'wide', pupil: 0 }], [43.0, 'strain', { eyes: 'squeeze' }]]), sq: -.15 * turbo + (whack ? .25 : 0), rot: Math.PI + Math.sin(t * 4) * .2 + spin, dy: -Math.sin(bump * Math.PI) * 1.2, aL: brake ? -.3 + Math.sin(t * 30) * .1 : 1.3 + Math.sin(t * 20) * .2, aR: brake ? -.3 + Math.cos(t * 30) * .1 : 1.3 + Math.cos(t * 20) * .2,
       ...(chomp ? { talk: .3 * Math.max(0, Math.sin(t * 25)) } : { who: 'pumpkin', talk: t < 33.8 || t > 35.4 ? .8 + .2 * Math.sin(t * 30) : 0 }), noShadow: true, boilKey: 'pk' });
+    burst(cx, cy + 330, 170, (t - WH) / .35, 10, '#FFFFFF', 12);
+    if (brake) for (let i = 0; i < 8; i++) { const k = frac(t * 5 + i / 8); paint(starPts(cx + (i % 2 ? 1 : -1) * (170 + hash(i) * 60), cy + 360 - k * 500, 14 * (1 - k), .4, 4), { wash: '#FFE27A', ink: null }); }   // claws scraping: sparks
     if (chomp) for (let i = 0; i < 4; i++) { const k = frac((t - 33.8) * 2 + i / 4); paint(ellPts(cx + 60 + i * 10, cy + 200 - k * 300, 7, 5, 6), { wash: '#F2C14E', ink: null }); }
     // Pip: from 38.5 a little way behind, deadpan, arms folded
-    if (t > 38.5) { const k = ease(seg(t, 38.5, 39.3)); pip(cx - 330 + Math.sin(t * 2) * 30, lerp(-200, cy - 60, k), U * 1.1, { ...face('deadpan', { lookX: 1 }), rot: Math.PI * .1, aL: .1, aR: .1, scarfWind: 1, who: 'pip', noShadow: true, boilKey: 'pip' }); }
+    // Pip: right behind him from the start, lying back, paws behind his head, as if it were a water slide
+    { const k = ease(seg(t, 28.4, 29.2)), px = cx - 430 + Math.sin(t * 2) * 30 - 300 * Math.sin(seg(t, 29.8, 31.0) * Math.PI); /* he ducks out of the way of the spinning cat */ pip(px, lerp(-300, cy - 120, k), U * 1.1, { ...faces(t, [[28, 'happy', { eyes: 'closed' }], [39.6, 'deadpan', { lookX: 1 }], [41.8, 'surprised', { eyes: 'wide' }], [42.6, 'happy', { eyes: 'closed' }]]), view: 'q', rot: -.3 + Math.sin(t * 2) * .05, aL: 1.5, aR: 1.5, scarfWind: 1, who: 'pip', noShadow: true, boilKey: 'pip' }); }
     // the lost remote: floats up to his paw (40.8-41.3), he presses a button (41.6): TURBO
     if (t > 40.6 && t < 43.2) { const k = ease(seg(t, 40.6, 41.3)); push(); translate(lerp(1650, cx + 190, k), lerp(1150, cy - 160, k)); rotate(lerp(2, .3, k)); remoteP(0, 0, 0); if (t > 41.6 && t < 41.8) glow(0, -62, 60, '#FF4A4A', 1); pop(); }
     if (turbo > 0) { for (let i = 0; i < 12; i++) { const x = 100 + hash(i * 3) * 1720, y = frac(hash(i) + t * 3) * 1500 - 200; inkLine([[x, y], [x, y - 260]], 4, '#FFFFFF', 'ink', 0); } }
