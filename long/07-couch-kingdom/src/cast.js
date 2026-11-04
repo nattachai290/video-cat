@@ -20,7 +20,7 @@ const LOST = {
   lint: '#B9BFD3', lintDk: '#8E95AD', lintLt: '#DCE0EA', thimble: '#C9CED6', thimbleDk: '#959CA8', cap: '#D2434B', capDk: '#9C2B33',
   pick: '#E3C38E', pickDk: '#B8945A', button: '#5FB3A8', buttonDk: '#3E8C82', buttonLt: '#8ED1C6', thread: '#F2EAD8', clip: '#B7BEC9',
   cookie: '#E9B860', cookieDk: '#C48A3A', cookieLt: '#F6D99A', paper: '#FFFDF6', mystic: '#B79CF2',
-  sock: ['#3E8C82', '#F2C14E', '#FFF8EC'], sockDk: '#2C6B63', btnEye: '#3B3F4A', dust: '#A3A0B0', dustDk: '#7C7889', dustLt: '#C9C6D3',
+  sock: ['#3E8C82', '#F2C14E', '#FFF8EC'], sockDk: '#2C6B63', sockPink: ['#D9607A', '#F5A9B8', '#FFF4F4'], sockPinkDk: '#A8435A', btnEye: '#3B3F4A', dust: '#A3A0B0', dustDk: '#7C7889', dustLt: '#C9C6D3',
 };
 
 // soft scalloped outline (fluff): bumps round an ellipse
@@ -192,7 +192,7 @@ function sockOutline(u, side, bend = 0) {
           [2.55 * u, -4.85 * u + b], [2.1 * u, -4.2 * u + b], [1.2 * u, -4.0 * u], [.95 * u, -3.4 * u], [1.0 * u, -.25 * u]];
 }
 function sockTroll(x, y, u, o = {}) {
-  const C = LOST, sw = folkSW(u, o), side = (o.view || 'side') !== 'front';
+  const C = o.pink ? { ...LOST, sock: LOST.sockPink, sockDk: LOST.sockPinkDk } : LOST, sw = folkSW(u, o), side = (o.view || 'side') !== 'front';
   folkBegin(x, y, u, o, 1.6);
   const bend = o.bend ?? Math.sin(T * 2) * .4, P = sockOutline(u, side, bend), b = bend * .3 * u;
   paint(P, { wash: C.sock[2], ink: null, curv: .35 });
@@ -217,6 +217,7 @@ function sockTroll(x, y, u, o = {}) {
       for (const [dx, dy] of [[-1, -1], [1, -1], [-1, 1], [1, 1]]) paint(ellPts(ex + lx + dx * r * .28, ey + ly + dy * r * .28, r * .1, r * .1, 6), { wash: '#1B1D24', ink: null });
       paint(ellPts(ex - r * .45, ey - r * .45, r * .2, r * .14, 6), { wash: '#FFFFFF', washOp: 200, ink: null });
     }
+    if (o.pink && !shut) for (let k = 0; k < 3; k++) { const a = -Math.PI / 2 + (k - 1) * .45 + (i ? .35 : -.35); inkLine([[ex + Math.cos(a) * r, ey + Math.sin(a) * r], [ex + Math.cos(a) * r * 1.55, ey + Math.sin(a) * r * 1.55]], sw * 1.1, PAL.ink, 'ink', 0); }   // eyelashes
     const br = o.brow || 0, up = (o.browUp || 0) * .12 * u;
     inkLine([[ex - .32 * u, ey - .48 * u + s * br * .13 * u - up], [ex + .32 * u, ey - .48 * u - s * br * .13 * u - up]], sw * 1.1, PAL.ink, 'ink', .2);
   });
@@ -246,7 +247,7 @@ function dustBunny(x, y, u, o = {}) {
 // The sock cape: the troll's twin (same stripes), hanging from the shoulders BEHIND the body; it peeks out at both sides and
 // its green toe shows under him. Same x, y, u, view, flip, rot as pumpkin(). o.wind -1..1 blows it.
 function sockCape(x, y, u, o = {}) {
-  const C = LOST, sw = clamp(u / 15, .5, 3), view = o.view || 'front', side = view === 'side', q = view === 'q';
+  const C = { ...LOST, sock: LOST.sockPink }, sw = clamp(u / 15, .5, 3), view = o.view || 'front', side = view === 'side', q = view === 'q';
   const wind = o.wind ?? Math.sin(T * 2) * .12, wv = wind * u;
   push(); translate(x, y + (o.dy || 0) * u); if (o.rot) rotate(o.rot); scale(o.flip ? -1 : 1, 1);
   let P;

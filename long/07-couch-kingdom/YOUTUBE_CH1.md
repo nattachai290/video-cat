@@ -1,5 +1,6 @@
 # YouTube upload: The Kingdom Under the Couch · Chapter 1: The Chosen One
 
+Cover: `out/cover_ch1.png` (1280x720; render `--loop=cover1 --still=0.3` then scale to 1280x720)
 Video: `out/ch1.mp4` (1920x1080, 3:25 = titles 0:00-0:05, chapter 0:05-3:05, End Screen 3:05-3:25). A normal (landscape) video, not a Short.
 
 ## Title (pick one)
