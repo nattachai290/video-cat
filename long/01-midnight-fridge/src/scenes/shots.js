@@ -652,10 +652,10 @@
     cam(FX + 120, 1240, 1.15);
     roomNight(t);
     fortBack(t, seg(t, 158.4, 159.2));
-    const vin = seg(t, 159.3, 160.3), vx = lerp(2300, VB[0], easeOut(vin));
+    const vin = seg(t, 159.3, 160.3), vx = lerp(2700, VB[0], easeOut(vin));
     pumpkin(KF, FY, U, { ...faces(t, [[158, 'deadpan'], [158.4, 'surprised', { lookY: -1 }], [160.0, 'surprised', { eyes: 'wide', lookX: 1 }], [163.0, 'sheepish', { lookX: -1 }], [164.0, 'surprised', { eyes: 'wide', lookX: 1, pupil: 1 }]]), aL: -1.1, aR: -1.1, ...SPY, boilKey: 'pk' });
     pip(PF, FY, U, { ...faces(t, [[158, 'deadpan'], [158.4, 'surprised', { lookY: -1 }], [160.0, 'surprised', { eyes: 'wide' }], [163.0, 'sheepish', { lookX: -1 }], [164.0, 'happy']]), view: 'q', flip: t > 163 && t < 164, aL: -.6, aR: -.4, draw: ninjaMask(1), boilKey: 'pip' });
-    cakeSlice(FX + 20, FY + 10, .7, false);
+    { const k = easeIn(seg(t, 158.5, 159.2)); if (k < 1) cakeSlice(lerp(FX + 20, vx, k), lerp(FY + 10, VB[1] - 60, k) - 180 * Math.sin(k * Math.PI), .7 * (1 - .8 * k), false); }   // the sponge cake gets slurped up with the blanket
     robotVac(vx, VB[1], 1.0, t, { led: 'blue', blink: false });
     cakeSlice(vx - 10, VB[1] - 60, .9, false, t > 160.4 ? .6 : 0); candle(vx - 20, VB[1] - 60 - 100, 1.0, t, 1);
     for (let i = 0; i < 6; i++) pop2(i % 3 === 2 ? '♫' : '♪', vx + 70 + (i % 2) * 90, VB[1] - 300, t, 161.0 + i * .6, 92, '#7CC8F5', .9, (i % 2 ? .2 : -.2));
@@ -681,7 +681,6 @@
     const cry = t > 168.2;
     pumpkin(KF, FY, U, { ...faces(t, [[166, 'surprised', { lookX: -1, lookY: -1 }], [167.2, 'sheepish', { blush: .7 }], [168.2, 'happy', { blush: .8 }]]), aL: -1.1, aR: -1.1, ...SPY, who: 'pumpkin', boilKey: 'pk' });
     pip(PF, FY, U, { ...faces(t, [[166, 'happy', { lookX: -1 }], [169.4, 'happy']]), view: 'q', flip: t >= 168, aL: -.6, aR: t < 168 ? 1.3 : -.4, draw: ninjaMask(1), who: 'pip', boilKey: 'pip' });
-    cakeSlice(FX + 20, FY + 10, .7, false);
     robotVac(VB[0], VB[1], 1.0, t, { led: 'blue', blink: false });
     cakeSlice(VB[0] - 10, VB[1] - 60, .9, false, .6); candle(VB[0] - 20, VB[1] - 160, 1.0, t, 1);
     if (cry) for (const s of [-1, 1]) for (let i = 0; i < 9; i++) { const k = frac(t * 1.6 + i / 9), ex = KF + s * 1.15 * U, ey = FY - 8.6 * U; paint(ellPts(ex + s * k * 330, ey - 220 * k + 380 * k * k, 13, 17, 10), { wash: '#8FD3F0', sw: .8 }); }
