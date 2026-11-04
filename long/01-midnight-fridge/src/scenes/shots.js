@@ -389,7 +389,7 @@
     pumpkin(kx, FK, U, { ...faces(t, [[92, 'determined'], [92.6, 'surprised', { eyes: 'wide' }], [97.2, 'strain'], [97.8, 'surprised', { eyes: 'wide', pupil: .3 }]]), rot: shiver, puff: shatter ? 1 : 0,
       aL: frozen ? -1.1 : -1.1, aR: frozen ? -1.1 : -1.1, ...SPY, who: 'pumpkin', boilKey: 'pk' });
     if (frozen || (t > 93 && t < 97.2)) {
-      icicles(kx, FK - 6.3 * U, 3.2 * U, 6, 46);
+      icicles(kx, FK - 7.8 * U, 3.0 * U, 6, 44);
       iceBlock(kx, FK + 20, 11 * U, 13.6 * U, t, seg(t, 96.0, 97.2));
     }
     const prun = seg(t, 95.0, 95.6);

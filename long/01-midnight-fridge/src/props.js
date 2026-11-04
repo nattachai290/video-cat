@@ -420,11 +420,11 @@ function laserBeams(t, on = 1, blink = 0) {
   CTX.globalAlpha = 1;
 }
 // An ice block (Pumpkin frozen solid). (x, y) = bottom middle, w x h. crack 0..1.
-function iceBlock(x, y, w, h, t, crack = 0) {
-  paint(rrPts(x - w / 2, y - h, w, h, 24), { wash: '#CFEFFF', washOp: 150, sw: 2.2 });
+function iceBlock(x, y, w, h, t, crack = 0, op = 150) {
+  paint(rrPts(x - w / 2, y - h, w, h, 24), { wash: '#CFEFFF', washOp: op, sw: 2.2 });
   paint([[x - w / 2 + 30, y - h + 40], [x - w / 2 + 70, y - h + 30], [x - w / 2 + 50, y - 60], [x - w / 2 + 26, y - 80]], { wash: '#FFFFFF', washOp: 150, ink: null });
   paint(rrPts(x + w / 2 - 60, y - h + 30, 22, 120, 10), { wash: '#FFFFFF', washOp: 130, ink: null });
-  for (let i = 0; i < 6; i++) paint(rrPts(x - w / 2 + 40 + i * (w - 80) / 5, y - h - 6, 26, 40 + 30 * hash(i + 3), 12), { wash: '#E4F7FF', washOp: 200, sw: 1 });   // frost on top
+  for (let i = 0; i < 7; i++) paint(ellPts(x - w / 2 + 30 + i * (w - 60) / 6, y - h + 4, w / 9, 22 + 10 * hash(i + 3), 16), { wash: '#F4FCFF', washOp: 235, ink: null });   // a cap of frost on top
   if (crack > 0) for (let i = 0; i < 4; i++) { const a = i * 1.7 + .4, L = 160 * crack; inkLine([[x, y - h * .5], [x + Math.cos(a) * L * .5, y - h * .5 + Math.sin(a) * L * .4], [x + Math.cos(a + .3) * L, y - h * .5 + Math.sin(a + .3) * L * .8]], 3, '#FFFFFF', 'ink', 0); }
 }
 // Icicles hanging from a line (a frozen moustache), in world coordinates.

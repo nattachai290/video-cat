@@ -40,7 +40,7 @@ letter = (txt, x, y, size, col, o = {}) => {
 subs = () => {};                         // the 16:9 subtitles are replaced by vsubs() below
 const _frame = frame;
 frame = t => {
-  if (window.LOOP === LOOPS.coverV) { VRAW = true; _frame(t); VRAW = false; return; }
+  if (window.LOOP === LOOPS.coverV || window.LOOP === LOOPS.coverV2) { VRAW = true; _frame(t); VRAW = false; return; }
   VCX = clamp(vcx(t), 400, 1520);
   _frame(t);
   VRAW = true; CTX.save(); CTX.setTransform(1, 0, 0, 1, 0, 0);
@@ -141,3 +141,30 @@ LOOPS.coverV = t => {
   letter('PART 1', VW / 2, 430, 64, '#2B2233', { font: '800 64px "Baloo 2", sans-serif', screen: true });
 };
 LOOPS.coverV.len = 2;
+// Vertical cover for the Part 2 Short: Pumpkin frozen solid in a block of ice in front of the open fridge (the cake glowing
+// inside), Pip tapping the ice with his cracker. Render: --page=short.html --loop=coverV2 --still=0.6 --out=out/cover_short_p2.png
+LOOPS.coverV2 = t => {
+  paint(rectPts(-10, -10, VW + 20, VH + 20), { wash: '#232254', ink: null });
+  for (let i = 0; i < 70; i++) paint(ellPts(hash(i + 11) * VW, hash(i + 14) * 560, 2 + 2.5 * hash(i + 5), 2 + 2.5 * hash(i + 5), 6), { wash: '#FFFFFF', washOp: 110, ink: null });
+  paint(rectPts(-10, 1580, VW + 20, 400), { wash: '#3A3560', ink: null });
+  // the open fridge behind, glowing, the cake on its shelf
+  glow(540, 1000, 700, '#DDF2FF', .55);
+  paint(rrPts(170, 560, 740, 1060, 40), { wash: '#F4F6F8', sw: 3 });
+  paint(rrPts(200, 600, 680, 990, 26), { wash: '#EAF6FF', sw: 2 });
+  inkLine([[210, 900], [870, 900]], 8, '#B9D3E8', 'ink', 0);
+  cakeSlice(700, 895, 1.2, true, 1);
+  paint([[910, 600], [1060, 560], [1060, 1660], [910, 1620]], { wash: '#C9D0D8', sw: 2 });   // the door, swung open
+  // Pumpkin, frozen
+  pumpkin(470, 1640, 62, { ...face('surprised', { eyes: 'wide', pupil: .3, mouth: 'O' }), aL: -1.1, aR: -1.1, headband: '#262A33', mustache: true, boilKey: 'cf' });
+  icicles(470, 1640 - 7.8 * 62, 3.0 * 62, 6, 60);
+  iceBlock(470, 1665, 11.6 * 62, 14 * 62, t, 0, 70);
+  // cold mist puffs
+  for (let i = 0; i < 6; i++) paint(ellPts(120 + i * 170, 1560 + (i % 2) * 40, 120, 60, 16), { wash: '#F2FBFF', washOp: 120, ink: null });
+  // Pip, tapping the ice with his cracker
+  pip(930, 1660, 58, { ...face('determined', { lookX: -1 }), view: 'q', flip: true, cracker: true, aR: .7, aL: -.5, draw: ninjaMask(1), boilKey: 'cpv2' });
+  letter('tink!', 790, 1240, 64, '#FFFFFF', { stroke: '#2B2233', rot: -.12, screen: true });
+  letter('SO... COLD.', VW / 2, 250, 150, '#CFEFFF', { font: '800 150px "Baloo 2", sans-serif', stroke: '#2B2233', rot: -.04, screen: true });
+  paint(rrPts(VW / 2 - 150, 380, 300, 96, 48), { wash: '#F2C14E', sw: 3 });
+  letter('PART 2', VW / 2, 430, 64, '#2B2233', { font: '800 64px "Baloo 2", sans-serif', screen: true });
+};
+LOOPS.coverV2.len = 2;
