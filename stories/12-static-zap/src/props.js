@@ -170,16 +170,6 @@ function chargedPumpkin(x, y, u, o, k, t) {
   pumpkin(x, y, u, { ...o, puff: Math.max(o.puff || 0, k) });
   if (k > .3 && o.sparks !== false) { push(); translate(x, y + dy); rotate(rot); sparks(0, -6.5 * u, 5.6 * u, 6.2 * u, t, 2, 1.8 * u, 3); pop(); }
 }
-// Pip as a puffball: a round ragged ball of grey fur with his face, ears and tail poking out. k 0..1 (2 = super puffed).
-function puffPip(x, y, u, o, k, t) {
-  const r = 1 + .35 * Math.max(0, k - 1), dy = (o.dy || 0) * u;
-  push(); translate(x, y + dy); rotate(o.rot || 0);
-  staticFur(0, -3.0 * u, 3.0 * u * r, 3.3 * u * r, Math.min(k, 1.6), t, PIP_COL.col, 30, 7);
-  paint(ellPts(0, -3.0 * u, 2.75 * u * r, 3.0 * u * r, 26), { wash: PIP_COL.col, ink: null, shade: true });
-  pop();
-  pip(x, y, u, o);
-  if (o.sparks !== false) { push(); translate(x, y + dy); sparks(0, -3.0 * u, 3.1 * u * r, 3.4 * u * r, t, 2, 1.2 * u, 9); pop(); }
-}
 
 // ---------- puffball Pip v2: four candidate looks (style 'cotton' | 'dandelion' | 'tufts' | 'frizz') ----------
 // A soft scalloped outline: bumps round an ellipse (cx, cy, rx, ry), n bumps, bump size b (0..1 of the radius).

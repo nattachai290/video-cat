@@ -6,7 +6,7 @@
     chargedPumpkin(280, 700, 30, { ...face('surprised'), boilKey: 'a' }, 1, t);
     chargedPumpkin(800, 700, 30, { ...face('panic'), view: 'q', boilKey: 'b' }, 1, t);
     pumpkin(280, 1250, 30, { ...face('soggy'), wet: .4, boilKey: 'c' });
-    puffPip(780, 1200, 34, { ...face('surprised'), view: 'q', boilKey: 'd' }, 1.6, t);
+    puffPip2(780, 1200, 34, { ...face('surprised'), boilKey: 'd' }, 1.3, t, 'tufts');
     balloon(200, 1480, .8); sock(420, 1500, .3); remote(560, 1500, -.2); yarn(700, 1500); pillow(880, 1480); cushion(300, 1800); crackerProp(560, 1800); plate(760, 1820);
     zapBolt(450, 1700, 750, 1650, t, 4);
   };
