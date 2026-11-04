@@ -276,3 +276,46 @@ function townGate(t, o = {}) {
   for (let i = 0; i < 4; i++) inkLine([[-900, TFY + 40 + i * 60 + i * i * 10], [2900, TFY + 40 + i * 60 + i * i * 10]], 2, CK.floorDk, 'ink', 0);
   if (o.dark) paint(rectPts(-900, -600, 3800, 1800), { wash: '#0E0B18', washOp: 190 * o.dark, ink: null });
 }
+
+// ---------- the opening titles (5 s, reused by every chapter) ----------
+// lt 0..5. 0-1.4: Snackatoon bumper (logo pops, a cracker spins in, Pumpkin pops up and CHOMPS it). 1.4-3.8: the sofa cushions
+// slide apart to reveal the series title, eyes blinking in the gap, the chapter label. 3.8-5: we dive into the gap (to black).
+const INTRO = 5;
+function introTitles(lt, chapter = 'CHAPTER 1', name = 'THE CHOSEN ONE') {
+  if (lt < 1.4) {
+    paint(rectPts(-10, -10, W + 20, H + 20), { wash: '#F6C46A', ink: null });
+    for (let i = 0; i < 30; i++) { const x = (hash(i) * 2200 + lt * 120) % 2100 - 100, y = (hash(i + 5) * 1200 + lt * 60) % 1200 - 60; push(); translate(x, y); rotate(hash(i + 9) * 3 + lt); paint(rrPts(-24, -18, 48, 36, 6), { wash: '#F2B04E', ink: null }); pop(); }
+    const pop1 = backOut(seg(lt, .05, .35));
+    push(); translate(W / 2, 400); scale(pop1, pop1); translate(-W / 2, -400); pop();
+    letter('SNACKATOON', W / 2, 400, 150 * (.6 + .4 * pop1), '#FFFFFF', { font: `800 ${Math.round(150 * (.6 + .4 * pop1))}px "Baloo 2", sans-serif`, stroke: '#2B2233', screen: true, rot: -.03 + Math.sin(lt * 9) * .02 * (1 - seg(lt, .3, .8)) });
+    // the cracker spins in from the right; Pumpkin pops up from the bottom and chomps it at 1.0
+    const ck = seg(lt, .3, .95), up = backOut(seg(lt, .6, .9)), chomp = lt > 1.0;
+    if (!chomp) crackerP(lerp(2100, 1060, ease(ck)), 760 - Math.sin(ck * Math.PI) * 120, lt * 9, 3);
+    pumpkin(960, 1080 + 700 * (1 - up) + 380, 62, { ...face(chomp ? 'munching' : 'greedy', { lookX: chomp ? 0 : 1, mouth: chomp ? undefined : 'O' }), talk: chomp ? .3 * Math.max(0, Math.sin(lt * 30)) : .9, noShadow: true, boilKey: 'ipk' });
+    if (chomp) for (let i = 0; i < 6; i++) { const k = seg(lt, 1.0, 1.4), a = i * 1.05; paint(rrPts(960 + Math.cos(a) * 260 * k - 10, 700 + Math.sin(a) * 160 * k - 8, 20, 16, 4), { wash: '#E6B65F', ink: null }); }
+    if (lt > 1.25) paint(rectPts(-10, -10, W + 20, H + 20), { wash: '#FFFFFF', washOp: 255 * seg(lt, 1.25, 1.4), ink: null });
+    return;
+  }
+  // the title card: the sofa face-on (back with button tufts, two plump seat cushions, the front rail); the cushions slide
+  // apart and reveal a deep dark hole full of blinking eyes
+  const k = lt - 1.4, open = ease(seg(k, .1, .7)), dive = easeIn(seg(lt, 3.8, 4.7));
+  push(); translate(W / 2, 640); scale(1 + dive * 6, 1 + dive * 6); translate(-W / 2, -640);
+  paint(rectPts(-10, -10, W + 20, H + 20), { wash: '#2A2440', ink: null });
+  paint(rrPts(-60, -40, W + 120, 520, 80), { wash: CK.sofaDk, ink: PAL.ink, sw: 3, shade: true, shadeK: .35 });   // the back
+  for (let r = 0; r < 2; r++) for (let c = 0; c < 9; c++) { const x = 140 + c * 205 + (r % 2) * 100, y = 130 + r * 160; paint(ellPts(x, y, 12, 12, 10), { wash: CK.sofa, ink: PAL.ink, sw: 1.5 }); for (const [dx, dy] of [[-40, -30], [40, -30], [-40, 30], [40, 30]]) inkLine([[x, y], [x + dx, y + dy]], 1.5, mixCol(CK.sofaDk, '#000000', .2), 'ink', .3); }
+  paint(rrPts(-60, 860, W + 120, 260, 30), { wash: CK.sofaDk, ink: PAL.ink, sw: 3 });   // the front rail
+  // the hole between the cushions: deep and dark, eyes blinking in it
+  paint(rrPts(60, 470, W - 120, 400, 40), { wash: CK.dark, ink: null });
+  glow(W / 2, 470, 500, '#FFE7A8', .12 * open);
+  for (let i = 0; i < 14; i++) { const x = 160 + hash(i * 3.1) * 1600, y = 560 + hash(i * 1.9) * 260, r = 8 + 6 * hash(i * 2.2), bl = ((lt * 1.3 + i * .41) % 2.2) < .1; if (Math.abs(x - 960) > 900 * open) continue; for (const s2 of [-1, 1]) { glow(x + s2 * r * 2, y, r * 3, '#FFE27A', .25); paint(ellPts(x + s2 * r * 2, y, r, bl ? 1 : r * 1.15, 10), { wash: '#FFE98A', ink: null }); paint(ellPts(x + s2 * r * 2, y - r * .2, r * .45, r * .5, 8), { wash: '#2B2233', ink: null }); } }
+  // the two plump seat cushions, sliding apart
+  for (const s2 of [-1, 1]) { const x = s2 < 0 ? 20 - open * 860 : 960 + open * 860; paint(rrPts(x, 450, 940, 430, 90), { wash: CK.sofaLt, ink: PAL.ink, sw: 3, shade: true, shadeK: .4 }); paint(rrPts(x + 60, 480, 820, 60, 30), { wash: '#FFFFFF', washOp: 60, ink: null }); }
+  pop();
+  const tin = backOut(seg(k, .55, .9)), out = 1 - seg(lt, 3.7, 3.95);
+  letter('PUMPKIN & PIP', W / 2, 150, 80 * tin, '#FFB347', { font: `800 ${Math.max(1, Math.round(80 * tin))}px "Baloo 2", sans-serif`, stroke: '#2B2233', screen: true, alpha: out });
+  letter('THE KINGDOM', W / 2, 290, 130 * tin, '#FFFFFF', { font: `800 ${Math.max(1, Math.round(130 * tin))}px "Baloo 2", sans-serif`, stroke: '#2B2233', screen: true, rot: -.02, alpha: out });
+  letter('UNDER THE COUCH', W / 2, 700, 130 * tin, '#FFFFFF', { font: `800 ${Math.max(1, Math.round(130 * tin))}px "Baloo 2", sans-serif`, stroke: '#2B2233', screen: true, rot: .02, alpha: out });
+  const ch = backOut(seg(k, 1.1, 1.4));
+  letter(`${chapter} · ${name}`, W / 2, 985, 58 * ch, '#FFE27A', { font: `800 ${Math.max(1, Math.round(58 * ch))}px "Baloo 2", sans-serif`, stroke: '#2B2233', screen: true, alpha: out });
+  if (lt > 4.5) paint(rectPts(-10, -10, W + 20, H + 20), { wash: '#000000', washOp: 255 * seg(lt, 4.5, 4.75) * (1 - seg(lt, 4.85, 5)), ink: null });
+}

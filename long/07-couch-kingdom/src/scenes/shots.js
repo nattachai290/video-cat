@@ -355,5 +355,7 @@
     camEnd();
   }
 
-  shots([[0, s01], [12, s02], [21, s03], [28, s04], [45, s05], [51, s06], [62, s07], [80, s08], [108, s09], [130, s10], [155, s11], [180, t => endScreen(t, 180, { hat: true, guides: typeof GUIDES !== 'undefined' })]]);
+  // every shot is written in chapter time (0 = the cold open); the 5-second opening titles come first, so shift by INTRO
+  const at = fn => t => fn(t - INTRO);
+  shots([[0, t => introTitles(t)], [5, at(s01)], [17, at(s02)], [26, at(s03)], [33, at(s04)], [50, at(s05)], [56, at(s06)], [67, at(s07)], [85, at(s08)], [113, at(s09)], [135, at(s10)], [160, at(s11)], [185, t => endScreen(t, 185, { hat: true, guides: typeof GUIDES !== 'undefined' })]]);
 })();
