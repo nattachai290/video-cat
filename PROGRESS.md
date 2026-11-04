@@ -12,7 +12,7 @@
 ## วิดีโอยาว 16:9 (`long/`)
 
 - แม่แบบ `long/_template` (1920x1080, 200 s, ซับล่างจอ, End Screen ใช้ซ้ำพร้อมช่องว่างสำหรับปุ่ม YouTube) + `long/GUIDE.md` (ขั้นตอน + พรอมต์ก๊อปวางให้ AI ตัวอื่นทำต่อ)
-- **ใหม่: 07 Kingdom Under the Couch** แฟนตาซีตลก ~15 นาที (5 บท × 3 นาที) · สตอรี่ v2 (ตัดช่วงยืด + บทพูดหลัก) รอผู้ใช้อนุมัติ · `long/07-couch-kingdom/STORYBOARD.md`
+- **ใหม่: 07 Kingdom Under the Couch** แฟนตาซีตลก ~15 นาที (5 บท × 3 นาที) · สตอรี่ v2 + model sheet v1 รอผู้ใช้อนุมัติ · `long/07-couch-kingdom/STORYBOARD.md`
 - สตอรี่บอร์ด 6 เรื่อง: 01 Midnight Fridge, 02 Snow Day, 03 Lost Ticket, 04 Attic Ghost, 05 Beach Day, 06 Big Race · ยังไม่ได้สร้าง (ผู้ใช้จะให้ AI ตัวอื่นทำ)
 
 ## สถานะตอนนี้
