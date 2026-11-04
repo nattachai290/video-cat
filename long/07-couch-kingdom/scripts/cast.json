@@ -1,5 +1,9 @@
 {
  "pumpkin": { "voice": "en_GB-alan-medium", "length": 1.0, "pitch": 0.97 },
  "pip": { "voice": "en_US-amy-medium", "length": 0.95, "pitch": 1.15 },
- "dusty": { "voice": "en_GB-northern_english_male-medium", "length": 1.05, "pitch": 0.85 }
+ "lint": { "voice": "en_GB-northern_english_male-medium", "length": 0.95, "pitch": 1.3 },
+ "queen": { "voice": "en_GB-alba-medium", "length": 1.05, "pitch": 1.0 },
+ "town1": { "voice": "en_US-ryan-medium", "length": 1.0, "pitch": 1.25 },
+ "town2": { "voice": "en_US-lessac-medium", "length": 1.0, "pitch": 1.4 },
+ "tiny": { "voice": "en_US-amy-medium", "length": 0.9, "pitch": 1.5 }
 }

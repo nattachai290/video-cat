@@ -88,7 +88,7 @@ function sirLint(x, y, u, o = {}) {
   paint(fluff(.1 * u, -2.2 * u, .35 * u, .4 * u, 6, .3, 13, 1), { wash: C.cap, ink: PAL.ink, sw: sw * .5 });
   pop();
   // the bottle-cap shield on his left (front of him in front / q; hidden behind in side)
-  if (!side) {
+  if (!side && !o.noShield) {
     push(); translate(-1.75 * u + q * .3 * u, -1.45 * u); rotate(-.1);
     const R = 1.0 * u, rim = []; for (let i = 0; i < 42; i++) { const a = i / 42 * TAU; rim.push([Math.cos(a) * R * (i % 2 ? 1.06 : .98) * (1 - q * .2), Math.sin(a) * R * (i % 2 ? 1.06 : .98)]); }
     paint(rim, { wash: C.capDk, ink: PAL.ink, sw: sw * .7 });
@@ -103,7 +103,7 @@ function sirLint(x, y, u, o = {}) {
 
 // ---------- Queen Button ----------
 function queenButton(x, y, u, o = {}) {
-  const C = LOST, sw = folkSW(u, o), view = o.view || 'front', q = view === 'q' ? 1 : 0, side = view === 'side';
+  const C = o.col ? { ...LOST, ...o.col } : LOST, sw = folkSW(u, o), view = o.view || 'front', q = view === 'q' ? 1 : 0, side = view === 'side';
   folkBegin(x, y, u, o, 1.8);
   const cy = -3.6 * u, R = 2.5 * u, rx = side ? .55 * u : R * (1 - q * .22);
   // thread legs and arms (drawn first, the disc covers their roots)
@@ -137,14 +137,19 @@ function queenButton(x, y, u, o = {}) {
     // edge-on: one eye on the rim, the crown tilted
     folkFace(.15 * u, cy - .5 * u, u, o, sw, C.button, { er: .2, my: .7, mw: .35, single: true });
   }
-  // the paper-clip crown
+  // the paper-clip crown (citizens: o.noCrown)
+  if (!o.noCrown) {
   push(); translate(side ? 0 : q * .2 * u, cy - R * .96); rotate(side ? .1 : 0); scale(side ? .45 : 1 - q * .15, 1);
   const P = [[-1.2, 0], [-1.2, -1.0], [-.6, -.45], [0, -1.3], [.6, -.45], [1.2, -1.0], [1.2, 0]].map(([a, b]) => [a * u, b * u]);
   inkLine(P, sw * 3.2, PAL.ink, 'ink', 0); inkLine(P, sw * 2.0, C.clip, 'ink', 0);
   for (const [a, b] of [[-1.2, -1.0], [0, -1.3], [1.2, -1.0]]) paint(ellPts(a * u, b * u, .16 * u, .16 * u, 8), { wash: '#E2464E', ink: PAL.ink, sw: sw * .4 });
   pop();
+  }
   pop();
 }
+// a button citizen: a smaller plain button in another colour, no crown, no sceptre
+const BTN_COLS = [{ button: '#E2848C', buttonDk: '#B85A63', buttonLt: '#F5B5BA' }, { button: '#F2C14E', buttonDk: '#C9932F', buttonLt: '#FFE08A' }, { button: '#9C8AD8', buttonDk: '#7564B0', buttonLt: '#C3B6EE' }];
+function buttonFolk(x, y, u, o = {}) { queenButton(x, y, u * .7, { ...o, col: BTN_COLS[(o.seed || 0) % 3], noCrown: true, sceptre: false }); }
 
 // ---------- Oracle Cookie ----------
 function oracleCookie(x, y, u, o = {}) {

@@ -348,7 +348,7 @@ function castAccessories(u, o, sw, fx, q, fy, hx = 3.35 * u, hy = 2.85 * u) {
 // spec.slip 0..1 slides it down the face (1 = over the eyes, the "blind with power" gag). tilt: radians.
 function castCrown(cx, cy, u, spec, sw, tilt = 0) {
   const c = (spec && spec.col) || '#F2C14E', dk = mixCol(c, '#8A5A12', .45), slip = (spec && spec.slip) || 0;
-  push(); translate(cx, cy + slip * 2.3 * u); rotate(tilt + (spec && spec.tilt || 0)); scale(1 + slip * .15, 1 + slip * .15);
+  push(); translate(cx, cy + slip * 3.05 * u); rotate(tilt + (spec && spec.tilt || 0)); scale(1 + slip * .15, 1 + slip * .15);
   const w = 1.5 * u, h = .62 * u, n = 12, rim = [];
   for (let i = 0; i <= n * 2; i++) { const x = -w - .12 * u + i / (n * 2) * (w + .12 * u) * 2; rim.push([x, i % 2 ? .12 * u : -.05 * u]); }   // crimped bottom edge
   paint([...rim, [w * .97, -h], [-w * .97, -h]], { wash: c, ink: PAL.ink, sw: sw * .8, shade: true, shadeK: .55 });
