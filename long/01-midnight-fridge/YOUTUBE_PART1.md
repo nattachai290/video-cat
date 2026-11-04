@@ -1,6 +1,6 @@
 # YouTube upload: The Midnight Fridge · Part 1
 
-Video: `out/part1_next.mp4` (1920x1080, 60 s, with the "NEXT: PART 2" badge) · Cover: `out/cover.png` (1280x720, "I'M A LAMP. / PART 1"; render `--loop=cover --still=0.6` then scale to 1280x720)
+Video: `out/part1_next_58.mp4` (1920x1080, 58 s: 44-46 s cut out, see STATUS, with the "NEXT: PART 2" badge) · Cover: `out/cover.png` (1280x720, "I'M A LAMP. / PART 1"; render `--loop=cover --still=0.6` then scale to 1280x720)
 
 Note: a horizontal (16:9) video does not count as a Short on YouTube; it is posted as a normal video (Shorts must be vertical or square).
 

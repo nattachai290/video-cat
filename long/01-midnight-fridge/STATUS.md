@@ -14,3 +14,9 @@
 - 2026-11-03 · ส่วนที่ 1 **v2** สร้างแล้ว: 9 ช็อต (มุกทุก 3–5 วิ), เสียงพูดใหม่ 4 ประโยค (รวม 16, 0 flagged), SFX + เพลงของส่วนที่ 1 (`scripts/sfx.mjs`, `scripts/music.mjs` 120 bpm), มิกซ์ · เรนเดอร์ `out/part1.mp4` ส่งผู้ใช้แล้ว
 - 2026-11-03 · CLIMB ในฉากฝันเปลี่ยนเป็นยิงตะขอไต่เชือก (ผู้ใช้เลือก A) · ลองทำเวอร์ชัน Short แนวตั้ง + ตอนจบ 6 วิ แล้ว **ผู้ใช้ยกเลิก** (ไม่ทำ Short, ลบโค้ดออกแล้ว) · เรนเดอร์ `out/part1.mp4` ใหม่
 - 2026-11-03 · ชุดสายลับแก้ (ผ้าคาดหัวนินจา + หนวด เป็นตัวเลือกใน rig ตามหน้าทุกมุม) · เรนเดอร์ใหม่ `out/part1.mp4` และ `out/part1_next.mp4` (มีป้าย NEXT: PART 2)
+
+## 58-second version (user asked for 2 s shorter)
+`out/part1_58.mp4` and `out/part1_next_58.mp4`: cut out 44.0-46.0 s (the start of shot 1-8, where the vacuum beam slowly sweeps
+toward the plant; nothing new happens there). The cut is on a music bar line (120 bpm = 2 s per bar), with a 20 ms
+audio crossfade, made with ffmpeg trim/concat from the 60 s files. Checked: 58.000 s, full decode with no errors, frames
+around the cut and the ending. The NEXT: PART 2 badge now shows at 55.8-58.
