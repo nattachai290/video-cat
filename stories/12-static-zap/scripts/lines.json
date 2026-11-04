@@ -1,7 +1,7 @@
 [
-  {"id": "d01", "who": "pip",     "shot": "02", "t": 3.2,  "text": "Static boost!", "emo": "gleeful prankster, proud of the trick", "exag": 0.8, "cfg": 0.35, "speed": 1.05, "pitch": 1.04},
-  {"id": "d02", "who": "pip",     "shot": "05", "t": 17.6, "text": "Help!", "emo": "squeaky panic, stuck to a belly", "exag": 0.9, "cfg": 0.3, "speed": 1.1, "pitch": 1.06},
-  {"id": "d03", "who": "pumpkin", "shot": "06", "t": 22.0, "text": "I am... the junk ball.", "emo": "deadpan, solemn, accepting fate", "exag": 0.35, "cfg": 0.5, "speed": 1.0, "pitch": 0.97},
-  {"id": "d04", "who": "pip",     "shot": "09", "t": 35.0, "text": "...Oh no.", "emo": "small voice, sudden dread", "exag": 0.6, "cfg": 0.45, "speed": 1.0, "pitch": 1.0},
-  {"id": "d05", "who": "pumpkin", "shot": "10", "t": 40.2, "text": "Boop.", "emo": "smug, sly, tiny revenge", "exag": 0.6, "cfg": 0.4, "speed": 1.0, "pitch": 0.97}
+  {"id": "d01", "who": "pip",     "shot": "02", "t": 3.2,  "text": "Static boost!", "emo": "gleeful prankster, cackling, very proud of the trick", "exag": 0.85, "cfg": 0.35, "speed": 1.05, "pitch": 1.04},
+  {"id": "d02", "who": "pip",     "shot": "05", "t": 17.6, "text": "Help!", "emo": "squeaky panic scream, stuck to a belly", "exag": 0.9, "cfg": 0.3, "speed": 1.1, "pitch": 1.06},
+  {"id": "d03", "who": "pumpkin", "shot": "06", "t": 22.0, "text": "I am... the junk ball.", "emo": "deadpan, slow, solemn, accepting fate (flat on purpose)", "exag": 0.4, "cfg": 0.5, "speed": 1.0, "pitch": 0.97},
+  {"id": "d04", "who": "pip",     "shot": "09", "t": 35.0, "text": "Oh... no.", "emo": "tiny trembling voice, sinking dread", "exag": 0.8, "cfg": 0.35, "speed": 1.0, "pitch": 1.0},
+  {"id": "d05", "who": "pumpkin", "shot": "10", "t": 40.2, "text": "Boop.", "emo": "smug, sly, savouring the tiny revenge", "exag": 0.85, "cfg": 0.35, "speed": 1.0, "pitch": 0.97}
 ]

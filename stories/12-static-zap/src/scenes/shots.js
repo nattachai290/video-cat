@@ -201,21 +201,21 @@
     pumpkin(KX, FY, U, { ...faces(t, [[32.5, 'soggy', { lid: .55 }], [34.0, 'soggy', { lid: .55, lookX: -1 }], [36.4, 'smug', { lookX: -1 }]]), wet: .45, view: t > 36 ? 'q' : 'front', flip: t > 36, aL: -1.2, aR: -1.2, boilKey: 'pk' });
     const fall = seg(t, 32.5, land), bounce = t > land ? Math.abs(Math.sin((t - land) * 9)) * Math.exp(-(t - land) * 5) * .9 : 0;
     const py = t < land ? lerp(FY - 1100, FY, easeIn(fall)) : FY;
-    puffPip(PX, py, U, { ...faces(t, [[32.5, 'panic'], [land, 'surprised', { eyes: 'wide' }], [34.4, 'neutral', { lookY: 1, lookX: -.3 }], [34.9, 'sheepish', { lookY: .2 }]]), view: 'q', dy: -bounce, aL: t > 34.3 && t < 34.9 ? .3 : -.7, aR: -.7, who: 'pip', noShadow: t < land, boilKey: 'pip' }, t < land ? 1.1 : 1.3, t);
+    puffPip2(PX, py, U, { ...faces(t, [[32.5, 'panic'], [land, 'surprised', { eyes: 'wide' }], [34.4, 'neutral', { lookY: 1, lookX: -.3 }], [34.9, 'sheepish', { lookY: .2 }]]), view: 'q', dy: -bounce, aL: t > 34.3 && t < 34.9 ? .3 : -.7, aR: -.7, who: 'pip', noShadow: t < land, boilKey: 'pip' }, t < land ? 1.1 : 1.3, t, 'tufts');
     burst(PX, FY - 120, 180, (t - land) / .35, 10, '#FFFFFF', 7);
     camEnd();
   }
 
   // 10 · 38–42 · Close: one soggy paw reaches out, slowly, to Pip's nose. "Boop." CRACK! Pip doubles in size.
   function s10(t) {
-    const PX = 300, KX = 600, zap = 40.6, z = lerp(1.45, 2.0, ease(seg(t, 38, 38.6)));
-    cam(lerp(470, 440, ease(seg(t, 38, 38.6))), lerp(1300, 1265, ease(seg(t, 38, 38.6))), z, shake(t, zap, 16, .5));
+    const PX = 300, KX = 660, zap = 40.6, z = lerp(1.45, 2.0, ease(seg(t, 38, 38.6)));
+    cam(lerp(470, 430, ease(seg(t, 38, 38.6))), lerp(1300, 1265, ease(seg(t, 38, 38.6))), z, shake(t, zap, 16, .5));
     room(t);
     const reach = ease(seg(t, 38.6, 40.2));
     const k = t < zap ? 1.3 : lerp(1.3, 2.2, backOut(seg(t, zap, zap + .3)));
-    puffPip(PX, FY, U, { ...faces(t, [[38, 'sheepish', { lookX: 1 }], [39.4, 'panic', { lookX: 1, eyes: 'wide' }], [zap, 'surprised', { eyes: 'wide', pupil: 0 }], [41.4, 'deadpan', { lookX: 1 }]]), view: 'q', aL: -.7, aR: -.7, boilKey: 'pip' }, k, t);
-    pumpkin(KX, FY, U, { ...faces(t, [[38, 'smug', { lookX: -1 }], [zap, 'happy', { mouth: 'grin' }]]), wet: .45, view: 'q', flip: true, aR: lerp(-1.2, -.6, reach) + (t > zap ? .5 * ease(seg(t, zap, zap + .2)) : 0), aL: -1.2, who: 'pumpkin', boilKey: 'pk' });
-    if (t > zap && t < zap + .4) zapBolt(345, 1355, 250, 1250, t, 5, 8);
+    puffPip2(PX, FY, U, { ...faces(t, [[38, 'sheepish', { lookX: 1 }], [39.4, 'panic', { lookX: 1, eyes: 'wide' }], [zap, 'surprised', { eyes: 'wide', pupil: 0 }], [41.4, 'deadpan', { lookX: 1 }]]), view: 'q', aL: -.7, aR: -.7, boilKey: 'pip' }, k, t, 'tufts');
+    pumpkin(KX, FY, U, { ...faces(t, [[38, 'smug', { lookX: -1 }], [zap, 'happy', { mouth: 'grin' }]]), wet: .45, view: 'q', flip: true, rot: -.25 * reach * (1 - ease(seg(t, zap + .2, zap + .6))), aR: lerp(-1.2, -.4, reach) - (t > zap ? .8 * ease(seg(t, zap, zap + .35)) : 0), aL: -1.2, who: 'pumpkin', boilKey: 'pk' });
+    if (t > zap && t < zap + .4) zapBolt(310, 1372, 190, 1240, t, 5, 8);
     flash(t > zap && t < zap + .08 ? .9 : 0, 440, 1300);
     camEnd();
   }

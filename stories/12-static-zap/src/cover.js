@@ -11,6 +11,24 @@
     zapBolt(450, 1700, 750, 1650, t, 4);
   };
   LOOPS.props.len = 2;
+  LOOPS.pipball = t => {
+    paint(rectPts(-10, -10, W + 20, H + 20), { wash: '#CFE3D8', ink: null });
+    paint(rectPts(-10, 1500, W + 20, 500), { wash: '#C99A6B', ink: null });
+    const F = { ...face('surprised', { eyes: 'wide' }) };
+    [['cotton', 270, 820], ['dandelion', 810, 820], ['tufts', 270, 1700], ['frizz', 810, 1700]].forEach(([st, x, y], i) => {
+      puffPip2(x, y, 44, { ...F, view: 'front', aL: -.7, aR: -.7, boilKey: 'pb' + i }, 1.3, t, st);
+      letter(['A cotton', 'B dandelion', 'C tufts', 'D frizz'][i], x, y - 560, 70, '#2B2233', { font: '800 70px "Baloo 2", sans-serif', screen: true });
+    });
+  };
+  LOOPS.pipball.len = 2;
+  LOOPS.wetears = t => {
+    paint(rectPts(-10, -10, W + 20, H + 20), { wash: '#CFE3D8', ink: null });
+    [[0, 'front', false], [.45, 'front', false], [1, 'front', false], [0, 'q', true], [.45, 'q', true], [1, 'q', false]].forEach(([w, v, f], i) => {
+      pumpkin(200 + (i % 3) * 340, 860 + Math.floor(i / 3) * 900, 34, { ...face('soggy'), wet: w, view: v, flip: f, boilKey: 'we' + i });
+      letter('wet ' + w + ' ' + v, 200 + (i % 3) * 340, 300 + Math.floor(i / 3) * 900, 46, '#2B2233', { font: '800 46px "Baloo 2", sans-serif', screen: true });
+    });
+  };
+  LOOPS.wetears.len = 2;
   LOOPS.cover = t => {
     paint(rectPts(-10, -10, W + 20, H + 20), { wash: '#2E3A6E', ink: null });
     const cx = 540, cy = 1150;

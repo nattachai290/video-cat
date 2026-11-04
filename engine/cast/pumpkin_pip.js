@@ -277,8 +277,9 @@ function pumpkin(x, y, u, o = {}) {
   const hx = 3.35 * u * (1 + puff * .18 - wet * .1) * hs, hy = 2.85 * u * (1 + puff * .12 - wet * .05) * hs, fx = q * 1.0 * u;
   push(); scale(hs, hs);
   for (const s of [-1, 1]) {   // ears (the head covers their bases)
-    const far = q && s < 0, ex = s * 1.95 * u + fx * .5 - (far ? .35 * u : 0), droop = wet * .9;
-    const tip = [ex + s * .65 * u * (1 + cu * .2) + s * droop * u * 1.2, (-3.85 * u - cu * .3 * u) + droop * 1.6 * u];
+    // wet: the ears slide in toward the crown and fold down, so their bases stay inside the head (no floating flaps)
+    const far = q && s < 0, droop = wet * .9, ex = s * 1.95 * u + fx * .5 - (far ? .35 * u : 0) - s * wet * .8 * u;
+    const tip = [ex + s * .65 * u * (1 + cu * .2) + s * droop * u * .6, (-3.85 * u - cu * .3 * u) + droop * 1.3 * u];
     paint([[ex - 1.1 * u, -1.6 * u], tip, [ex + 1.1 * u, -1.7 * u]], { wash: far ? mixCol(col, dk, .3) : col, ink: PAL.ink, sw: sw * .85 });
     paint([[ex - .55 * u, -1.9 * u], [lerp(ex, tip[0], .85), lerp(-1.9 * u, tip[1], .8)], [ex + .55 * u, -1.95 * u]], { wash: C.inner, ink: null });
   }

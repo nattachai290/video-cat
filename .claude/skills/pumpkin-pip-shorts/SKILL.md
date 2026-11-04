@@ -59,6 +59,13 @@ then replace STORYBOARD, lines.json, props.js, scenes, sfx.mjs, music.mjs.
 2. **Dialogue** (`scripts/lines.json`: id, who, shot, t, text, emo, exag 0.25-1, cfg, speed, pitch). Then
    `voice.py` → `timing.py` (0 OVER) → `dialog.mjs` (writes `src/dialog.js`: lip-sync + LY for subtitles).
    Chatterbox sometimes pads short lines (e.g. "Big lunch?" came out 1.9 s): move the line or retake (`--takes 3`).
+   - **USER RULE: emotion first.** Every line must sound like its `emo`, not read out. Push `exag` (.8–.9 for excited,
+     scared, smug; .35–.45 for deadpan, where flatness IS the joke) and lower `cfg` (.3–.35) for livelier pacing, then
+     record `--takes 4` (6 for one-word shouts) and run `engine/pick_takes.py`: it scores each take's pitch range and
+     loudness against the line's exag, transcribes it with faster-whisper and disqualifies takes with wrong words,
+     copies the winner to out/voice/raw and writes out/voice/compare/<id>.wav (all takes, best first) to overrule by ear.
+   - exag 1.0 or ALL CAPS garbles Chatterbox (story 12: "Static BOOST!" came out "So, how did you go through the
+     post, Kyle?" in every take). Keep exag <= .9 and normal case; buy emotion with more takes, not higher numbers.
 3. **Sets and props** (`src/props.js`): fixed coordinates in a 1080x1920 world, one function per set.
 4. **Shots** (`src/scenes/shots.js`): one function per shot, `shots([[t0, fn], ...])`, every frame a pure function of t.
    - Faces: `faces(t, [[t0, 'name', {overrides}], ...])` (18 presets in `CAST_FACES`). Mouths: `who: 'pumpkin'`.
@@ -106,6 +113,10 @@ then replace STORYBOARD, lines.json, props.js, scenes, sfx.mjs, music.mjs.
   The `cute` dial changes only scale/blush/sparkle (not shape), so these rules still hold; head-fitted props (story 11's
   shark hoods) keep working because the hoods enclose a larger head, but check a still before a full render.
 
+- `wet` used to fold Pumpkin's ears OUT sideways so they floated off the head (user caught it in story 12, front and q
+  views). Fixed in the rig (ears slide in toward the crown); still look at the ears in any wet/puff still.
+- Puffball Pip (story 12, user's pick "C tufts"): `puffPip2(x, y, u, o, k, t, 'tufts')` in stories/12-static-zap/src/props.js:
+  a jagged fur ball hiding the body, face/ears/scarf/paws/tail poking out. Copy it rather than drawing a halo behind pip().
 - Costumes that sit on the face or head (moustache, headband) belong in the rig (`mustache`, `headband` options in
   `pumpkin_pip.js`) so they turn with the head in front / q / side views. Never draw them in body space in a story.
 - `letter()` draws in world coordinates (it ignores a local push/translate): place text by hand.

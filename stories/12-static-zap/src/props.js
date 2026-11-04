@@ -180,3 +180,85 @@ function puffPip(x, y, u, o, k, t) {
   pip(x, y, u, o);
   if (o.sparks !== false) { push(); translate(x, y + dy); sparks(0, -3.0 * u, 3.1 * u * r, 3.4 * u * r, t, 2, 1.2 * u, 9); pop(); }
 }
+
+// ---------- puffball Pip v2: four candidate looks (style 'cotton' | 'dandelion' | 'tufts' | 'frizz') ----------
+// A soft scalloped outline: bumps round an ellipse (cx, cy, rx, ry), n bumps, bump size b (0..1 of the radius).
+function fluffPts(cx, cy, rx, ry, n = 16, b = .12, t = 0, wob = 0, seed = 1) {
+  const pts = [];
+  for (let i = 0; i < n; i++) for (let k = 0; k <= 6; k++) {
+    const a = (i + k / 6) / n * TAU, bump = Math.sin(k / 6 * Math.PI) * b * (1 + .25 * hash(i + seed)) + wob * Math.sin(t * 25 + i) * .02;
+    pts.push([cx + Math.cos(a) * rx * (1 + bump), cy + Math.sin(a) * ry * (1 + bump)]);
+  }
+  return pts;
+}
+// Pip's face, ears, feet and tail on their own (for the ball looks): the body is hidden inside the fluff.
+function pipBits(u, o, sw, part) {
+  const C = PIP_COL, cu = CAST_CUTE;
+  if (part === 'back') {   // tail, standing bristly, and the feet
+    paint(ribbon(_P(u, [[1.6, -1.0], [2.8, -1.6], [3.6, -2.9], [3.5, -4.0]]), u * .34, u * .14), { wash: C.tail, ink: PAL.ink, sw: sw * .6 });
+    for (let k = 0; k < 5; k++) { const y = -1.3 - k * .55, x = 2.1 + k * .32; inkLine([[x * u, y * u], [(x + .35) * u, (y - .25) * u]], sw * .8, C.tail, 'ink', 0); }
+    for (const s of [-1, 1]) paint(ellPts(s * .8 * u, -.2 * u, .55 * u, .25 * u, 10), { wash: C.tail, ink: PAL.ink, sw: sw * .6 });
+  }
+}
+function puffPip2(x, y, u, o, k, t, style = 'cotton') {
+  const C = PIP_COL, sw = clamp(u / 17, .45, 2.6) * .93, r = 1 + .3 * Math.max(0, k - 1), dy = (o.dy || 0) * u;
+  const cx = 0, cy = -3.1 * u, rx = 2.6 * u * r, ry = 2.75 * u * r;
+  push(); translate(x, y + dy); rotate(o.rot || 0);
+  if (!o.noShadow) castShadow(0, 0, u * 2.6 * r, u, o.dy);
+  pipBits(u, o, sw, 'back');
+  if (style === 'cotton') {
+    paint(fluffPts(cx, cy, rx * 1.08, ry * 1.08, 14, .14, t, 1, 3), { wash: C.dk, ink: null });
+    paint(fluffPts(cx, cy, rx, ry, 14, .14, t, 1, 3), { wash: mixCol(C.col, '#FFFFFF', .18), ink: PAL.ink, sw: sw * .9, shade: true, shadeK: .5 });
+    for (let i = 0; i < 9; i++) { const a = hash(i * 3) * TAU, d = .35 + .45 * hash(i * 5); const px = cx + Math.cos(a) * rx * d, py = cy + Math.sin(a) * ry * d; inkLine(arcPts(px, py, u * .35, u * .2, Math.PI * 1.1, Math.PI * 1.9, 5), sw * .7, C.dk, 'ink', .3); }
+    for (const s of [-1, 0, 1]) paint(fluffPts(cx + s * .55 * u, cy - ry * 1.02 - (s ? 0 : .25 * u), .5 * u, .55 * u, 5, .25, t, 1, 4 + s), { wash: mixCol(C.col, '#FFFFFF', .18), ink: PAL.ink, sw: sw * .8 });   // a tuft on top
+  } else if (style === 'dandelion') {
+    for (let i = 0; i < 90; i++) { const a = i / 90 * TAU + hash(i) * .05, l = 1 + .12 * hash(i * 7) + .02 * Math.sin(t * 30 + i); inkLine([[cx + Math.cos(a) * rx * .5, cy + Math.sin(a) * ry * .5], [cx + Math.cos(a) * rx * 1.2 * l, cy + Math.sin(a) * ry * 1.2 * l]], sw * .9, i % 3 ? C.col : C.lt, 'ink', 0); }
+    paint(ellPts(cx, cy, rx * .95, ry * .95, 30), { wash: C.col, washOp: 200, ink: null });
+  } else if (style === 'tufts') {
+    const pts = []; for (let i = 0; i < 44; i++) { const a = i / 44 * TAU, out = i % 2 ? 1.18 + .1 * hash(i) + .03 * Math.sin(t * 30 + i) : .96; pts.push([cx + Math.cos(a + (i % 2 ? .05 : 0)) * rx * out, cy + Math.sin(a) * ry * out]); }
+    paint(pts, { wash: C.col, ink: PAL.ink, sw: sw * .9, curv: .35, shade: true, shadeK: .5 });
+    paint(ellPts(cx, cy + ry * .25, rx * .55, ry * .5, 20), { wash: C.lt, washOp: 200, ink: null });
+  }
+  if (style !== 'frizz') {
+    // ears poke out of the top, face sits in the upper middle of the ball
+    push(); translate(cx, cy - ry * .25);
+    for (const s of [-1, 1]) { push(); translate(s * 1.5 * u * r, -1.25 * u * r); rotate(s * .45); paint(ellPts(0, 0, 1.1 * u, 1.15 * u, 18), { wash: C.col, ink: PAL.ink, sw: sw * .8 }); paint(ellPts(0, .05 * u, .72 * u, .76 * u, 14), { wash: C.inner, ink: null }); pop(); }
+    pipFace(u, o, sw, t);
+    pop();
+    // the scarf round the "neck" of the ball, its end flapping, and two tiny paws poking out of the sides
+    const ny = cy + ry * .38;
+    paint([...arcPts(cx, ny - .3 * u, rx * .62, .45 * u, Math.PI * .92, Math.PI * .08, 12), ...arcPts(cx, ny + .25 * u, rx * .62, .45 * u, Math.PI * .08, Math.PI * .92, 12)], { wash: C.scarf, ink: PAL.ink, sw: sw * .8 });
+    paint([[cx + .5 * u, ny], [cx + 1.2 * u, ny + .1 * u], [cx + 1.1 * u + Math.sin(t * 12) * .1 * u, ny + 1.6 * u], [cx + .55 * u, ny + 1.5 * u]], { wash: C.scarf, ink: PAL.ink, sw: sw * .8, curv: .3 });
+    for (const s of [-1, 1]) paint(ellPts(cx + s * rx * 1.02, cy + ry * .3 + Math.sin(t * 9 + s) * 3, .38 * u, .3 * u, 10), { wash: C.tail, ink: PAL.ink, sw: sw * .6 });
+    if (o.sparks !== false) sparks(cx, cy, rx * 1.15, ry * 1.15, t, 2, 1.1 * u, 9);
+    pop(); return;
+  }
+  pop();
+  // frizz: Pip as usual, with a big frizzy hair cloud BEHIND his head (it frames the face) and a bottle-brush tail
+  push(); translate(x, y + dy - 6.3 * u);
+  paint(fluffPts(0, 0, 2.6 * u * r, 1.9 * u * r, 12, .2, t, 1, 5), { wash: C.dk, ink: PAL.ink, sw: sw * .8 });
+  for (let i = 0; i < 7; i++) { const a = Math.PI + (i + .5) / 7 * Math.PI; inkLine(arcPts(Math.cos(a) * 1.9 * u, Math.sin(a) * 1.3 * u, .3 * u, .2 * u, 0, 4, 6), sw * .7, PAL.ink, 'ink', .3); }
+  pop();
+  pip(x, y, u, { ...o, noShadow: true });
+  if (o.sparks !== false) sparks(x, y + dy - 4 * u, 2.6 * u, 3.4 * u, t, 2, 1.1 * u, 9);
+}
+// Pip's front face (eyes, brows, snout, nose, mouth, whiskers, blush) at the origin, head radius ~1.5u. Mirrors pip()'s
+// front view, so faces()/who still work.
+function pipFace(u, o, sw, t) {
+  const C = PIP_COL, cu = CAST_CUTE, hs = 1 + cu * .18;
+  const talk = o.talk ?? (o.who && typeof SPEAK === 'function' ? SPEAK(o.who, T) : 0);
+  push(); scale(hs, hs);
+  paint(ellPts(0, .55 * u, .85 * u, .55 * u, 14), { wash: C.lt, washOp: 230, ink: null });
+  const blush = clamp((o.blush || 0) + cu * .35);
+  if (blush) for (const s of [-1, 1]) paint(ellPts(s * .95 * u, .4 * u, (.36 + cu * .08) * u, (.2 + cu * .04) * u, 10), { wash: '#E8607A', washOp: 160 * blush, ink: null });
+  const kinds = Array.isArray(o.eyes) ? o.eyes : [o.eyes || 'open', o.eyes || 'open'];
+  for (const s of [-1, 1]) {
+    const ex = s * .58 * u, ey = -.2 * u;
+    push(); translate(ex, ey); castEye(kinds[s < 0 ? 0 : 1], s, .3 * u * (1 + cu * .2), .36 * u * (1 + cu * .2), { ...o, cute: cu }, sw * .8, C.col, '#3A3045', 'cat'); pop();
+    castBrow(ex, ey, .55 * u, .55 * u, s, o.brow || 0, (o.browUp || 0) + (s < 0 ? o.browL || 0 : o.browR || 0), sw * .6);
+  }
+  paint(ellPts(0, .3 * u, .2 * u, .16 * u, 10), { wash: C.nose, ink: PAL.ink, sw: sw * .45 });
+  push(); translate(0, .45 * u); castMouth(o.mouth || 'w', talk, .6 * u, sw * .8); pop();
+  for (const s of [-1, 1]) castWhiskers(s * .35 * u, .5 * u, s, 1.5 * u, sw * .8);
+  pop();
+}
