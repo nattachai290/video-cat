@@ -29,3 +29,9 @@ picture (high up during the crayon fantasy), and the NEXT: PART 2 badge in the t
 untouched. Render: `render_pw.mjs --page=short.html --range=0:60 --audio=out/audio/mix.wav --out=out/short_v60.mp4`, then the
 same 44-46 s ffmpeg cut as the 58 s 16:9 version. Sheets need `--crop=0,0,1080,1920`. Checked: 1080x1920, 58.000 s,
 decodes with no errors, out/check/short_cuts.jpg.
+
+## Vertical Short of Part 2 (1080x1920, 60 s): `out/short_p2.mp4`
+Same `short.html` + `src/vertical.js` as Part 1 (crop keyframes for 60-120 added to `VKEYS`; the title band says PART 2,
+the end badge NEXT: PART 3, and a red edge glow inside the picture for the dark ending). Render:
+`render_pw.mjs --page=short.html --range=60:120 --audio=out/audio/mix.wav --out=out/short_p2.mp4`. Checked: 1080x1920,
+60.0 s, decodes with no errors, out/check/short_p2_cuts.jpg.
