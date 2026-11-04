@@ -6,3 +6,6 @@
 - [x] model sheet v1: `src/cast.js` (Sir Lint, Queen Button, Oracle Cookie, Sock Troll, Dust Bunny, ผ้าคลุมถุงเท้า, Excalifork, เป้ Pip) + มงกุฎฝาขวดใน rig (`crown`, `slip`) · ชีต `out/check/lineup|sheetA|sheetB|sheetC|kitViews.png` · **รอผู้ใช้อนุมัติ**
 - [ ] บทที่ 1–5: ตารางช็อต → เสียง → ภาพนิ่ง → เรนเดอร์ (ทีละบท)
 - [ ] ต่อเป็นเรื่องเต็ม 15 นาที + End Screen + ปก + YOUTUBE.md
+- [x] รูปแบบ: คลิปละบท (อินโทร 5 วิ `introTitles` + บท 3 นาที + End Screen 20 วิ `chapterEnd` ที่ชี้ไปบทถัดไป) · ผู้ใช้เลือก
+- [x] บทที่ 1: ฉาก (โซฟา, ใต้โซฟา, สไลเดอร์, เมือง, หน้าวัง, ท้องพระโรง, ประตูเมือง) + 11 ช็อต + มุกเสริมช่วงยืด · ภาพนิ่ง/สตอรี่บอร์ดส่งผู้ใช้แล้ว
+- [ ] บทที่ 1: เสียงพูด (เลือกเทคแล้ว 32/33, "Who comes?" กำลังอัดใหม่) → SFX + เพลง → เรนเดอร์ `out/ch1.mp4`

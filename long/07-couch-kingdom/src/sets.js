@@ -319,3 +319,31 @@ function introTitles(lt, chapter = 'CHAPTER 1', name = 'THE CHOSEN ONE') {
   letter(`${chapter} · ${name}`, W / 2, 985, 58 * ch, '#FFE27A', { font: `800 ${Math.max(1, Math.round(58 * ch))}px "Baloo 2", sans-serif`, stroke: '#2B2233', screen: true, alpha: out });
   if (lt > 4.5) paint(rectPts(-10, -10, W + 20, H + 20), { wash: '#000000', washOp: 255 * seg(lt, 4.5, 4.75) * (1 - seg(lt, 4.85, 5)), ink: null });
 }
+
+// ---------- the chapter End Screen (20 s) ----------
+// Same slots as the template (ENDSLOTS: two video boxes on the right, the round subscribe slot) so YouTube Studio's elements fit,
+// but dressed for this series: Pumpkin in his hero kit and Pip bottom-left, the NEXT chapter's character peeking in, and a
+// "NEXT:" label over the first video slot. next = [label, title]; who = 'troll' | 'none' (the teaser character).
+function chapterEnd(t, t0, next = ['CHAPTER 2', 'THE SOCK BRIDGE'], who = 'troll', guides = false) {
+  const lt = t - t0, U2 = 44, wave = Math.sin(lt * 3);
+  paint(rectPts(-10, -10, W + 20, H + 20), { wash: '#F6C46A', ink: null });
+  for (let i = 0; i < 40; i++) { const x = (hash(i) * 2200 + lt * 20) % 2100 - 100, y = (hash(i + 5) * 1200 + lt * 12) % 1200 - 60; push(); translate(x, y); rotate(hash(i + 9) * 3); paint(rrPts(-24, -18, 48, 36, 6), { wash: '#F2B04E', ink: null }); pop(); }
+  letter('SNACKATOON', 560, 140, 120, '#FFFFFF', { font: '800 120px "Baloo 2", sans-serif', stroke: '#2B2233', rot: -.03, screen: true });
+  letter('THANKS FOR WATCHING!', 560, 255, 52, '#C8363F', { font: '800 52px "Baloo 2", sans-serif', stroke: '#FFFFFF', screen: true });
+  // the cast, bottom left, pointing at the slots
+  sockCape(290, 1030, U2, { wind: .3 });
+  pumpkin(290, 1030, U2, { ...face('happy', { mouth: 'grin', blush: .4 }), crown: true, aR: .55 + .15 * wave, armR: excalifork(.4 + .3 * Math.sin(lt * 4)), aL: -1.1, boilKey: 'ek' });
+  pipPack(520, 1030, U2, { view: 'q' }); pip(520, 1030, U2, { ...face('happy'), view: 'q', aR: .7 + .2 * wave, aL: -.6, boilKey: 'ep' });
+  // the next chapter's character peeks in from the bottom, between the cast and the subscribe slot
+  if (who === 'troll') { const up = ease(seg(lt, 1.0, 1.8)); sockTroll(690, 1080 + (1 - up) * 300 + 40, 36, { ...face('sheepish', { mouth: 'smile' }), flip: false, noShadow: true, boilKey: 'et' }); }
+  // the labels over the slots
+  const [lab, title] = next;
+  letter('NEXT:', 1490, 110, 46, '#2B2233', { font: '800 46px "Baloo 2", sans-serif', screen: true, ink: false });
+  letter(`${lab} · ${title}`, 1490, 160, 44, '#FFFFFF', { font: '800 44px "Baloo 2", sans-serif', stroke: '#2B2233', screen: true });
+  letter('MORE PUMPKIN & PIP', 1490, 1000, 40, '#FFFFFF', { font: '800 40px "Baloo 2", sans-serif', stroke: '#2B2233', screen: true });
+  if (guides) {
+    const dash = P => { for (let i = 0; i < P.length - 1; i++) { const [a, b] = [P[i], P[i + 1]], n = Math.ceil(Math.hypot(b[0] - a[0], b[1] - a[1]) / 30); for (let k = 0; k < n; k += 2) inkLine([[lerp(a[0], b[0], k / n), lerp(a[1], b[1], k / n)], [lerp(a[0], b[0], (k + 1) / n), lerp(a[1], b[1], (k + 1) / n)]], 4, '#2B2233', 'ink', 0); } };
+    for (const [x, y, w, h] of ENDSLOTS.videos) dash([[x, y], [x + w, y], [x + w, y + h], [x, y + h], [x, y]]);
+    const [cx, cy, r] = ENDSLOTS.subscribe; dash([...ellPts(cx, cy, r, r, 40), ellPts(cx, cy, r, r, 40)[0]]);
+  }
+}
