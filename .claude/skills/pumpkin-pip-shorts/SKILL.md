@@ -22,6 +22,17 @@ reusable. Reply to the user in Thai; write code, comments and dialogue in Englis
   `RUNBOOK.md` with a copy-paste prompt. Short renders (sheets, a 1-minute MP4) are fine to run directly.
 - **Fixes: stills first.** When the user points out a problem (or you change a shot), send still frames of exactly that
   spot (`--sheet` around the times involved, `--w=540`) and wait for their OK before rendering the full video.
+- **USER RULE: check it yourself before sending; the user should never be the one to find the mistake.** Past misses:
+  the moustache stayed still when the head turned, and the headband looked like a unibrow. Before any still or video
+  goes to the user, go through:
+  1. Zoom in (crop, at least 2x) on every new prop or costume: does it really look like the thing it's meant to be?
+  2. Look at it in every view used in the story (front / q / side): does it move with the head or body?
+  3. Watch the motion in a `--sheet` every ~0.1 s: does anything float, drift away, poke through or disappear?
+  4. Do the faces and subtitles read at phone size?
+  If any answer is "not sure", fix it first and check again. Only then send it.
+- **USER RULE: never drag the story out; boring is the worst outcome.** Every shot needs something new: a gag, a
+  reaction, a strong sound. No walking in, no waiting, no explaining, nothing held over 3 s. Cut every line or shot that
+  isn't funny or doesn't move the story. Before sending, watch it as a viewer: where would you swipe away? Cut there.
 - **Zoom in before sending.** Crop and enlarge any new costume or prop (`--still` at full width, then crop) and check it
   really reads as the thing (a headband once looked like a unibrow). Don't send a still you haven't looked at closely.
 - **Branch:** `claude/nice-heisenberg-5vtd6i`. Keep `PROGRESS.md` and the story's `STATUS.md` updated after each step.
