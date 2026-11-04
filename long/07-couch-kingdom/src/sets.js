@@ -41,9 +41,10 @@ function underDark(t, k = 1) {
   const N = 22;
   for (let i = 0; i < N; i++) {
     if (hash(i * 3.3) > k) continue;
-    const x = 120 + hash(i * 7.1) * 1680, y = 520 + hash(i * 1.7) * 480, r = 7 + 9 * hash(i * 2.9), bl = ((t + i * .37) % 4) < .12;
+    const up = t > 7.4 && t < 9.6 ? -14 * ease(seg(t, 7.4, 7.7)) : 0, x = 120 + hash(i * 7.1) * 1680 + Math.sin(t * .8 + i) * 18, y = 520 + hash(i * 1.7) * 480 + Math.cos(t * .6 + i * 2) * 8, r = 7 + 9 * hash(i * 2.9), bl = ((t + i * .37) % 4) < .12;
     if (Math.abs(x - 960) < 160 && y < 700) continue;
-    for (const s of [-1, 1]) { glow(x + s * r * 2, y, r * 3, '#FFE27A', .25); paint(ellPts(x + s * r * 2, y, r, bl ? 1 : r * 1.15, 10), { wash: '#FFE98A', ink: null }); }
+    const talk = (i === 4 && ((t > .8 && t < 1.8) || (t > 3.8 && t < 5.2))) || (i === 9 && ((t > 2.4 && t < 3.3) || (t > 5.8 && t < 7.4)));   // the two whisperers
+    for (const s of [-1, 1]) { glow(x + s * r * 2, y, r * (talk ? 5 : 3), '#FFE27A', talk ? .55 : .25); paint(ellPts(x + s * r * 2, y + up * .3, r, bl ? 1 : r * 1.15, 10), { wash: '#FFE98A', ink: null }); paint(ellPts(x + s * r * 2, y + up * .3 - r * .3 + up * .02, r * .45, r * .5, 8), { wash: '#2B2233', ink: null }); }
   }
 }
 // ---------- the slide ----------
@@ -231,7 +232,7 @@ function palaceFront(t, o = {}) {
   // banners: ribbons hanging from the rim
   for (const x of [520, 1400]) { const sw = Math.sin(t * 2 + x) * 8; paint([[x - 50, top + 60], [x + 50, top + 60], [x + 50 + sw, top + 420], [x + sw, top + 380], [x - 50 + sw, top + 420]], { wash: '#C8363F', ink: PAL.ink, sw: 1.4 }); paint(starPts(x + sw * .5, top + 200, 30, .45, 5), { wash: '#F2C14E', ink: null }); }
   // the great door (arched), open a crack of light
-  door(960, TFY - STEP, 300, 520, '#8E5A3A'); paint(rectPts(955, TFY - STEP - 460, 10, 460), { wash: '#FFE7A8', ink: null });
+  door(960, TFY - STEP, 300, 520, '#8E5A3A'); if (!o.shut) paint(rectPts(955, TFY - STEP - 460, 10, 460), { wash: '#FFE7A8', ink: null });
   // the steps: stacked coins
   for (let k = 0; k < 3; k++) { const h = STEP / 3, y = TFY - (k + 1) * h, w = 760 - k * 160; paint(rrPts(960 - w / 2, y, w, h, 10), { wash: CK.coin, ink: PAL.ink, sw: 1.5 }); for (let j = 0; j < w / 30; j++) inkLine([[960 - w / 2 + 10 + j * 30, y + 6], [960 - w / 2 + 10 + j * 30, y + h - 6]], 1, CK.coinDk, 'ink', 0); }
   // spool towers either side

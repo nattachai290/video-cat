@@ -265,7 +265,7 @@
       rot: tripRot,
       armR: hasFork ? excalifork(t > 125.6 ? .8 : 0) : undefined, who: 'pumpkin', boilKey: 'pk' });
     // the stack of bunnies carrying the crown up (108-110)
-    if (t < crownOn + .3) { const k = ease(seg(t, 108, crownOn)); for (let i = 0; i < 4; i++) dustBunny(PKX - 330 + i * 0, TFY - i * k * 95, U * .9, { ...face('strain'), seed: 11 + i, noShadow: i > 0, boilKey: 'st' + i }); if (t < crownOn) castCrown(PKX - 330, TFY - 4 * 95 * k - 60, U, true, 2); }
+    if (t < crownOn + .3) { const k = ease(seg(t, 108, crownOn)); for (let i = 0; i < 4; i++) dustBunny(PKX - 230, TFY - i * k * 95, U * .9, { ...face('strain'), seed: 11 + i, noShadow: i > 0, boilKey: 'st' + i }); if (t < crownOn) castCrown(PKX - 230 + 230 * ease(seg(t, 109.6, crownOn)), TFY - 4 * 95 * k - 60, U, true, 2); }
     // the marshmallow stone at his right, until he pulls the fork out
     if (t > 111 && pull < 1) marshmallowStone(PKX + 300, TFY, pull, t);
     else if (t > 111 && t < 118) marshmallowStone(PKX + 300, TFY, 1, t);
@@ -284,7 +284,7 @@
   function s10(t) {
     const z1 = 137.0, z2 = 143.3, lift = ease(seg(t, 150, 151.2)) * (1 - easeIn(seg(t, 153.0, 153.3)));
     if (t > 145.8 && t < 149.8) camT(760, 1.9); else camT(900, 1.3, [0, 0], lift * 90);
-    palaceFront(t);
+    palaceFront(t, { shut: true });
     crowd(t, { cheer: t > 140 });
     sockCape(PKX, TFY - lift * 120, U, { wind: .3 });
     const wave = (t > 131.4 && t < 132.3) || (t > 134.4 && t < 137.2) || (t > 142 && t < 143.4);
