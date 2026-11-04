@@ -212,10 +212,16 @@
     camT(cx, z, [Math.sin(whip * Math.PI) * 300, 0]);
     palaceFront(t);
     // the receipt drops from the Queen's hand down the steps... and keeps going
-    if (t > 86.4) receipt(qx + 90, qy - 200, 120 + unroll * (STEP + 200), t * .5, false);
+    const bx = qx + 90 + Math.sin(6 + t * .5) * 10;   // where the hanging receipt meets the floor
+    if (t > 86.4) receipt(qx + 90, qy - 200, 120 + unroll * (STEP + 200 - 130), t * .5, false);
     // ...and it keeps coming: along the floor to the left, round and round Sir Lint
     const slide = ease(seg(t, 89.6, 91.6)), wrapK = seg(t, 91.6, 92.5);
-    if (t > 89.6) { const x1 = lerp(qx + 90, 250 + 60, slide); paint(rectPts(x1, TFY - 20, qx + 90 - x1, 40), { wash: '#FFFDF6', ink: PAL.ink, sw: 1.2 }); for (let i = 0; i < 8; i++) { const xx = x1 + 40 + i * 80; if (xx < qx + 60) inkLine([[xx, TFY - 4], [xx + 40, TFY - 4]], 2.5, '#B9B2A6', 'ink', 0); } }
+    if (t > 89.6) {   // one continuous strip: the hanging part folds onto the floor and runs left to Sir Lint
+      const x1 = lerp(bx, 250 + 150, slide);
+      paint(rectPts(x1, TFY - 20, bx - x1, 40), { wash: '#FFFDF6', ink: PAL.ink, sw: 1.2 });
+      for (let i = 0; i < 8; i++) { const xx = x1 + 40 + i * 80; if (xx < bx - 80) inkLine([[xx, TFY], [xx + 40, TFY]], 2.5, '#B9B2A6', 'ink', 0); }
+      paint([[bx - 60, TFY - 12], [bx + 60, TFY - 12], [bx + 30, TFY + 20], [bx - 60, TFY + 20]], { wash: '#F4EEDF', ink: PAL.ink, sw: 1.2 });   // the fold where it bends onto the floor
+    }
     queenButton(qx, qy, U, { ...faces(t, [[82, 'proud'], [86, 'happy', { mouth: 'grin' }], [89.5, 'annoyed'], [91, 'proud', { mouth: 'grin' }], [93.6, 'neutral', { brow: .3 }], [100.4, 'determined', { mouth: 'grin' }], [104.6, 'proud']]),
       aL: t > 100.4 && t < 103 ? .9 : -.9, aR: t > 86.4 && t < 99 ? .4 : .5, flip: t > 100.4, view: t > 100.4 ? 'q' : 'front', who: 'queen', boilKey: 'queen' });
     const holding = t > 99.3;
@@ -224,7 +230,7 @@
     pip(PIP8, TFY, U, { ...faces(t, [[82, 'deadpan', { lookX: -1 }], [96, 'deadpan', { lookX: -1, browUp: .4 }], [101, 'surprised', { lookX: -1 }], [103.6, 'sheepish', { lookX: -1 }]]), view: 'q', flip: true, aL: t > 97.4 && t < 99 ? .6 : -.6, aR: -.6, who: 'pip', boilKey: 'pip' });
     const mum = t > 91.6, hopL = mum && t < 106 && t > 92.6 ? -Math.abs(Math.sin(t * 7)) * .5 : 0, spin = t > 91.6 && t < 92.5;
     sirLint(250, TFY, U, { ...faces(t, [[82, 'happy', { lookX: 1 }], [91.4, 'surprised', { eyes: 'wide', lookX: 1, lookY: 1 }], [92.6, 'annoyed', { brow: .8 }]]), view: spin ? (Math.floor(t * 12) % 2 ? 'q' : 'front') : 'q', flip: spin && Math.floor(t * 6) % 2 === 1, dy: hopL, boilKey: 'lint' });
-    if (mum) receiptWrap(250, TFY + hopL * U, wrapK, t);
+    if (mum) { receiptWrap(250, TFY + hopL * U, wrapK, t); const ly = TFY + hopL * U; paint(ribbon([[250 + 70, ly - 32], [250 + 115, ly - 14], [250 + 160, TFY]], 36, 36), { wash: '#FFFDF6', ink: PAL.ink, sw: 1.2 }); }   // the strip runs from the floor up into the lowest wrap
     // 105.4: one trumpeter tries a fanfare to close the ceremony: a squeak... and he bursts into dust
     if (t > 105.2) { const b = seg(t, 106.4, 106.6); if (b < 1) { dustBunny(1220, TFY - STEP / 3, U, { ...face(t > 106 ? 'strain' : 'happy', { eyes: t > 106 ? 'squeeze' : 'open' }), seed: 9, flip: true, sq: -.2 * b, boilKey: 'tbx' }); paint([[1200, TFY - STEP / 3 - 150], [1110, TFY - STEP / 3 - 190], [1110, TFY - STEP / 3 - 130]], { wash: CK.coin, ink: PAL.ink, sw: 1.2 }); } puffCloud(1220, TFY - 140, 120, t - 106.5); }
     for (const [i, x] of [[0, 700], [1, 1220]]) if (t < 86) { dustBunny(x, TFY - STEP / 3, U, { ...face('happy'), seed: 8 + i, flip: i > 0, boilKey: 'tb' + i }); const d = i ? -1 : 1; paint([[x + d * 20, TFY - STEP / 3 - 150], [x + d * 110, TFY - STEP / 3 - 190], [x + d * 110, TFY - STEP / 3 - 130]], { wash: CK.coin, ink: PAL.ink, sw: 1.2 }); }   // trumpeters
