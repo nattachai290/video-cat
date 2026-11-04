@@ -1,6 +1,6 @@
 [
   {"id": "d01", "who": "town1", "shot": "1-01", "t": 5.8, "text": "He comes...", "emo": "mysterious whisper in the dark", "exag": 0.6, "cfg": 0.4},
-  {"id": "d02", "who": "town2", "shot": "1-01", "t": 7.4, "text": "Who comes?", "emo": "curious tiny whisper", "exag": 0.6, "cfg": 0.4},
+  {"id": "d02", "who": "town2", "shot": "1-01", "t": 7.4, "text": "Who comes?", "emo": "curious, quiet whisper", "exag": 0.45, "cfg": 0.45},
   {"id": "d03", "who": "town1", "shot": "1-01", "t": 8.8, "text": "The Orange One.", "emo": "dramatic, awed whisper", "exag": 0.75, "cfg": 0.35},
   {"id": "d04", "who": "town2", "shot": "1-01", "t": 10.8, "text": "Is he bringing snacks?", "emo": "hopeful, excited whisper", "exag": 0.8, "cfg": 0.35},
   {"id": "d05", "who": "pumpkin", "shot": "1-02", "t": 18.5, "text": "Pip. I found the cracker.", "emo": "proud, pleased", "exag": 0.65, "cfg": 0.4},
