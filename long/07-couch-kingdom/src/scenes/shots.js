@@ -23,8 +23,20 @@
   // 1-01 · 0–12 · HOOK: dark under the sofa; eyes blink open; whispers. "Is he bringing snacks?" Then an orange paw comes
   // down through the slit of light (9.5) and gropes about... cut up.
   function s01(t) {
+    // 0-2.8: cold open on the sofa: Pumpkin sniffs at the cushion gap... and plunges his arm in. (The first whisper plays over it.)
+    if (t < 2.8) {
+      cam(1030, 470, 1.35);
+      couchSet(t);
+      const dive = ease(seg(t, 1.7, 2.2));
+      pumpkin(700, 770, U * 1.15, { ...faces(t, [[0, 'greedy', { lookX: 1, lookY: 1, mouth: 'grin' }], [1.7, 'determined', { lookX: 1, lookY: 1 }]]), view: 'q',
+        aR: lerp(.4, -1.08, dive), armR: dive > .9 ? forearm : undefined, dy: -Math.abs(Math.sin(t * 7)) * .1 * (1 - dive), boilKey: 'pk' });
+      if (dive > .9) gapOverPaw(t);
+      for (let i = 0; i < 3; i++) { const f = frac(t * .8 + i / 3); paint(starPts(980 + Math.sin(f * 6 + i) * 30, 600 - f * 200, 10, .4, 4), { wash: '#FFE7A8', washOp: 255 * (1 - f), ink: null }); }   // the cracker smell, rising
+      pip(1220, 700, U * 1.15, { ...face('deadpan', { lookX: -1 }), view: 'q', flip: true, aL: -.6, aR: -.6, boilKey: 'pip' });
+      camEnd(); return;
+    }
     cam(960, 560, lerp(1.0, 1.15, t / 12));
-    underDark(t, seg(t, 0, 3));
+    underDark(t, seg(t, 2.8, 4.2));
     if (t > 8.6) { const k = ease(seg(t, 8.6, 10)); push(); translate(960, -60 + k * 340); rotate(Math.sin(t * 5) * .15); paint(ribbon([[0, -400], [0, -100], [10, 0]], 150, 120), { wash: PUMPKIN_COL.col, ink: PAL.ink, sw: 2.5 }); paint(ellPts(10, 10, 80, 60, 16), { wash: PUMPKIN_COL.col, ink: PAL.ink, sw: 2.5 }); for (const d of [-1, 0, 1]) inkLine([[10 + d * 30, 40], [10 + d * 30, 60]], 2, PAL.ink, 'ink', 0); pop(); }
     camEnd();
   }
@@ -251,7 +263,7 @@
   // power." The bunnies tie the sock cape on. He poses. Cheers.
   function s09(t) {
     const crownOn = 110.0, pull = seg(t, 113.4, 114.2), slip = ease(seg(t, 119.8, 120.4)) * (1 - ease(seg(t, 123.4, 123.8))), cape = ease(seg(t, 124.5, 125.5));
-    if (t > 119.6 && t < 123.8) cam(PKX, HEAD + 150, 2.6);        // close on the slipped crown
+    if (t > 119.0 && t < 123.8) cam(PKX, HEAD + 90, 2.15);        // close on the slipped crown
     else if (t > 114.8 && t < 118.6) camT(1050, 1.8);
     else if (t > 126.9) camT(1180, 1.2);
     else camT(860, 1.3);
@@ -260,8 +272,9 @@
     const tripRot = t > 127.1 && t < 129.8 ? 1.4 * easeIn(seg(t, 127.1, 127.4)) * (1 - ease(seg(t, 129.2, 129.8))) : 0;
     if (cape > 0) sockCape(PKX, TFY, U, { wind: t > 126 ? .4 : 0, dy: (1 - cape) * -3, rot: tripRot });
     const hasFork = pull > 0;
+    const blind = slip > .5;
     pumpkin(PKX, TFY, U, { ...faces(t, [[108, 'sheepish'], [crownOn, 'surprised', { lookY: -1 }], [111.4, 'happy'], [113.4, 'strain', { eyes: 'squeeze' }], [114.4, 'deadpan', { lookX: 1 }], [117.4, 'neutral'], [120.2, 'proud', { mouth: 'grin' }], [125.6, 'determined', { mouth: 'grin' }]]),
-      crown: t > crownOn && !(t > 127.35 && t < 129.6) ? { slip } : false, sq: t < 112.8 ? .22 : 0, aR: hasFork ? (t > 125.6 ? 1.2 : lerp(-.4, .6, ease(pull))) : -1.2, aL: t > 125.6 ? .8 : -1.2,
+      crown: t > crownOn && !(t > 127.35 && t < 129.6) ? { slip, tilt: blind ? Math.sin(t * 3) * .08 : 0 } : false, sq: t < 112.8 ? .22 : 0, aR: blind ? .15 + Math.cos(t * 6) * .3 : hasFork ? (t > 125.6 ? 1.2 : lerp(-.4, .6, ease(pull))) : -1.2, aL: blind ? .1 + Math.sin(t * 6) * .3 : t > 125.6 ? .8 : -1.2,
       rot: tripRot,
       armR: hasFork ? excalifork(t > 125.6 ? .8 : 0) : undefined, who: 'pumpkin', boilKey: 'pk' });
     // the stack of bunnies carrying the crown up (108-110)
