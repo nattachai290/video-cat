@@ -23,6 +23,16 @@
     ['Pumpkin (hero kit)', 'Pip + pack', 'Sir Lint', 'Queen Button', 'Sock Troll', 'Oracle Cookie', 'Dust Bunnies'].forEach((n, i) => label(n, i < 6 ? xs[i] : 1750, gy + 60, 28));
   };
   LOOPS.lineup.len = 2;
+  // the new town, wide, with the folk in it for scale
+  LOOPS.town = t => {
+    camBegin(960, TFY - 445 / 1.0, 1.0);
+    townSquare(t, {});
+    sirLint(300, TFY, 40, { ...face('happy'), boilKey: 'tl' }); queenButton(640, TFY, 40, { ...face('proud'), boilKey: 'tq' });
+    dustBunny(760, TFY, 40, { seed: 2, boilKey: 'tb' }); buttonFolk(1250, TFY, 40, { ...face('happy'), seed: 1, boilKey: 'tf' }); dustBunny(1560, TFY, 40, { seed: 4, boilKey: 'tb2' });
+    pumpkin(1960, TFY, 40, { ...face('surprised'), boilKey: 'tp' });
+    camEnd();
+  };
+  LOOPS.town.len = 2;
 
   // a row: views then expressions of one character
   const row = (fn, gy, u, views, faces_, extra = {}) => {

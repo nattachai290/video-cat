@@ -65,38 +65,111 @@ function slideJunk(t, s) {
   });
 }
 // ---------- Lostland ----------
-// houses: [x, w, h, label colour]. x = left edge on the ground line
-const HOUSES = [[60, 190, 130, '#C8363F'], [270, 160, 210, '#3E8C82'], [450, 210, 140, '#C8363F'], [1260, 200, 160, '#5E7FC8'], [1480, 170, 230, '#C8363F'], [1680, 200, 140, '#3E8C82']];
-const SQUASHED = [860, 210, 140, '#5E7FC8'];   // the one Pumpkin lands on
+// The town is built from lost things, and every house is TALLER than its folk (folk: 5.5-7.5u = 220-300 px; houses 300-520 px):
+// a thread-spool tower, a mug house, a sneaker house, a tin-can house, and the matchbox cottage with a playing-card roof that
+// Pumpkin flattens. Above: the underside of the sofa (webbing straps, coil springs, the glowing gap). Floor: wooden boards.
+const LOT = [   // [kind, centre x, scale]
+  ['can', -330, 1], ['spool', 110, 1], ['mug', 430, 1], ['sneaker', 1380, 1], ['spool2', 1730, .95], ['can2', 2080, 1], ['mug2', -700, 1], ['sneaker2', 2450, 1],
+];
+const COTTAGE = [960, 330, 270];   // centre x, w, h of the matchbox cottage Pumpkin lands on
 function townSquare(t, o = {}) {
   boilSeed('town');
-  // sky = the underside of the sofa: dark fabric with the glowing gap far above
-  paint(rectPts(-600, -500, 3200, 1500), { wash: CK.town, ink: null });
-  for (let i = -3; i < 14; i++) paint([[i * 200, -500], [i * 200 + 120, -500], [i * 200 + 90, TFY - 360], [i * 200 + 30, TFY - 360]], { wash: CK.town2, washOp: 90, ink: null });   // soft folds of the sofa's lining
-  glow(960, -40, 380, CK.glow, .55); paint(rrPts(860, -80, 200, 60, 20), { wash: CK.glow, ink: null });
-  // far back: the coin wall
-  for (let r = 0; r < 4; r++) for (let c = -4; c < 26; c++) coin(c * 95 + (r % 2) * 47, TFY - 330 + r * 60, 0, .8, true);
-  // the ground: bottle-cap paving
-  paint(rectPts(-600, TFY, 3200, 600), { wash: CK.ground, ink: null });
-  for (let r = 0; r < 4; r++) for (let c = -6; c < 30; c++) { const cx = c * 90 + (r % 2) * 45, cy = TFY + 30 + r * 50 + r * r * 8; paint(ellPts(cx, cy, 34 + r * 4, 10 + r * 3, 14), { wash: CK.groundLt, ink: null }); }
-  // LED lamp posts (charger lights on toothpicks)
-  for (const x of [160, 700, 1200, 1780]) { paint(rectPts(x - 5, TFY - 300, 10, 300), { wash: '#E3C38E', ink: PAL.ink, sw: 1 }); glow(x, TFY - 310, 70, CK.led, .6); paint(ellPts(x, TFY - 310, 14, 14, 10), { wash: CK.led, ink: PAL.ink, sw: 1 }); }
-  // houses
-  HOUSES.forEach(([x, w, h, c], i) => matchbox(x, TFY, w, h, c, 0, i));
-  if (o.house !== false) matchbox(SQUASHED[0], TFY, SQUASHED[1], SQUASHED[2], SQUASHED[3], o.squash || 0, 9);
-  if (o.dark) paint(rectPts(-600, -500, 3200, 1600), { wash: '#0E0B18', washOp: 200 * o.dark, ink: null });
+  // the underside of the sofa: dark lining, webbing straps, springs
+  paint(rectPts(-900, -600, 3800, 1700), { wash: CK.town, ink: null });
+  for (let i = -6; i < 22; i++) paint(rectPts(i * 170, -600, 90, 420), { wash: CK.town2, washOp: 140, ink: null });   // straps (down)
+  for (const y of [-260, -80]) paint(rectPts(-900, y, 3800, 70), { wash: CK.town2, washOp: 120, ink: null });         // straps (across)
+  glow(960, -60, 420, CK.glow, .6); paint(rrPts(870, -120, 180, 70, 24), { wash: CK.glow, ink: null });              // the gap, far up
+  for (let i = 0; i < 9; i++) { const x = -500 + i * 380 + (i % 2) * 90; if (Math.abs(x - 960) < 200) continue; const sw = Math.sin(t * 1.3 + i) * 4; for (let k = 0; k < 7; k++) paint(ellPts(x + sw * k * .2, -70 + k * 24, 34, 9, 14), { ink: '#2A2440', sw: 3 }); }   // coil springs
+  // far away: giant lost things as soft silhouettes (a pencil, a toy block, a slipper, a marble)
+  const sil = '#2F2947';
+  paint([[-300, TFY - 40], [80, TFY - 560], [120, TFY - 540], [-260, TFY - 20]], { wash: sil, ink: null });
+  paint(rrPts(560, TFY - 470, 330, 330, 30), { wash: sil, ink: null }); letter('A', 725, TFY - 300, 200, '#3A3354', { font: '800 200px "Baloo 2", sans-serif', ink: false });
+  paint(ellPts(1560, TFY - 120, 420, 160, 26), { wash: sil, ink: null });
+  paint(ellPts(2150, TFY - 220, 150, 150, 24), { wash: sil, ink: null });
+  // a bunting line of thread with stamp flags, strung across the square
+  const bunt = x => TFY - 650 + Math.pow((x - 960) / 960, 2) * 160 + Math.sin(t * 1.5 + x * .01) * 4;
+  inkLine(Array.from({ length: 25 }, (_, i) => [-300 + i * 105, bunt(-300 + i * 105)]), 2, '#F2EAD8', 'ink', .2);
+  for (let i = 0; i < 24; i++) { const x = -250 + i * 105, y = bunt(x); paint([[x - 22, y], [x + 22, y], [x, y + 42]], { wash: ['#E2464E', '#F2C14E', '#5FB3A8', '#9C8AD8'][i % 4], ink: PAL.ink, sw: 1 }); }
+  // the floor: wooden boards, a crumb or two
+  paint(rectPts(-900, TFY, 3800, 700), { wash: CK.floor, ink: null });
+  for (let i = 0; i < 4; i++) inkLine([[-900, TFY + 40 + i * 60 + i * i * 10], [2900, TFY + 40 + i * 60 + i * i * 10]], 2, CK.floorDk, 'ink', 0);
+  for (let i = 0; i < 12; i++) { const x = -800 + i * 330 + (i % 3) * 60; inkLine([[x, TFY + 40 + (i % 4) * 60], [x, TFY + 100 + (i % 4) * 70]], 2, CK.floorDk, 'ink', 0); }
+  // matchstick lamp posts with LED lights
+  for (const x of [-120, 270, 1180, 1560, 2260]) { paint(rectPts(x - 7, TFY - 420, 14, 420), { wash: '#E3C38E', ink: PAL.ink, sw: 1.2 }); paint(ellPts(x, TFY - 428, 15, 22, 12), { wash: '#C8363F', ink: PAL.ink, sw: 1.2 }); glow(x, TFY - 470, 90, CK.led, .55); paint(ellPts(x, TFY - 470, 16, 16, 10), { wash: CK.led, ink: PAL.ink, sw: 1 }); }
+  // the houses
+  LOT.forEach(([k, x, sc], i) => house(k, x, TFY, sc, t, i));
+  if (o.house !== false) cottage(COTTAGE[0], TFY, o.squash || 0, t);
+  if (o.dark) paint(rectPts(-900, -600, 3800, 1800), { wash: '#0E0B18', washOp: 200 * o.dark, ink: null });
 }
-// a matchbox house: (x = left, y = ground), w x h, a striker label in colour c, a door and a window. squash 0..1 flattens it.
-function matchbox(x, y, w, h, c, squash = 0, seed = 0) {
-  const H = h * (1 - squash * .82), W2 = w * (1 + squash * .25), X = x - (W2 - w) / 2;
-  paint(rectPts(X, y - H, W2, H), { wash: CK.match, ink: PAL.ink, sw: 1.4, shade: true, shadeK: .35 });
-  paint(rectPts(X, y - H, W2, Math.min(H, 24)), { wash: c, ink: PAL.ink, sw: 1 });   // the label stripe = roof
-  if (squash < .5) {
-    paint(rrPts(X + W2 * .4, y - H * .55, W2 * .22, H * .55, 6), { wash: CK.matchDk, ink: PAL.ink, sw: 1 });   // door
-    paint(rectPts(X + W2 * .12, y - H * .7, W2 * .18, H * .2), { wash: '#FFE7A8', ink: PAL.ink, sw: 1 });      // window, lit
-    paint(rectPts(X + W2 * .72, y - H * .7, W2 * .16, H * .2), { wash: '#FFE7A8', ink: PAL.ink, sw: 1 });
-  } else for (let i = 0; i < 3; i++) inkLine([[X + W2 * (.2 + i * .3), y - H], [X + W2 * (.25 + i * .3), y - H * .3]], 1.2, CK.matchDk, 'ink', .4);   // crumpled
+// a lit window (warm glow), round or square
+function win(x, y, w, h, round = false, t = 0, i = 0) {
+  const lit = .75 + .25 * Math.sin(t * 1.7 + i * 2.3);
+  glow(x, y, Math.max(w, h) * 1.1, '#FFD27A', .35 * lit);
+  paint(round ? ellPts(x, y, w / 2, h / 2, 16) : rrPts(x - w / 2, y - h / 2, w, h, 6), { wash: '#FFE7A8', ink: PAL.ink, sw: 1.3 });
+  if (round) { inkLine([[x - w / 2, y], [x + w / 2, y]], 1.2, PAL.ink, 'ink', 0); inkLine([[x, y - h / 2], [x, y + h / 2]], 1.2, PAL.ink, 'ink', 0); }
+  else { inkLine([[x, y - h / 2], [x, y + h / 2]], 1.2, PAL.ink, 'ink', 0); paint(rectPts(x - w / 2 - 6, y + h / 2, w + 12, 8), { wash: '#B98F48', ink: PAL.ink, sw: 1 }); }
 }
+function door(x, y, w, h, col = '#8E5A3A') { paint([[x - w / 2, y], [x - w / 2, y - h + w / 2], ...arcPts(x, y - h + w / 2, w / 2, w / 2, Math.PI, TAU, 8), [x + w / 2, y]], { wash: col, ink: PAL.ink, sw: 1.4 }); paint(ellPts(x + w * .25, y - h * .45, 5, 5, 8), { wash: '#F2C14E', ink: PAL.ink, sw: .8 }); }
+function house(kind, x, y, sc, t, i) {
+  push(); translate(x, y); scale(sc, sc); translate(-x, -y);
+  if (kind.startsWith('spool')) {   // a thread-spool tower with a bottle-cap roof and a pennant
+    const c = kind === 'spool' ? '#E2464E' : '#5FB3A8', w = 190, h = 420;
+    paint(ellPts(x, y - 12, w * .62, 22, 20), { wash: '#C9A26B', ink: PAL.ink, sw: 1.5 });
+    paint(rectPts(x - w / 2, y - h + 30, w, h - 50), { wash: c, ink: PAL.ink, sw: 1.6, shade: true, shadeK: .45 });
+    for (let k = 0; k < 14; k++) inkLine([[x - w / 2, y - 40 - k * 25], [x + w / 2, y - 30 - k * 25]], 1.2, mixCol(c, '#000000', .25), 'ink', 0);   // the wound thread
+    paint(ellPts(x, y - h + 30, w * .62, 22, 20), { wash: '#C9A26B', ink: PAL.ink, sw: 1.5 });
+    paint([[x - w * .66, y - h + 30], [x, y - h - 110], [x + w * .66, y - h + 30]], { wash: '#F2C14E', ink: PAL.ink, sw: 1.6, shade: true, shadeK: .5 });   // roof
+    for (let k = -4; k <= 4; k++) inkLine([[x + k * w * .14, y - h + 32], [x + k * w * .05, y - h - 40]], 1, '#C9932F', 'ink', 0);
+    inkLine([[x, y - h - 110], [x, y - h - 190]], 2.4, PAL.ink, 'ink', 0); paint([[x, y - h - 190], [x + 70 + Math.sin(t * 4) * 8, y - h - 175], [x, y - h - 155]], { wash: '#F2EAD8', ink: PAL.ink, sw: 1.2 });
+    win(x, y - 300, 64, 64, true, t, i); win(x - 40, y - 175, 46, 60, false, t, i + 1); door(x + 40, y - 12, 60, 110);
+    paint(rrPts(x + 60, y - 260, 80, 12, 4), { wash: '#C9CED6', ink: PAL.ink, sw: 1 });   // a hair-clip balcony
+  } else if (kind.startsWith('mug')) {   // a mug house: polka dots, the handle is a balcony, a sugar-cube chimney
+    const c = kind === 'mug' ? '#F6EBDA' : '#BFD9F2', w = 300, h = 330;
+    const hp = arcPts(x + w / 2 - 10, y - h / 2 - 10, 95, 115, -Math.PI / 2 + .1, Math.PI / 2 - .1, 14);   // the handle (a balcony with a rail)
+    paint(ribbon(hp, 44, 44), { wash: c, ink: PAL.ink, sw: 1.6 });
+    inkLine([[x + w / 2 + 40, y - h / 2 - 50], [x + w / 2 + 40, y - h / 2 + 30]], 2, PAL.ink, 'ink', 0);
+    paint([[x - w / 2, y - h], [x + w / 2, y - h], [x + w / 2 - 14, y], [x - w / 2 + 14, y]], { wash: c, ink: PAL.ink, sw: 1.7, shade: true, shadeK: .4 });
+    for (let k = 0; k < 9; k++) paint(ellPts(x - w / 2 + 30 + (k % 3) * 120 + (Math.floor(k / 3) % 2) * 50, y - h + 60 + Math.floor(k / 3) * 100, 14, 14, 10), { wash: '#E2848C', ink: null });
+    paint(ellPts(x, y - h, w / 2, 20, 22), { wash: '#6E4A3A', ink: PAL.ink, sw: 1.5 });   // coffee on top = the roof
+    paint(rrPts(x - 90, y - h - 70, 60, 60, 6), { wash: '#FFFFFF', ink: PAL.ink, sw: 1.3 });   // sugar-cube chimney
+    for (let k = 0; k < 3; k++) { const f = frac(t * .4 + k / 3); paint(ellPts(x - 60 + Math.sin(f * 6) * 10, y - h - 90 - f * 120, 14 + f * 14, 10 + f * 10, 10), { wash: '#FFFFFF', washOp: 160 * (1 - f), ink: null }); }
+    win(x - 70, y - 200, 60, 70, false, t, i); win(x + 70, y - 200, 60, 70, false, t, i + 1); door(x, y - 6, 70, 120, '#5E7FC8');
+  } else if (kind.startsWith('sneaker')) {   // a lost sneaker lying on its side: the toe is the porch, the opening the roof garden
+    const c = kind === 'sneaker' ? '#5E7FC8' : '#E2464E', w = 520;
+    paint(rrPts(x - w / 2, y - 50, w, 50, 22), { wash: '#F6F1E6', ink: PAL.ink, sw: 1.6 });   // the sole
+    for (let k = 0; k < 9; k++) inkLine([[x - w / 2 + 30 + k * 55, y - 30], [x - w / 2 + 50 + k * 55, y - 10]], 1.2, '#C9C3B6', 'ink', 0);
+    const body = [[x - w / 2, y - 45], [x - w / 2 + 10, y - 260], [x - w / 2 + 110, y - 330], [x - 30, y - 300], [x + 60, y - 210], [x + w / 2 - 40, y - 160], [x + w / 2, y - 90], [x + w / 2, y - 45]];
+    paint(body, { wash: c, ink: PAL.ink, sw: 1.7, curv: .35, shade: true, shadeK: .45 });
+    paint([[x + 120, y - 45], [x + 140, y - 175], [x + w / 2 - 40, y - 160], [x + w / 2, y - 90], [x + w / 2, y - 45]], { wash: '#F6F1E6', ink: PAL.ink, sw: 1.4, curv: .35 });   // toe cap
+    for (let k = 0; k < 4; k++) { const lx = x - 110 + k * 42, ly = y - 262 + k * 20; paint(ellPts(lx - 22, ly + 4, 6, 6, 8), { wash: '#F2EAD8', ink: PAL.ink, sw: .8 }); paint(ellPts(lx + 22, ly + 14, 6, 6, 8), { wash: '#F2EAD8', ink: PAL.ink, sw: .8 }); inkLine([[lx - 22, ly + 4], [lx + 22, ly + 14]], 6, '#FFFFFF', 'ink', 0); }   // eyelets + laces, on the instep
+    paint(rrPts(x - 230, y - 110, 300, 26, 12), { wash: '#FFFFFF', washOp: 200, ink: PAL.ink, sw: 1 });   // a side stripe
+    win(x - 170, y - 150, 60, 60, true, t, i); win(x - 60, y - 140, 56, 56, true, t, i + 1); door(x + 200, y - 50, 64, 100, '#F2C14E');
+    paint(ellPts(x - w / 2 + 70, y - 320, 70, 18, 14), { wash: '#3B3F4A', ink: PAL.ink, sw: 1.2 });   // the opening = a roof garden
+    for (let k = 0; k < 4; k++) paint(ellPts(x - w / 2 + 30 + k * 28, y - 340 - (k % 2) * 14, 16, 16, 10), { wash: '#7FB36A', ink: PAL.ink, sw: .8 });
+  } else if (kind.startsWith('can')) {   // a tin-can house: ridges, a paper label, a bottle-cap roof
+    const c = kind === 'can' ? '#F2C14E' : '#9C8AD8', w = 230, h = 380;
+    paint(rectPts(x - w / 2, y - h, w, h), { wash: '#C9CED6', ink: PAL.ink, sw: 1.6, shade: true, shadeK: .5 });
+    for (let k = 0; k < 6; k++) inkLine([[x - w / 2, y - 20 - k * 8], [x + w / 2, y - 20 - k * 8]], 1, '#959CA8', 'ink', 0);
+    paint(rectPts(x - w / 2, y - h + 70, w, 200), { wash: c, ink: PAL.ink, sw: 1.3 });   // the label
+    letter('BEANS', x, y - h + 120, 34, '#2B2233', { font: '800 34px "Baloo 2", sans-serif', ink: false });
+    paint(ellPts(x, y - h, w / 2, 18, 20), { wash: '#DCE0EA', ink: PAL.ink, sw: 1.4 });
+    castCrown(x, y - h + 4, 70, { col: '#E2464E' }, 1.6);   // a red bottle cap for a roof
+    win(x - 50, y - h + 200, 56, 60, false, t, i); win(x + 50, y - h + 200, 56, 60, false, t, i + 1); door(x, y, 72, 120, '#5A3E2B');
+  }
+  pop();
+}
+// the matchbox cottage with a folded playing-card roof and a crayon chimney. squash 0..1 flattens it (Pumpkin lands on it).
+function cottage(x, y, squash, t) {
+  const [, w, h] = COTTAGE, H = h * (1 - squash * .8), W2 = w * (1 + squash * .3), X = x - W2 / 2, roofH = 120 * (1 - squash * .85);
+  paint(rectPts(X, y - H, W2, H), { wash: CK.match, ink: PAL.ink, sw: 1.6, shade: true, shadeK: .4 });
+  paint(rectPts(X, y - H + 30, 26, H - 30), { wash: '#8E5A3A', ink: PAL.ink, sw: 1 });   // the striker strip
+  paint([[X - 30, y - H], [x, y - H - roofH], [X + W2 + 30, y - H]], { wash: '#C8363F', ink: PAL.ink, sw: 1.6 });   // the card roof (its back)
+  if (roofH > 30) { for (let k = 0; k < 4; k++) inkLine([[X + 20 + k * 40, y - H - 6], [x - 10 + k * 20, y - H - roofH + 16]], 1, '#F2EAD8', 'ink', 0); paint(rectPts(X + W2 - 70, y - H - roofH * .9, 26, roofH * .7), { wash: '#5FB3A8', ink: PAL.ink, sw: 1.2 }); }   // pattern + crayon chimney
+  if (squash < .5) { win(X + 70, y - H * .62, 64, 64, false, t, 7); door(X + W2 - 90, y, 70, Math.min(120, H - 30)); }
+  else for (let i = 0; i < 4; i++) inkLine([[X + W2 * (.15 + i * .22), y - H], [X + W2 * (.2 + i * .22), y - H * .3]], 1.4, CK.matchDk, 'ink', .4);
+}
+// (kept for the slide etc.)
+function matchbox(x, y, w, h, c, squash = 0) { cottage(x + w / 2, y, squash, 0); }
 function coin(x, y, r = 0, s = 1, flat = false) {
   push(); translate(x, y); rotate(r); scale(s, s);
   paint(ellPts(0, 0, 34, flat ? 30 : 34 * Math.abs(Math.cos(r * 2)) + 4, 18), { wash: CK.coin, ink: PAL.ink, sw: 1.2 });
