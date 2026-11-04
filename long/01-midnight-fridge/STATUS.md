@@ -20,3 +20,11 @@
 toward the plant; nothing new happens there). The cut is on a music bar line (120 bpm = 2 s per bar), with a 20 ms
 audio crossfade, made with ffmpeg trim/concat from the 60 s files. Checked: 58.000 s, full decode with no errors, frames
 around the cut and the ending. The NEXT: PART 2 badge now shows at 55.8-58.
+
+## Vertical Short (1080x1920, 58 s): `out/short_58.mp4`
+`short.html` + `src/vertical.js` draw the same 16:9 scenes through a moving crop window (zoom 1.35, 800 world px wide,
+keyframes in `VKEYS`), with a night-sky title band on top ("THE MIDNIGHT FRIDGE" + PART 1), subtitles over the lower
+picture (high up during the crayon fantasy), and the NEXT: PART 2 badge in the top band at the end. The long video is
+untouched. Render: `render_pw.mjs --page=short.html --range=0:60 --audio=out/audio/mix.wav --out=out/short_v60.mp4`, then the
+same 44-46 s ffmpeg cut as the 58 s 16:9 version. Sheets need `--crop=0,0,1080,1920`. Checked: 1080x1920, 58.000 s,
+decodes with no errors, out/check/short_cuts.jpg.

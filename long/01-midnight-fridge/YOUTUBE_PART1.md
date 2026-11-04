@@ -1,6 +1,6 @@
 # YouTube upload: The Midnight Fridge · Part 1
 
-Video: `out/part1_next_58.mp4` (1920x1080, 58 s: 44-46 s cut out, see STATUS, with the "NEXT: PART 2" badge) · Cover: `out/cover.png` (1280x720, "I'M A LAMP. / PART 1"; render `--loop=cover --still=0.6` then scale to 1280x720)
+Video for the **Short**: `out/short_58.mp4` (vertical 1080x1920, 58 s, NEXT: PART 2 badge). 16:9 version: `out/part1_next_58.mp4` (not a Short) · Cover: `out/cover.png` (1280x720, for the 16:9 upload)
 
 Note: a horizontal (16:9) video does not count as a Short on YouTube; it is posted as a normal video (Shorts must be vertical or square).
 
@@ -23,7 +23,7 @@ New cartoons on Snackatoon: subscribe so you don't miss Part 2! 🍪
 
 Made from scratch with code: picture, music and sound effects. Character voices are AI-generated.
 
-#cartoon #animation #funnycat #catcartoon #midnightsnack #pumpkinandpip #snackatoon
+#shorts #cartoon #animation #funnycat #catcartoon #midnightsnack #pumpkinandpip #snackatoon
 
 ## Settings
 
