@@ -659,7 +659,9 @@
     robotVac(vx, VB[1], 1.0, t, { led: 'blue', blink: false });
     cakeSlice(vx - 10, VB[1] - 60, .9, false, t > 160.4 ? .6 : 0); candle(vx - 20, VB[1] - 60 - 100, 1.0, t, 1);
     for (let i = 0; i < 6; i++) pop2(i % 3 === 2 ? '♫' : '♪', vx + 70 + (i % 2) * 90, VB[1] - 300, t, 161.0 + i * .6, 92, '#7CC8F5', .9, (i % 2 ? .2 : -.2));
-    fortFront(t, 0, seg(t, 158.4, 159.2), [vx, VB[1] - 40]);
+    fortFront(t, 0, seg(t, 158.4, 159.2), [vx, VB[1] - 40], seg(t, 159.2, 159.5));
+    if (t > 159.5 && t < 160.0) for (const s of [-1, 1]) puffCloud(FORT.x + s * (FORT.w / 2 + 10), FY - 20, 70, (t - 159.5));
+    pop2('FLOMP!', FORT.x, FY - 360, t, 159.5, 60, '#FFFFFF', .7);
     pop2('SHLURP!', 1700, 900, t, 158.6, 70, '#9CD6F5', .8);
     camEnd();
     night(.55);
@@ -675,7 +677,7 @@
     calendar(CAL[0], CAL[1], seg(t, 166.4, 167.0));
     if (t > 166.9) letter("PUMPKIN'S B-DAY", CAL[0], CAL[1] + 175, 44, '#E2463F', { font: '800 44px "Baloo 2", sans-serif', stroke: '#FFFFFF', pop: seg(t, 166.9, 167.1) * 1.2, rot: -.05 });
     fortBack(t, 1);
-    fortFront(t, 0, 1);
+    fortFront(t, 0, 1, undefined, 1);
     const cry = t > 168.2;
     pumpkin(KF, FY, U, { ...faces(t, [[166, 'surprised', { lookX: -1, lookY: -1 }], [167.2, 'sheepish', { blush: .7 }], [168.2, 'happy', { blush: .8 }]]), aL: -1.1, aR: -1.1, ...SPY, who: 'pumpkin', boilKey: 'pk' });
     pip(PF, FY, U, { ...faces(t, [[166, 'happy', { lookX: -1 }], [169.4, 'happy']]), view: 'q', flip: t >= 168, aL: -.6, aR: t < 168 ? 1.3 : -.4, draw: ninjaMask(1), who: 'pip', boilKey: 'pip' });
@@ -695,7 +697,7 @@
     const z = lerp(1.25, 1.1, ease(seg(t, 177.5, 180)));
     cam(1350, 1270, z);
     roomNight(t);
-    fortBack(t, 1); fortFront(t, 0, 1);
+    fortBack(t, 1); fortFront(t, 0, 1, undefined, 1);
     const blow = t > 173.0 && t < 173.8, eat = t > 174.6;
     const lit = t < 173.2 ? 1 : 0;
     pumpkin(KF, FY, U, { ...faces(t, [[172, 'happy'], [172.4, 'determined', { mouth: 'O' }], [173.0, 'strain', { mouth: 'O' }], [173.8, 'surprised', { lookX: 1 }], [174.6, 'munching'], [176.8, 'surprised', { lookX: 1, eyes: 'wide' }], [177.8, 'happy', { blush: .6 }]]),

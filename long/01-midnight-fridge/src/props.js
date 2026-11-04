@@ -487,9 +487,10 @@ function fortBack(t, lift = 0) {
   const { x, y, w } = FORT;
   paint(rrPts(x - w / 2 - 40, y - 640, w + 80, 640, 24), { wash: '#3C3466', washOp: 120 * (1 - lift), ink: null });   // the dark inside
 }
-function fortFront(t, lift = 0, suck = 0, to = [2000, 1500]) {
-  const { x, y, w } = FORT, ly = -lift * 420;
-  for (const s of [-1, 1]) { push(); translate(x + s * (w / 2 + 10), y - 290); rotate(s * .06); scale(1.4, 3.4); cushion(0, 0, Math.PI / 2, 1); pop(); }
+function fortFront(t, lift = 0, suck = 0, to = [2000, 1500], fall = 0) {
+  const { x, y, w } = FORT, ly = -lift * 420, kf = easeIn(clamp(fall));
+  // the two cushion walls; fall 0..1 flops them flat onto the floor (toward the camera) once the roof is gone
+  for (const s of [-1, 1]) { push(); translate(x + s * (w / 2 + 10), y); scale(1 + .25 * kf, 1 - .86 * kf); translate(0, -290); rotate(s * .06 * (1 - kf)); scale(1.4, 3.4); cushion(0, 0, Math.PI / 2, 1); pop(); }
   if (suck >= 1) return;
   // the blanket roof (a draped, scalloped shape); suck 0..1 shrinks it into the vacuum at `to`
   push(); if (suck > 0) { const k = easeIn(suck); translate(lerp(0, to[0] - x, k), lerp(0, to[1] - (y - 640), k)); translate(x, y - 640); scale(1 - k * .95, 1 - k * .95); rotate(k * 2); translate(-x, -(y - 640)); }

@@ -141,6 +141,7 @@ for (let i = 0; i < 6; i++) put(155.9 + i * .25, .12, blubS(i), { gain: .35 }); 
 put(156.6, .9, inflate(200, 700, .9), { gain: .5 });                                                  // Pip blows a big bubble
 put(157.5, .15, pop(1400, 105), { gain: .9 });                                                        // POP
 put(158.4, .9, (() => { const n = noise(106), bp = new Biquad(); return t => { bp.set('bp', 300 + 2600 * t / .9, 1.5); return bp.run(n()) * fade(t, .9, .02, .1) * 2; }; })(), { gain: .8 });   // SHLURP (the blanket)
+put(159.5, .4, (() => { const n = noise(120), lp = new Biquad().set('lp', 500, .7); return t => lp.run(n()) * env(t, .005, .12) * 3; })(), { gain: .8 });   // FLOMP (the cushion walls fall flat)
 put(159.3, 1.0, whoosh(1.0, 300, 900, 107), { gain: .35 }); put(159.3, 6.5, hum(6.5, 90), { gain: .25 });
 put(160.4, .6, chirp(3600, 4), { gain: .35, send: .5 });                                              // the cake sparkles
 // the vacuum's little birthday tune (original): beeps
