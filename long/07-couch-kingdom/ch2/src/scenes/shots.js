@@ -92,14 +92,14 @@
   // now?" — the troll's whole sock gurgles — "...Snack." "...Correct." (he starts to sob)
   function s05(t) {
     const onTroll = (t > 68.6 && t < 74) || (t > 75.6 && t < 83.6) || (t > 86 && t < 92.6) || t > 96;
-    if (onTroll) camC(TX, 1.8); else camC(560, 1.6);
+    if (onTroll) camC(TX + 60, 2.4); else camC(620, 1.5);
     canyon(t);
     const gurgle = t > 92.4 && t < 94 ? Math.sin(t * 50) * .08 : 0;
     troll(t, { ...faces(t, [[68, 'smug', { mouth: 'smirk' }], [76, 'surprised'], [78.6, 'determined', { mouth: 'smirk' }], [86.4, 'panic', { mouth: 'O' }], [89.2, 'smug', { mouth: 'smirk' }], [92.4, 'surprised', { eyes: 'wide' }], [96.4, 'sheepish', { mouth: 'wobble' }]]), bend: gurgle * 4 + Math.sin(t * 2) * .3, sq: gurgle, tears: t > 97 ? seg(t, 97, 98) : 0, who: 'troll' });
     if (t > 92.4 && t < 94) for (let i = 0; i < 3; i++) inkLine(arcPts(TX - 40, BR.deck - 150, 40 + i * 20, 20 + i * 10, 0, Math.PI, 6), 2.5, '#FFFFFF', 'ink', 0);   // the gurgle
-    hero(560, TFY, { ...faces(t, [[68, 'neutral', { lookX: 1 }], [72.8, 'neutral', { lookX: 1, lookY: -.3, brow: .3 }], [74.4, 'sheepish', { lookX: 1 }], [77, 'happy'], [82.6, 'greedy', { lookX: 1 }], [84, 'proud'], [91, 'neutral', { lookX: 1 }], [93.4, 'deadpan', { lookX: 1 }]]), view: 'q', aR: t > 84 && t < 85.5 ? 1.0 : .4, who: 'pumpkin' }, t);
-    mouse(330, TFY, { ...faces(t, [[68, 'deadpan', { lookX: 1 }], [86.6, 'surprised', { lookX: 1 }], [87.4, 'deadpan', { lookX: 1 }]]), view: 'q' });
-    if (t > 82.8 && t < 85.6) { paint(ellPts(760, HEAD + 40, 60, 60, 20), { wash: '#D9A35C', ink: PAL.ink, sw: 1.6 }); paint(ellPts(760, HEAD + 40, 20, 20, 12), { wash: '#272138', ink: PAL.ink, sw: 1.2 }); }   // the donut (a thought, a prop he produces)
+    hero(480, TFY, { ...faces(t, [[68, 'neutral', { lookX: 1 }], [72.8, 'neutral', { lookX: 1, lookY: -.3, brow: .3 }], [74.4, 'sheepish', { lookX: 1 }], [77, 'happy'], [82.6, 'greedy', { lookX: 1 }], [84, 'proud'], [91, 'neutral', { lookX: 1 }], [93.4, 'deadpan', { lookX: 1 }]]), view: 'q', aR: t > 84 && t < 85.5 ? 1.0 : .4, who: 'pumpkin' }, t);
+    mouse(250, TFY, { ...faces(t, [[68, 'deadpan', { lookX: 1 }], [86.6, 'surprised', { lookX: 1 }], [87.4, 'deadpan', { lookX: 1 }]]), view: 'q' });
+    if (t > 82.8 && t < 85.6) { paint(ellPts(680, HEAD + 40, 60, 60, 20), { wash: '#D9A35C', ink: PAL.ink, sw: 1.6 }); paint(ellPts(680, HEAD + 40, 20, 20, 12), { wash: '#272138', ink: PAL.ink, sw: 1.2 }); }   // the donut (a thought, a prop he produces)
     camEnd();
   }
 
