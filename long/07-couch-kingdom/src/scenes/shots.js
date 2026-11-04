@@ -169,8 +169,7 @@
     const shakeFoot = t > 77.3 && t < 79.5 ? Math.sin(t * 18) * .08 : 0;
     pumpkin(PKX, TFY, U, { ...faces(t, [[62, 'neutral', { lookX: -1, lookY: .5 }], [67, 'surprised', { lookX: -1 }], [69.4, 'sheepish', { lookX: 1 }], [72.2, 'sheepish', { lookX: -1, mouth: 'smile' }], [77.3, 'surprised', { lookY: 1, lookX: -.5 }], [78.2, 'strain', { eyes: 'squeeze' }], [79.6, 'sheepish', { lookX: 1 }]]),
       view: turn ? 'q' : 'front', flip: false, sq: t > 76.8 ? .05 : .22, rot: shakeFoot, dy: t > 77.3 && t < 79.5 ? -Math.abs(Math.sin(t * 9)) * 1.4 : 0, aL: t > 77.3 && t < 79.5 ? .9 : -1.2, aR: t > 77.3 && t < 79.5 ? .9 : -1.2, boilKey: 'pk' });
-    pip(PIPX, TFY, U, { ...faces(t, [[62, 'deadpan', { lookX: -1 }], [72.8, 'sheepish', { lookX: -1 }], [75.6, 'deadpan'], [79.9, 'surprised', { eyes: 'wide' }], [80.3, 'deadpan', { lid: .6 }]]), view: 'q', flip: true, aL: -.6, aR: -.6, who: 'pip', boilKey: 'pip' });
-    if (t > 79.9) tapeMouth(PIPX, TFY, U);
+    pip(PIPX, TFY, U, { ...faces(t, [[62, 'deadpan', { lookX: -1 }], [72.8, 'sheepish', { lookX: -1 }], [75.6, 'deadpan'], [79.9, 'surprised', { eyes: 'wide', mouth: 'flat' }], [80.3, 'deadpan', { lid: .6, mouth: 'flat' }]]), view: 'q', flip: true, aL: -.6, aR: -.6, who: 'pip', draw: t > 79.9 ? tapeMouth('q') : undefined, boilKey: 'pip' });
     // the red carpet: two bunnies unroll it from the left... it's sticky tape. It grabs his foot; he shakes; it flies onto Pip's face.
     if (t > 75.4) {
       const roll = lerp(260, 900, ease(seg(t, 75.5, 76.8))), stuck = t > 77.3 && t < 79.5, off = seg(t, 79.5, 79.9);
@@ -198,10 +197,13 @@
     if (k >= 1) { const fl = Math.sin(t * 5) * 12; paint(ribbon([[x + 80, y - 128], [x + 130, y - 160 + fl], [x + 165, y - 130 - fl]], 34, 26), { wash: '#FFFDF6', ink: PAL.ink, sw: 1.2 }); }   // the loose end
   }
   // the sticky tape stuck over Pip's mouth: two red strips in an X, one corner curling up. (x, y) = Pip's ground point.
-  function tapeMouth(x, y, u) {
-    const mx = x - .1 * u, my = y - 4.2 * u;
-    for (const a of [-.35, .35]) { push(); translate(mx, my); rotate(a); paint(rrPts(-1.0 * u, -.24 * u, 2.0 * u, .48 * u, .1 * u), { wash: '#D9434B', ink: PAL.ink, sw: 1.2 }); inkLine([[-.8 * u, 0], [.8 * u, 0]], 1, '#F08A90', 'ink', 0); pop(); }
-    paint([[mx + .75 * u, my - .55 * u], [mx + 1.05 * u, my - .75 * u], [mx + .95 * u, my - .4 * u]], { wash: '#F08A90', ink: PAL.ink, sw: 1 });   // the curled corner
+  function tapeMouth(view = 'q') {   // a draw() hook for pip(): body space, so it follows his head, view, flip and squash
+    return (u, sw) => {
+      const q = view === 'q' ? 1 : 0, cu = CAST_CUTE, hs = 1 + cu * .18;
+      const mx = q * .25 * u + hs * q * .45 * u, my = -4.55 * u - cu * .1 * u + hs * .62 * u, L = .75 * u;
+      for (const a of [-.35, .35]) { push(); translate(mx, my); rotate(a); paint(rrPts(-L, -.2 * u, 2 * L, .4 * u, .08 * u), { wash: '#D9434B', ink: PAL.ink, sw: sw * .7 }); pop(); }
+      paint([[mx + .55 * u, my - .4 * u], [mx + .8 * u, my - .6 * u], [mx + .72 * u, my - .3 * u]], { wash: '#F08A90', ink: PAL.ink, sw: sw * .5 });
+    };
   }
   // 1-08 · 80–108 · Queen Button arrives (bunny trumpets). "Behold! The Ancient Scroll!" — it unrolls, and unrolls, across the
   // square. "That's a receipt." "The Ancient RECEIPT!" ... the drawing: a cheese puff. "Then explain THAT!" — whip to Pumpkin,
@@ -215,8 +217,7 @@
       for (let i = 0; i < 5; i++) dustBunny(x - 160 + i * 80, TFY, U * .9, { ...face('happy', { eyes: 'happy' }), seed: 20 + i, dy: -Math.abs(Math.sin(t * 12 + i)) * .3, boilKey: 'pb' + i });
       pumpkin(x, TFY - 90 - Math.abs(Math.sin(t * 6)) * 14, U, { ...face('happy', { mouth: 'grin', blush: .4 }), aL: .9, aR: .9, noShadow: true, boilKey: 'pk' });
       const py8 = HEAD - 90 - Math.abs(Math.sin(t * 6)) * 14;
-      pip(x + 30, py8, U, { ...face('deadpan', { lid: .6 }), view: 'q', sq: .2, noShadow: true, boilKey: 'pip' });
-      tapeMouth(x + 30 + .25 * U, py8 + .9 * U, U);   // Pip is squashed (sq .2) up there, so his mouth sits lower
+      pip(x + 30, py8, U, { ...face('deadpan', { lid: .6 }), view: 'q', sq: .2, noShadow: true, draw: tapeMouth('q'), boilKey: 'pip' });
       sirLint(x + 420, TFY, U * 1.1, { ...face('determined', { mouth: 'grin' }), view: 'side', dy: -Math.abs(Math.sin(t * 10)) * .3, lance: .9, boilKey: 'lint' });
       speedLines(x - 300, TFY - 250, 1, t, 5, 200, 260);
       camEnd(); return;
