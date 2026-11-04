@@ -114,7 +114,7 @@
     // the troll and, from 115.4, his twin (the cape) running to him and hugging
     const twinX = t < 115.4 ? null : lerp(TX - 320, TX - 120, ease(seg(t, 115.6, 120.8)));
     troll(t, { ...faces(t, [[100, 'sheepish', { mouth: 'wobble' }], [114.6, 'surprised', { lookX: -1 }], [116, 'happy', { mouth: 'grin' }]]), tears, dx: slow ? -ease(seg(t, 115.6, 120.8)) * 2.2 : 0, who: 'troll' });
-    if (twinX != null) sockTroll(twinX, BR.deck + 20, U * 1.15, { ...face('happy', { eyes: t > 116.4 ? 'happy' : 'closed', mouth: 'smile' }), boilKey: 'twin' });
+    if (twinX != null) sockTroll(twinX, BR.deck + 20, U * 1.15, { pink: true, ...face('happy', { eyes: t > 116.4 ? 'happy' : 'closed', mouth: 'smile' }), boilKey: 'twin' });
     if (t > 120.6 && t < 126) for (let i = 0; i < 5; i++) { const k = frac(t * .6 + i / 5); paint(heartPts(TX - 190 + Math.sin(k * 6 + i) * 40, BR.deck - 260 - k * 260, 22 * (1 - k * .4)), { wash: '#E2848C', washOp: 255 * (1 - k), ink: PAL.ink, sw: 1 }); }
     // the cape flies off Pumpkin to the troll (114-115.4), as a flat sock
     if (give > 0 && give < 1) { const p = arcPt([600, HEAD + 120], [TX - 320, BR.deck - 60], 200, ease(give)); push(); translate(p[0], p[1]); rotate(give * 6); sockFlat(0, 0, 0); pop(); }
@@ -137,7 +137,7 @@
     camC(clamp(kx + 160, 700, 1500), 1.25, shake(t, 140, 10));
     canyon(t, { eaten: seg(t, 131, 140) * .45, fall: FALL, cracks: 141, shake: t > 141 ? 1 : 0 });
     sockTroll(BR.x0 - 260, TFY, U * 1.0, { ...face('happy', { mouth: 'grin' }), bend: Math.sin(t * 4) * .6, boilKey: 'troll' });
-    sockTroll(BR.x0 - 420, TFY, U * .95, { ...face('happy', { eyes: 'happy', mouth: 'smile' }), bend: Math.sin(t * 4 + 1) * .6, boilKey: 'twin' });
+    sockTroll(BR.x0 - 420, TFY, U * .95, { pink: true, ...face('happy', { eyes: 'happy', mouth: 'smile' }), bend: Math.sin(t * 4 + 1) * .6, boilKey: 'twin' });
     const pipDone = Math.min(px, BR.x1 + 260);
     mouse(pipDone, TFY, { ...faces(t, [[130, 'neutral'], [133.6, 'neutral', { lookX: -1 }], [140, 'surprised', { lookX: -1 }], [145.6, 'panic', { lookX: -1 }]]), view: 'side', flip: t > 133.4 && t < 137.6, walk: pipDone > BR.x1 + 200 ? undefined : t * (run ? 9 : 5), who: 'pip' });
     const chew = t > 131 && t < 140;
