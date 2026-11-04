@@ -18,6 +18,7 @@
 
 | เรื่อง | รูปแบบ | สถานะ |
 |---|---|---|
+| 12 · Pumpkin & Pip: Static Zap | Shorts 9:16, 45 s, การ์ตูนแบน | สตอรี่บอร์ด v1 รอผู้ใช้อนุมัติ · `stories/12-static-zap/STORYBOARD.md` |
 | 11 · Pumpkin & Pip: The Space Coaster | Shorts 9:16, 50 s, การ์ตูนแบน | **เสร็จ** · `stories/11-space-coaster/out/video.mp4` + ปก + `YOUTUBE.md` |
 | 10 · Pumpkin & Pip: The Sandwich | Shorts 9:16, 45 s, การ์ตูนแบน | **เสร็จ** · `stories/10-sandwich/out/video.mp4` + ปก + `YOUTUBE.md` |
 | 09 · Pumpkin & Pip: The Red Dot | Shorts 9:16, 45 s, การ์ตูนแบน | **เสร็จ** · `stories/09-red-dot/out/video.mp4` + ปก + `YOUTUBE.md` |
@@ -42,7 +43,7 @@
 - [x] ตอนที่ 7: The Red Dot (จังหวะเร็ว แอ็กชัน)
 - [x] ตอนที่ 8: The Sandwich
 - [x] ตอนที่ 9: The Space Coaster (ตัวละครใหม่ Dusty แรคคูน)
-- [ ] ตอนที่ 10 (ใช้ skill `pumpkin-pip-shorts`)
+- [ ] ตอนที่ 10: Static Zap (สตอรี่บอร์ด v1 รออนุมัติ)
 - [ ] ถ้าจะกลับไปทำเรื่อง 02 ให้ย้ายมาเป็นสไตล์แบนและเลือกรูปแบบ (ยาว 16:9 หรือแบ่งเป็น Shorts)
 
 ## สิ่งที่สร้างไว้ใช้ซ้ำ
