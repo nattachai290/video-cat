@@ -658,7 +658,7 @@
     cakeSlice(FX + 20, FY + 10, .7, false);
     robotVac(vx, VB[1], 1.0, t, { led: 'blue', blink: false });
     cakeSlice(vx - 10, VB[1] - 60, .9, false, t > 160.4 ? .6 : 0); candle(vx - 20, VB[1] - 60 - 100, 1.0, t, 1);
-    for (let i = 0; i < 6; i++) pop2('♪', vx + 90 + (i % 2) * 60, VB[1] - 280, t, 161.0 + i * .6, 56, '#9CD6F5', .9, (i % 2 ? .2 : -.2));
+    for (let i = 0; i < 6; i++) pop2(i % 3 === 2 ? '♫' : '♪', vx + 70 + (i % 2) * 90, VB[1] - 300, t, 161.0 + i * .6, 92, '#7CC8F5', .9, (i % 2 ? .2 : -.2));
     fortFront(t, 0, seg(t, 158.4, 159.2), [vx, VB[1] - 40]);
     pop2('SHLURP!', 1700, 900, t, 158.6, 70, '#9CD6F5', .8);
     camEnd();
