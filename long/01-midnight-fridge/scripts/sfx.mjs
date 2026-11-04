@@ -1,5 +1,5 @@
-// sfx.mjs: sound effects of "The Midnight Fridge" (200 s; part 1 = 0-60 done, parts 2-3 to come).
-import { Track, TAU, bed, thud, whoosh, tap, squeak, sweep, env, fade, noise, Biquad, boing, pop, poof, clang, crunch, chirp } from '../../../engine/audio/synth.mjs';
+// sfx.mjs: sound effects of "The Midnight Fridge" (200 s; parts 1-2 (0-120) done, part 3 to come).
+import { Track, TAU, bed, thud, whoosh, tap, squeak, sweep, env, fade, noise, Biquad, boing, pop, poof, clang, crunch, chirp, squish } from '../../../engine/audio/synth.mjs';
 
 const DUR = 200, tr = new Track(DUR), put = (t, len, g, o) => tr.put(t, len, g, o);
 const meow = (f = 560, len = .7) => { const bp = new Biquad().set('bp', 1400, 1.2); let ph = 0, last = 0; return t => { const k = t / len, fq = f * (1 + .7 * Math.sin(Math.PI * Math.min(1, k * 1.4)) - .3 * k); ph += TAU * fq * (t - last); last = t; const saw = (ph / TAU % 1) * 2 - 1; return (bp.run(saw) * 1.6 + Math.sin(ph) * .4) * fade(t, len, .03, .2) * .7; }; };
@@ -47,6 +47,61 @@ put(48.6, .4, whoosh(.4, 2000, 600, 12), { gain: .5 });                // beam w
 put(52.4, .5, whoosh(.5, 600, 1800, 13), { gain: .4 });                // Pip dives
 put(53.4, .4, whoosh(.4, 900, 1400, 14), { gain: .3 }); put(53.9, .15, tap(900, 140, 15), { gain: .4 });   // shade on
 put(56.5, 1.4, (() => { const c = clang(330); return t => c(t) * .8; })(), { gain: .6, send: .5 });   // spotlight sting
+
+// ---------- PART 2 (60-120) ----------
+put(60.2, 1.6, sweep(t => 900 + 500 * Math.abs(Math.sin(t * Math.PI * 1.5 / 1.6)), t => fade(t, 1.6, .05, .1) * .18), { gain: .6 });   // scan line
+put(62.0, .3, whoosh(.3, 800, 1800, 21), { gain: .3 }); put(62.7, .05, tap(3000, 0, 22), { gain: .5 });   // Pip pokes, flashlight click
+put(62.75, 1.2, (() => { const c = clang(523); return t => c(t) * .5; })(), { gain: .4, send: .6 });     // the shade lights up
+put(63.0, .12, beep(1568), { gain: .7 }); put(63.15, .2, beep(2093, .18), { gain: .7 });                   // ✓
+put(63.4, .4, sweep(t => 800 - 600 * t / .4, t => fade(t, .4, .01, .1) * .3), { gain: .5 });             // beam off
+put(64.0, .4, (() => { const n = noise(23), lp = new Biquad().set('lp', 900, .7); return t => lp.run(n()) * fade(t, .4, .1, .2) * 1.2; })(), { gain: .5 });   // relieved sigh
+put(64.3, .4, ding(3136), { gain: .7 });                                                                   // PING (button)
+put(65.35, .1, tap(1500, 300, 24), { gain: 1 });                                                           // POK
+put(65.8, .2, beep(900), { gain: .5 }); put(66.0, .2, beep(1200), { gain: .5 });                           // ?
+put(66.4, .45, (() => { const n = noise(25), bp = new Biquad(); return t => { bp.set('bp', 300 + 2500 * t / .45, 1.5); return bp.run(n()) * fade(t, .45, .01, .1) * 2; }; })(), { gain: .7 });   // SHLURP
+put(66.85, .3, chirp(2600, 2), { gain: .6 });                                                              // happy chirp
+put(67.1, .9, whoosh(.9, 300, 1200, 26), { gain: .5 });                                                    // rolls off
+put(68.0, .4, (() => { const s = sweep(t => 120, t => (Math.sin(t * 90) > 0 ? 1 : .2) * fade(t, .4, .01, .05) * .3); return s; })(), { gain: .6 });   // lasers flicker on
+put(68.4, 7.6, sweep(t => 118, t => fade(t, 7.6, .2, .3) * .06), { gain: .5 });                           // laser hum
+for (const tt of [68.5, 69.3, 70.0]) put(tt, .1, tap(1800, 200, tt * 10), { gain: .5 });                   // finger jabs
+for (const [tt, k] of [[72.2, 1], [72.95, 2], [73.6, 3]]) put(tt, .55, whoosh(.55, 600, 2800, 27 + k), { gain: .45 });   // flips
+put(74.3, .7, chirp(3400, 4), { gain: .4, send: .4 });                                                     // TA-DA sparkle
+put(76.4, .3, sweep(t => 2600, t => fade(t, .3, .01, .05) * .12), { gain: .5 });                           // the dot appears
+for (let t = 77.0; t < 80.2; t += .08) put(t, .04, tap(1200, 0, t * 91), { gain: .07 });                   // trembling
+put(80.2, .4, whoosh(.4, 500, 1800, 31), { gain: .5 }); put(80.6, .5, thud(60, .3, 32), { gain: 1.1 });   // POUNCE, flop
+for (let i = 0; i < 6; i++) put(80.7 + i * .35, .2, beep(1800, .18), { gain: .8 });                        // ALARM
+put(82.0, .9, (() => { const n = noise(33), bp = new Biquad().set('bp', 1200, 1); return t => bp.run(n()) * fade(t, .9, .02, .2) * 1.5; })(), { gain: .5 });   // dragged across the floor
+put(83.0, .5, whoosh(.5, 300, 1500, 34), { gain: .5 }); put(83.0, 2.7, hum(2.7, 90), { gain: .35 });       // vacuum zooms in
+put(84.0, .2, beep(900), { gain: .5 }); put(84.2, .2, beep(1200), { gain: .5 });                           // ?
+put(85.1, .6, whoosh(.6, 1500, 300, 35), { gain: .5 });                                                    // and off
+put(86.3, .4, whoosh(.4, 400, 1600, 36), { gain: .4 }); put(86.8, .15, tap(800, 200, 37), { gain: .6 });    // jump, grab
+put(87.3, .9, sweep(t => 300 + 200 * Math.sin(t * 30) + 400 * t, t => fade(t, .9, .05, .2) * .25), { gain: .7 });   // CREEEAK
+put(88.2, .3, whoosh(.3, 600, 2000, 38), { gain: .5 });
+put(88.5, .4, (() => { const s = squish(39), th = thud(80, .2, 40); return t => s(t) * 1.2 + th(t); })(), { gain: 1.1 });   // SPLAT
+put(88.6, 1.0, chirp(3000, 6), { gain: .25 });                                                             // birdies
+put(89.0, 1.6, sweep(t => 1400 - 800 * t / 1.6, t => fade(t, 1.6, .05, .2) * .12), { gain: .6 });          // sliiide down the wall
+put(90.8, .6, chirp(3600, 3), { gain: .3, send: .5 });                                                     // the cake sparkles
+put(92.0, .4, (() => { const n = noise(41); return t => tap(600, 120, 41)(t); })(), { gain: .3 });
+put(92.5, 1.0, (() => { const n = noise(42), lp = new Biquad().set('lp', 1500, .7); return t => lp.run(n()) * fade(t, 1.0, .05, .5) * 1.4; })(), { gain: .7 });   // cold blast
+put(93.0, .4, (() => { const n = noise(43), hp = new Biquad().set('hp', 2500, .7); return t => hp.run(n()) * env(t, .002, .15) * 2 + Math.sin(TAU * 2600 * t) * env(t, .001, .2) * .3; })(), { gain: .8 });   // KRRK (freeze)
+for (let t = 93.4; t < 96; t += .09) put(t, .04, tap(4200, 0, t * 33), { gain: .05 });                     // teeth chattering
+for (const tt of [96.15, 96.5, 96.85]) put(tt, .4, ding(3520), { gain: .45 });                             // tink tink tink
+put(97.2, .8, (() => { const n = noise(44), hp = new Biquad().set('hp', 2000, .7), c = clang(1800); return t => hp.run(n()) * env(t, .002, .25) * 2 + c(t) * .3; })(), { gain: .9 });   // CRASH
+put(97.3, .5, poof(45), { gain: .5 });                                                                     // fur puffs
+put(98.0, 14.6, hum(14.6, 120), { gain: .3 });                                                             // inside the fridge
+for (let t = 98.2; t < 104.4; t += .5) put(t, .3, (() => { const s = squish(46 + Math.round(t * 2)); return u => s(u) * .8; })(), { gain: .35 });   // jelly squelch
+for (const tt of [98.6, 99.3, 100.0, 100.7]) { put(tt, .3, whoosh(.3, 900, 2200, 50 + tt), { gain: .3 }); put(tt + .5, .1, tap(1400, 220, tt * 3), { gain: .5 }); }   // Pip hops up
+put(101.8, 3.0, choir(3.0), { gain: .7, send: .6 });                                                       // the cake choir (callback)
+put(104.4, .5, (() => { const n = noise(51), bp = new Biquad(); return t => { bp.set('bp', 2000 - 1500 * t / .5, 2); return bp.run(n()) * env(t, .005, .15) * 2.2; }; })(), { gain: .8 });   // SHLOP
+put(105.6, .4, (() => { const n = noise(52), bp = new Biquad().set('bp', 900, 1); return t => bp.run(n()) * fade(t, .4, .02, .1); })(), { gain: .4 });   // cake slides
+put(106.0, .7, whoosh(.7, 1600, 400, 53), { gain: .4 });
+put(106.7, .5, (() => { const th = thud(110, .1, 54), s = squish(55); return t => th(t) + s(t) * .6; })(), { gain: .9 });   // BONK (cake hat)
+for (let i = 0; i < 9; i++) put(109.4 + i * .28, .12, tap(i % 2 ? 1200 : 700, 160, 60 + i), { gain: .35 });   // victory dance steps
+put(112.0, .6, sweep(t => 250 + 150 * t, t => fade(t, .6, .05, .1) * .25), { gain: .6 });                 // door creak
+put(112.6, .8, (() => { const th = thud(55, .4, 61), c = clang(160); return t => th(t) * 1.5 + c(t) * .3; })(), { gain: 1.2 });   // THUNK
+for (const tt of [113.3, 113.6, 114.0]) put(tt, .06, tap(3500, 0, tt * 5), { gain: .25 });                // blinks
+put(116.6, 1.2, growl(1.2), { gain: 1.1 });                                                                // GRRRWL in the dark
+put(117.8, .14, beep(880), { gain: .5 }); put(118.1, 1.8, sweep(t => 70, t => fade(t, 1.8, .3, .4) * .3), { gain: .6 });   // the vacuum outside
 
 tr.reverb(.2, .8);
 tr.write('out/audio/sfx.wav');

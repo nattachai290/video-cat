@@ -402,3 +402,60 @@ function lampShade(x, y, s = 1, rot = 0) {
   pop();
 }
 const shadeHook = (q = 0) => (u, sw) => lampShade(q * .55 * u, -10.3 * u, u / 40 * 1.75);
+
+// ---------- part 2 ----------
+// The red alarm: a pulsing red veil over the whole frame (screen space). k 0..1.
+function redAlarm(k = 1) { if (k <= 0) return; CTX.save(); CTX.setTransform(1, 0, 0, 1, 0, 0); CTX.fillStyle = `rgba(255,40,40,${.28 * k})`; CTX.fillRect(0, 0, W, H); CTX.restore(); }
+// The vacuum's laser fence: two posts on the kitchen floor with red beams between them. on 0..1 (flicker in), blink 0..1.
+const LZ = { a: 930, b: 1300, beams: [[1150, 1250], [1290, 1170], [1230, 1390], [1360, 1310]] };
+function laserPosts(y) { for (const x of [LZ.a, LZ.b]) { paint(rrPts(x - 18, y - 330, 36, 330, 8), { wash: '#3B3F4A', sw: 1.2, shade: true, shadeK: .4 }); paint(ellPts(x, y - 334, 22, 9, 12), { wash: '#555B68', sw: 1 }); } }
+function laserBeams(t, on = 1, blink = 0) {
+  if (on <= 0) return;
+  const fl = on < 1 ? (Math.sin(t * 90) > 0 ? on : on * .3) : 1, b = blink ? (Math.sin(t * 25) > 0 ? 1 : .35) : 1, k = fl * b;
+  for (const [ya, yb] of LZ.beams) {
+    inkLine([[LZ.a, ya], [LZ.b, yb]], 12, '#FF8A8A', 'ink', 0);
+    inkLine([[LZ.a, ya], [LZ.b, yb]], 3.5, '#FF2E2E', 'ink', 0);
+    glow(LZ.a, ya, 30, '#FF3A3A', .7 * k); glow(LZ.b, yb, 30, '#FF3A3A', .7 * k);
+  }
+  CTX.globalAlpha = 1;
+}
+// An ice block (Pumpkin frozen solid). (x, y) = bottom middle, w x h. crack 0..1.
+function iceBlock(x, y, w, h, t, crack = 0) {
+  paint(rrPts(x - w / 2, y - h, w, h, 24), { wash: '#CFEFFF', washOp: 150, sw: 2.2 });
+  paint([[x - w / 2 + 30, y - h + 40], [x - w / 2 + 70, y - h + 30], [x - w / 2 + 50, y - 60], [x - w / 2 + 26, y - 80]], { wash: '#FFFFFF', washOp: 150, ink: null });
+  paint(rrPts(x + w / 2 - 60, y - h + 30, 22, 120, 10), { wash: '#FFFFFF', washOp: 130, ink: null });
+  for (let i = 0; i < 6; i++) paint(rrPts(x - w / 2 + 40 + i * (w - 80) / 5, y - h - 6, 26, 40 + 30 * hash(i + 3), 12), { wash: '#E4F7FF', washOp: 200, sw: 1 });   // frost on top
+  if (crack > 0) for (let i = 0; i < 4; i++) { const a = i * 1.7 + .4, L = 160 * crack; inkLine([[x, y - h * .5], [x + Math.cos(a) * L * .5, y - h * .5 + Math.sin(a) * L * .4], [x + Math.cos(a + .3) * L, y - h * .5 + Math.sin(a + .3) * L * .8]], 3, '#FFFFFF', 'ink', 0); }
+}
+// Icicles hanging from a line (a frozen moustache), in world coordinates.
+function icicles(x, y, w, n = 5, len = 40) { for (let i = 0; i < n; i++) { const xx = x - w / 2 + (i + .5) * w / n, l = len * (.6 + .6 * hash(i + 9)); paint([[xx - 9, y], [xx + 9, y], [xx, y + l]], { wash: '#E4F7FF', sw: 1.2 }); } }
+// Cold mist pouring out of the fridge: soft white puffs drifting right and down. k 0..1 strength.
+function coldMist(x, y, t, k = 1) { if (k <= 0) return; for (let i = 0; i < 10; i++) { const f = frac(t * .7 + i / 10), r = 60 + 120 * f; paint(ellPts(x + f * 420 + 30 * Math.sin(i), y + f * 160 + (hash(i) - .5) * 200, r, r * .7, 18), { wash: '#F2FBFF', washOp: 150 * k * (1 - f), ink: null }); } }
+// Inside the fridge, seen from the open door (screen space 1920x1080): back wall, side walls, the glass top shelf at
+// y = FI.top, the bottom shelf (floor) at FI.floor, the cold light. o.items: jelly / stairs / cake drawn by the shots.
+const FI = { top: 700, floor: 1300 };
+function fridgeInside(t) {
+  paint(rectPts(-100, -100, W + 200, H + 400), { wash: '#E3F2FC', ink: null });
+  paint([[-100, -100], [260, 120], [260, 1150], [-100, 1400]], { wash: '#CFE4F2', sw: 1.4 });
+  paint([[W + 100, -100], [W - 260, 120], [W - 260, 1150], [W + 100, 1400]], { wash: '#CFE4F2', sw: 1.4 });
+  glow(W / 2, 140, 700, '#FFFFFF', .8);
+  paint(rrPts(W / 2 - 120, 30, 240, 50, 20), { wash: '#FFFDF0', sw: 1.2 }); glow(W / 2, 55, 200, '#FFF8D8', .9);   // the fridge lamp
+  paint(rrPts(-60, FI.top - 4, W + 120, 30, 6), { wash: '#BFE0F2', washOp: 220, sw: 1.4 });   // glass shelf
+  inkLine([[-60, FI.top + 2], [W + 60, FI.top + 2]], 4, '#FFFFFF', 'ink', 0);
+  paint(rectPts(-60, FI.floor, W + 120, 400), { wash: '#C5DDED', sw: 1.4 });   // the bottom shelf / crisper front
+  paint(rrPts(260, FI.floor + 60, W - 520, 300, 30), { wash: '#DCEFFA', washOp: 200, sw: 1.2 });
+}
+// A wobbly green jelly on a little plate. (x, y) = bottom middle. wob = wobble amount.
+function jelly(x, y, s, t, wob = 0) {
+  const sx = 1 + Math.sin(t * 18) * .08 * wob, sy = 1 - Math.sin(t * 18) * .08 * wob;
+  paint(ellPts(x, y, 170 * s, 24 * s, 24), { wash: '#FFFFFF', sw: 1.4 });
+  paint([...arcPts(x, y - 4, 140 * s * sx, 210 * s * sy, Math.PI, TAU, 18), [x + 140 * s * sx, y - 4], [x - 140 * s * sx, y - 4]], { wash: '#7ED957', washOp: 215, sw: 1.8, shade: true, shadeK: .3 });
+  paint(ellPts(x - 50 * s * sx, y - 140 * s * sy, 26 * s, 50 * s, 12), { wash: '#E9FFD8', washOp: 200, ink: null });
+}
+// A pair of cartoon eyes glowing in the dark. look -1..1, open 0..1 (blink), pupil scale.
+function darkEyes(x, y, rx, ry, gap, look = 0, open = 1, pupil = 1, lookY = 0) {
+  for (const s of [-1, 1]) {
+    paint(ellPts(x + s * gap, y, rx, ry * Math.max(.06, open), 18), { wash: '#FFFFFF', ink: null });
+    if (open > .3) paint(ellPts(x + s * gap + look * rx * .45, y + lookY * ry * .4, rx * .42 * pupil, ry * .5 * pupil * open, 14), { wash: '#16142A', ink: null });
+  }
+}

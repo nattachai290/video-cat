@@ -1,4 +1,4 @@
-// music.mjs: "The Midnight Fridge", 120 bpm (1 bar = 2 s, 30 bars per part, 100 bars total). Part 1 (bars 0-29) done.
+// music.mjs: "The Midnight Fridge", 120 bpm (1 bar = 2 s, 30 bars per part, 100 bars total). Parts 1-2 (bars 0-59) done.
 import { Track, SR, TAU, rng, noise, Biquad, env, fade } from '../../../engine/audio/synth.mjs';
 
 const BPM = 120, BEAT = .5, BAR = 2, E8 = .25, DUR = 200, tr = new Track(DUR);
@@ -24,6 +24,23 @@ for (let b = 16; b <= 21; b++) { if (b >= 17 && b <= 18) { [0, 3, 6].forEach((e,
 for (let b = 22; b <= 25; b++) for (let e = 0; e < 8; e += 2) N(b, e, .3, bass(hz(38)), { gain: .5 });   // 44-52 tension pulse
 for (let b = 26; b <= 27; b++) spy(b, 3);                                         // 52-56
 N(29, 1, 2.5, pad(hz(38), 2.5), { gain: .6 });                                    // 58-60 the held, ominous note
+
+// ---------- PART 2 (bars 30-59) ----------
+const silent2 = t => (t >= 80.2 && t < 80.6) || (t >= 88.5 && t < 89.0) || (t >= 93.0 && t < 93.6) || (t >= 101.8 && t < 104.4) || t >= 112.6;
+function spy2(b, up = 0) { SPY.forEach((m, e) => { if (m && !silent2(at(b, e))) N(b, e, .22, pluck(hz(m + up), .2, .45), { gain: .4, pan: -.2 }); }); [0, 4].forEach(e => !silent2(at(b, e)) && N(b, e, .3, bass(hz(40 + up)), { gain: .45 })); for (let e = 1; e < 8; e += 2) if (!silent2(at(b, e))) N(b, e, .05, hat(b * 8 + e), { gain: .15 }); }
+spy2(30); spy2(31, 2);                                                                // 60-64 still a lamp
+[0, 2, 4].forEach((e, k) => N(32, e, .6, marimba(hz([79, 84, 88][k]), .7), { gain: .3, send: .5 }));   // 64-66 phew
+spy2(33, 3);                                                                          // 66-68 the vacuum
+for (let b = 34; b <= 37; b++) spy2(b, 5);                                           // 68-76 lasers + Pip's flips
+for (let b = 38; b <= 39; b++) for (let e = 0; e < 8; e++) if (!silent2(at(b, e))) N(b, e, .2, pluck(hz(64 + (e % 2)), .18, .6), { gain: .3 });   // 76-80 temptation (trill)
+for (let b = 40; b <= 42; b++) { for (let e = 0; e < 8; e++) if (!silent2(at(b, e))) N(b, e, .2, bass(hz(e % 2 ? 46 : 40)), { gain: .45 }); [0, 2, 4, 6].forEach(e => !silent2(at(b, e)) && N(b, e, .2, kick(), { gain: .5 })); }   // 80-86 ALARM chase
+for (let b = 43; b <= 45; b++) spy2(b, 2);                                           // 86-92 the fridge
+for (let b = 47; b <= 48; b++) spy2(b, 0);                                           // 94-98 frozen (thin) -> shatter
+for (let b = 49; b <= 50; b++) [0, 3, 6].forEach((e, k) => !silent2(at(b, e)) && N(b, e, .5, marimba(hz([76, 79, 83][k] + (b % 2) * 2), .6), { gain: .25, send: .5 }));   // 98-101.8 inside the fridge
+for (let b = 52; b <= 53; b++) spy2(b, 7);                                           // 104-108 cake falls
+for (let b = 54; b <= 55; b++) { [72, 0, 76, 74, 72, 0, 67, 0].forEach((m, e) => m && !silent2(at(b, e)) && N(b, e, .25, pluck(hz(m + 2), .25, .7), { gain: .32, send: .2 })); [0, 4].forEach(e => N(b, e, .2, kick(), { gain: .5 })); [2, 6].forEach(e => N(b, e, .1, snare(b * 8 + e), { gain: .25 })); }   // 108-112 victory dance
+N(56, 2.6, 1.0, bass(hz(28), 1.0), { gain: .6 });                                    // the THUNK
+N(57, 0, 6, pad(hz(38), 6), { gain: .55 });                                           // 114-120 dark, ominous
 
 tr.reverb(.25, 1);
 tr.write('out/audio/music.wav');

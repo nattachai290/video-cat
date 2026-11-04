@@ -1,5 +1,5 @@
 // shots.js: "Pumpkin & Pip: The Midnight Fridge" (16:9, 200 s). See ../STORYBOARD.md.
-// Part 1 (0-60) is built; parts 2 and 3 are placeholders until they are made; End Screen 180-200.
+// Parts 1 (0-60) and 2 (60-120) are built; part 3 is a placeholder until they are made; End Screen 180-200.
 // Living room: characters on the floor at y = 1560. Kitchen: floor line 1310, characters at y = 1420, fridge RIGHT.
 (() => {
   const U = 40, FY = FY1, FK = 1420, LAMP = [470, FK];
@@ -228,8 +228,257 @@
     camEnd();
   }
 
+  // ======================= PART 2 · 60–120 · the kitchen =======================
+  const pop2 = (txt, x, y, t, t0, size = 64, col = '#FFFFFF', dur = .7, rot = -.06) => { const a = t - t0; if (a > 0 && a < dur) letter(txt, x, y - a * 30, size, col, { stroke: '#2B2233', pop: seg(a, 0, .15) * 1.2, rot, alpha: 1 - seg(a, dur - .2, dur) }); };
+
+  // 2-1 · 60–65 · Still in the beam. A red scan line runs up and down him: "Still... a lamp." Pip pokes his flashlight up
+  // under the shade -> it glows like a real lamp. Vacuum: ✓ beep, beam off. Pumpkin sighs with relief: his vest button pops.
+  function s2_1(t) {
+    const z = 1.6;
+    cam(520, 1130, z, shake(t, 64.3, 6, .25));
+    kitchen(t, { minutes: 4 });
+    floorLamp(LAMP[0], LAMP[1], false);
+    const poke = seg(t, 62.0, 62.5), lit = t > 62.7;
+    pip(270, FK - 3.2 * U * ease(poke) * (t < 64.6 ? 1 : 1 - seg(t, 64.6, 65)), U, { ...faces(t, [[60, 'panic', { eyes: 'squeeze' }], [62.0, 'determined', { lookX: 1, lookY: -1 }], [63.4, 'happy']]), view: 'q', flip: false,
+      aR: poke > 0 ? lerp(-.4, 1.1, poke) : -.4, aL: 1.0, armR: flashHook(lit ? 1 : 0), draw: ninjaMask(1), noShadow: true, boilKey: 'pip' });
+    pottedPlant(300, FK + 20, .9);
+    const sigh = seg(t, 64.0, 64.3);
+    pumpkin(600, FK, U, { ...faces(t, [[60, 'neutral', { eyes: 'wide', lid: 0, pupil: .3, lookX: 1, mouth: 'flat' }], [63.6, 'neutral', { eyes: 'wide', lid: 0, pupil: .3, lookX: 1, mouth: 'flat' }], [64.0, 'proud'], [64.4, 'surprised', { lookY: 1 }]]),
+      aL: -1.5, aR: -1.5, sq: t > 64.0 && t < 64.4 ? -.06 * Math.sin(sigh * Math.PI) : 0, rot: t < 61.8 ? Math.sin(t * 40) * .008 : 0,
+      ...SPY, draw: (u, sw) => shadeHook(0)(u, sw), who: 'pumpkin', boilKey: 'pk' });
+    // the popped vest button flies off to the right
+    if (t > 64.3) { const k = seg(t, 64.3, 65.0), p = arcPt([600, FK - 4.4 * U], [1150, FK - 2 * U], 260, k); paint(ellPts(p[0], p[1], 14, 14, 12), { wash: '#EEC35A', sw: 1.4 }); }
+    pop2('PING!', 680, FK - 5 * U, t, 64.3, 54, '#FFE27A');
+    camEnd();
+    night(.75);
+    cam(520, 1130, z);
+    const beamK = 1 - seg(t, 63.4, 63.6);
+    searchlight(1300, FK - 300, Math.PI + .1, 760, .14, beamK);
+    if (beamK > 0) glow(600, FK - 8.4 * U, 140, '#FFF3B0', .8 * beamK);
+    // the scan line, up and down his body
+    if (t > 60.2 && t < 61.8) { const k = seg(t, 60.2, 61.8), y = FK - 12.5 * U * Math.abs(Math.sin(k * Math.PI * 1.5)); inkLine([[420, y], [780, y]], 5, '#FF4A4A', 'ink', 0); glow(600, y, 160, '#FF4A4A', .45); }
+    if (poke > .5 && t < 64.6) { const tip = [300 + 1.4 * U, FK - 3.2 * U - 5.0 * U]; paint([[tip[0], tip[1]], [600 - 3.4 * U, FK - 10.3 * U], [600 + 1.0 * U, FK - 10.3 * U]], { wash: '#FFF3B0', washOp: lit ? 110 : 60, ink: null }); glow(tip[0], tip[1], 50, '#FFF3B0', .8); }
+    if (lit) { glow(600, FK - 11.2 * U, 260, '#FFE9A8', .85); paint([[600 - 4.2 * U, FK - 10.3 * U], [600 + 4.2 * U, FK - 10.3 * U], [600 + 7 * U, FK], [600 - 7 * U, FK]], { wash: '#FFE9A8', washOp: 50, ink: null }); }
+    if (t > 63.0 && t < 63.9) letter('✓', 1000, 900, 110, '#5FE07A', { stroke: '#2B2233', pop: seg(t, 63.0, 63.15) * 1.2 });
+    camEnd();
+  }
+
+  // 2-2 · 65–68 · The button lands on the vacuum: POK. It stops... slurps the button (SHLURP), green light, rolls on happy.
+  function s2_2(t) {
+    cam(1150, 1250, 1.9);
+    kitchen(t, { minutes: 4 });
+    const go = seg(t, 67.1, 68.0), vx = 1150 + 700 * easeIn(go);
+    const land = seg(t, 65.0, 65.35), bounce = seg(t, 65.35, 65.75), slurp = seg(t, 66.4, 66.8);
+    robotVac(vx, FK + 10, 1.0, t, { led: t > 66.8 ? 'green' : 'red', blink: t > 66.8 });
+    if (slurp < 1) {
+      let p = land < 1 ? [lerp(900, 1150, land), lerp(950, FK - 55, land * land)] : bounce < 1 ? arcPt([1150, FK - 55], [1190, FK - 50], 60, bounce) : [lerp(1190, 1290, slurp), FK - 50 + 20 * slurp];
+      paint(ellPts(p[0], p[1], 14 * (1 - slurp * .7), 14 * (1 - slurp * .7), 12), { wash: '#EEC35A', sw: 1.4 });
+    }
+    pop2('POK!', 1150, FK - 140, t, 65.35, 58, '#FFFFFF');
+    if (t > 65.8 && t < 66.4) emote('?', 1150, FK - 200, 50, seg(t, 65.8, 66.0), t - 65.8);
+    pop2('SHLURP!', 1240, FK - 150, t, 66.4, 58, '#9CD6F5', .8, .05);
+    if (go > 0) speedLines(vx - 200, FK - 40, -1, t, 4, 160, 120);
+    camEnd();
+    night(.7);
+    cam(1150, 1250, 1.9); glow(vx + 70, FK - 16, 50, t > 66.8 ? '#5FE07A' : '#FF4A4A', .7); camEnd();
+  }
+
+  // 2-3 · 68–72 · The laser fence flickers on. Pip, one jab per word: "Don't. Chase. The lasers."
+  // 2-4 · 72–76 · Pip ninja-flips through the beams, three moves, and lands posing on the far side.
+  function s2_34(t) {
+    cam(860, 1150, 1.2);
+    kitchen(t, { minutes: 5 });
+    laserPosts(FK);
+    const jab = [68.5, 69.3, 70.0].some(a => t > a && t < a + .35);
+    let px = 720, py = FK, prot = 0, flip = true, aL = -.6, aR = jab ? 1.2 : -.3, fc = [[68, 'determined', { brow: .9 }], [71.0, 'smug']];
+    const F = [[72.2, [720, FK], [990, FK], 300], [72.95, [990, FK], [1150, FK], 140], [73.6, [1150, FK], [1430, FK], 320]];
+    for (const [t0, a, b, h] of F) { const k = seg(t, t0, t0 + .6); if (k > 0 && k < 1) { [px, py] = arcPt(a, b, h, ease(k)); prot = -TAU * ease(k); flip = false; aL = aR = 1.3; } else if (k >= 1) { [px, py] = b; flip = false; } }
+    if (t > 74.2) { aL = aR = 1.4; fc = [[74.2, 'proud']]; }
+    if (t > 72.2) fc = t > 74.2 ? [[74.2, 'proud']] : [[72.2, 'determined']];
+    pumpkin(470, FK, U, { ...faces(t, [[68, 'innocent', { lookX: 1 }], [72.4, 'surprised', { lookX: 1 }], [74.3, 'happy']]), view: 'q', aL: t > 74.3 ? 1.2 + .2 * Math.sin(t * 20) : -1.1, aR: t > 74.3 ? 1.2 - .2 * Math.sin(t * 20) : -1.1, ...SPY, boilKey: 'pk' });
+    pip(px, py, U, { ...faces(t, fc), view: 'q', flip, rot: prot, aL, aR, draw: ninjaMask(flip ? 1 : 1), noShadow: py < FK - 2, who: 'pip', boilKey: 'pip' });
+    if (t > 74.2 && t < 75.2) for (let i = 0; i < 4; i++) paint(starPts(1430 + Math.cos(i * 1.6 + t * 3) * 170, FK - 150 - Math.sin(i * 1.6 + t * 3) * 120, 22, .4, 4), { wash: '#FFE27A', sw: 1 });
+    pop2('TA-DA!', 1430, FK - 330, t, 74.3, 60, '#FFE27A', .9);
+    camEnd();
+    night(.75);
+    cam(860, 1150, 1.2); laserBeams(t, seg(t, 68.0, 68.4)); camEnd();
+  }
+
+  // 2-5 · 76–82 · Pumpkin's turn. A laser dot lands on his own belly. Eyes huge, trembling: "Hold it... hold it..."
+  // Pip: "Pumpkin. NO." He pounces... on his own belly, tumbles into the beams: ALARM, everything flashes red.
+  function s2_5(t) {
+    const al = t > 80.6, sh = shake(t, 80.5, 14, .5);
+    cam(1000, 1170, 1.5, sh);
+    kitchen(t, { minutes: 6 });
+    laserPosts(FK);
+    const pounce = seg(t, 80.2, 80.6);
+    let ky = FK, kdy = 0, krot = 0, ksq = 0;
+    if (pounce > 0) { kdy = -2.4 * Math.sin(pounce * Math.PI); }
+    if (t > 80.6) { ksq = .35 * Math.exp(-(t - 80.6) * 5) + .15; krot = .5 * ease(seg(t, 80.6, 81.0)); }
+    const tremble = t > 76.8 && t < 80.2 ? Math.sin(t * 60) * (.01 + .02 * seg(t, 76.8, 80)) : 0;
+    const kx5 = t < 80.2 ? 740 : lerp(740, 1080, ease(pounce));
+    pumpkin(kx5, ky, U, { ...faces(t, [[76, 'determined'], [76.5, 'surprised', { lookY: 1, pupil: 1 }], [77.0, 'strain'], [78.4, 'greedy', { pupil: 1.2, lookY: 1 }], [79.0, 'strain'], [80.2, 'greedy', { pupil: 1.2, lookY: 1 }], [80.6, 'dazed']]),
+      dy: kdy, rot: krot + tremble, sq: ksq, aL: pounce > 0 ? 1.3 : t > 80.6 ? -.2 : -1.1, aR: pounce > 0 ? 1.3 : t > 80.6 ? -.2 : -1.1, ...SPY, noShadow: pounce > 0 && pounce < 1, who: 'pumpkin', boilKey: 'pk' });
+    pip(1480, FK, U, { ...faces(t, [[76, 'proud'], [78.6, 'annoyed', { lookX: -1 }], [79.6, 'determined', { brow: 1 }], [80.6, 'panic']]), view: 'q', flip: true, aL: t > 79.6 && t < 80.6 ? 1.0 : -.5, aR: t > 79.6 && t < 80.6 ? 1.0 : -.5, draw: ninjaMask(1), who: 'pip', boilKey: 'pip' });
+    camEnd();
+    night(.75);
+    cam(1000, 1170, 1.5, sh);
+    laserBeams(t, 1, al ? 1 : 0);
+    if (t > 76.4 && t < 80.4) redDot(kx5 + Math.sin(t * 2.3) * 20, FK - 3.4 * U + Math.sin(t * 3) * 10, 1.4, seg(t, 76.4, 76.6));
+    if (al) for (let i = 0; i < 3; i++) pop2('BEEP!', 820 + i * 260, 900 + (i % 2) * 60, t, 80.7 + i * .35, 64, '#FF4A4A', .6, (i - 1) * .1);
+    camEnd();
+    if (al) redAlarm(.5 + .5 * Math.sin(t * 16));
+  }
+
+  // 2-6 · 82–86 · Pip drags Pumpkin by the tail across the floor and they flatten against the side of the fridge. The vacuum
+  // zooms in, searchlight sweeping, beeps "?"... and zooms off again.
+  function s2_6(t) {
+    cam(1150, 1150, 1.15);
+    kitchen(t, { minutes: 6 });
+    laserPosts(FK);
+    const drag = seg(t, 82.0, 82.9), hid = t > 82.9;
+    const kx = hid ? 1760 : lerp(900, 1760, ease(drag)), px = hid ? 1880 : kx + 260;
+    pumpkin(kx, FK, U, { ...faces(t, [[82, 'dazed'], [83.2, 'panic', { eyes: 'squeeze' }]]), rot: hid ? 0 : -.35, sq: hid ? -.12 : .1, dy: hid ? 0 : -.3, aL: hid ? -1.4 : 1.2, aR: hid ? -1.4 : 1.2, ...SPY, noShadow: !hid, boilKey: 'pk' });
+    pip(px, FK, U, { ...faces(t, [[82, 'determined'], [83.2, 'panic', { eyes: 'squeeze' }]]), view: 'q', flip: hid, sq: hid ? -.12 : 0, aL: hid ? -1.4 : -1.2, aR: hid ? -1.4 : .8, draw: ninjaMask(1), boilKey: 'pip' });
+    if (!hid && drag > 0) speedLines(kx - 300, FK - 160, -1, t, 5, 200, 260);
+    const vin = seg(t, 83.0, 83.5), vout = seg(t, 85.1, 85.7), vx = lerp(-300, 1060, easeOut(vin)) - 1500 * easeIn(vout);
+    robotVac(vx, FK + 10, 1.0, t, { led: 'red' });
+    if (t > 84.0 && t < 85.0) emote('?', vx, FK - 200, 56, seg(t, 84.0, 84.2), t - 84.0);
+    camEnd();
+    night(.75);
+    cam(1150, 1150, 1.15);
+    laserBeams(t, 1, t < 82.6 ? 1 : 0);
+    if (vin > 0 && vout < 1) { const a = t < 84 ? Math.PI + .3 : lerp(Math.PI + .3, -.25, ease(seg(t, 84.0, 85.0))); searchlight(vx - 60, FK - 30, a, 820, .17); glow(vx + 70, FK - 16, 50, '#FF4A4A', .7); }
+    camEnd();
+    if (t < 82.6) redAlarm((.5 + .5 * Math.sin(t * 16)) * (1 - seg(t, 82.0, 82.6)));
+  }
+
+  // 2-7 · 86–92 · The fridge. Pumpkin jumps and hangs off the handle... the door swings open WITH him and flings him into the
+  // wall: SPLAT. He slides down. Pip, deadpan, points at the open fridge: the cake.
+  function s2_7(t) {
+    cam(1500, 1000, 1.05, shake(t, 88.5, 12, .35));
+    const open = ease(seg(t, 87.3, 88.2));
+    kitchen(t, { minutes: 7, fridgeOpen: open });
+    const jump = seg(t, 86.3, 86.8), swing = seg(t, 87.3, 88.2), fly = seg(t, 88.2, 88.5), slide = seg(t, 89.0, 90.6);
+    let kx = 1180, ky = FK, aL = -1.1, aR = -1.1, rot = 0, sq = 0, sc = 1, fc = [[86, 'determined']];
+    if (jump > 0) { const p = arcPt([1180, FK], [1310, 1250], 160, ease(jump)); kx = p[0]; ky = p[1]; aL = aR = 1.45; rot = jump >= 1 ? Math.sin(t * 6) * .06 : 0; }
+    if (swing > 0) { kx = lerp(1310, 1760, swing); ky = 1250 - 120 * Math.sin(swing * Math.PI); sc = 1 + .25 * Math.sin(swing * Math.PI); rot = -.3 * swing; fc = [[87.3, 'panic']]; }
+    if (fly > 0) { const p = arcPt([1760, 1250], [2140, 1180], 80, fly); kx = p[0]; ky = p[1]; rot = .2; }
+    if (t > 88.5) { kx = 2140; ky = lerp(1180, FK, ease(slide)); sq = .18 * (1 - slide); sc = 1.08 - .08 * slide; rot = 0; aL = aR = lerp(.15, -1.1, slide); fc = [[88.5, 'dazed']]; }
+    if (t > 88.5) { for (let i = 0; i < 9; i++) { const a = i / 9 * TAU + .3, r0 = 200, r1 = 300 + 60 * hash(i + 2); inkLine([[2140 + Math.cos(a) * r0, 920 + Math.sin(a) * r0 * 1.2], [2140 + Math.cos(a + .08) * (r0 + r1) / 2, 920 + Math.sin(a + .08) * (r0 + r1) / 2 * 1.2], [2140 + Math.cos(a) * r1, 920 + Math.sin(a) * r1 * 1.2]], 4, '#7A6A48', 'ink', 0); } }
+    pumpkin(kx, ky, U * sc, { ...faces(t, fc), rot, sq, aL, aR, ...SPY, noShadow: ky < FK - 4, boilKey: 'pk' });
+    pip(1060, FK, U, { ...faces(t, [[86, 'determined', { lookX: 1 }], [88.5, 'deadpan', { lookX: 1 }], [90.8, 'smug', { lookX: 1 }]]), view: 'q', aL: -.5, aR: t > 90.8 ? .5 : -.4, draw: ninjaMask(1), boilKey: 'pip' });
+    pop2('CREEEAK', 1600, 640, t, 87.3, 54, '#FFFFFF', .9, .05);
+    pop2('SPLAT!', 2080, 900, t, 88.5, 80, '#FFE27A', .9);
+    if (t > 88.5 && t < 89.6) dizzy(2140, 1180 - 520, 60, t);
+    camEnd();
+    night(.6 * (1 - .4 * open));
+    cam(1500, 1000, 1.05);
+    if (open > .05) { glow(1480, 800, 520, '#DDF2FF', .55 * open); paint([[1320, 520], [1640, 520], [2000, 1500], [1000, 1500]], { wash: '#DDF2FF', washOp: 40 * open, ink: null }); }
+    if (t > 90.8) { const k = seg(t, 90.8, 91.1); for (let i = 0; i < 5; i++) paint(starPts(1460 + Math.cos(i * 1.3 + t * 2) * 150, 790 + Math.sin(i * 1.3 + t * 2) * 90, 18 * k, .3, 4), { wash: '#FFFFFF', ink: null }); }
+    camEnd();
+  }
+
+  // 2-8 · 92–98 · Pumpkin marches up to the open fridge: a blast of cold mist... frozen solid in a block of ice. "So... cold."
+  // Pip taps the ice with his cracker: tink, tink... it shatters. Pumpkin is left a shivering puffball.
+  function s2_8(t) {
+    cam(1480, 1060, 1.45);
+    kitchen(t, { minutes: 7, fridgeOpen: 1 });
+    const walk = seg(t, 92.0, 92.5), frozen = t > 93.0 && t < 97.2, shatter = t > 97.2;
+    const kx = lerp(1900, 1480, ease(walk)), shiver = shatter ? Math.sin(t * 70) * .03 : frozen ? Math.sin(t * 50) * .006 : 0;
+    pumpkin(kx, FK, U, { ...faces(t, [[92, 'determined'], [92.6, 'surprised', { eyes: 'wide' }], [97.2, 'strain'], [97.8, 'surprised', { eyes: 'wide', pupil: .3 }]]), rot: shiver, puff: shatter ? 1 : 0,
+      aL: frozen ? -1.1 : -1.1, aR: frozen ? -1.1 : -1.1, ...SPY, who: 'pumpkin', boilKey: 'pk' });
+    if (frozen || (t > 93 && t < 97.2)) {
+      icicles(kx, FK - 6.3 * U, 3.2 * U, 6, 46);
+      iceBlock(kx, FK + 20, 11 * U, 13.6 * U, t, seg(t, 96.0, 97.2));
+    }
+    const prun = seg(t, 95.0, 95.6);
+    pip(lerp(900, 1180, ease(prun)), FK, U, { ...faces(t, [[92, 'surprised', { lookX: 1 }], [96.0, 'determined', { lookX: 1 }], [97.2, 'surprised', { lookX: 1 }]]), view: 'q', cracker: true, aR: t > 96.0 && t < 97.2 ? .2 + .6 * Math.abs(Math.sin(t * 9)) : -.3, aL: -.6, draw: ninjaMask(1), boilKey: 'pip' });
+    pop2('KRRK!', kx + 300, 820, t, 93.0, 70, '#9CD6F5', .8);
+    pop2('tink', 1300, 1000, t, 96.15, 46, '#FFFFFF', .5); pop2('tink', 1320, 960, t, 96.5, 46, '#FFFFFF', .5); pop2('tink', 1340, 920, t, 96.85, 46, '#FFFFFF', .5);
+    burst(kx, FK - 6 * U, 520, (t - 97.2) / .6, 14, '#CFEFFF', 7);
+    pop2('CRASH!', kx, 640, t, 97.2, 80, '#FFFFFF', .8);
+    camEnd();
+    night(.45);
+    cam(1480, 1060, 1.45);
+    glow(1480, 800, 520, '#DDF2FF', .5);
+    coldMist(1400, 900, t, t < 92.4 ? 0 : t < 93.2 ? 1 : .4);
+    camEnd();
+    flash(seg(t, 93.0, 93.1) * (1 - seg(t, 93.1, 93.4)) * .7, '#E8F8FF');
+  }
+
+  // 2-9 · 98–106 · Inside the fridge. Pumpkin has his face stuck in a wobbly jelly. Pip hops up the groceries (eggs, butter,
+  // milk) to the top shelf and lifts the cake: heavenly light. "Got it!"
+  // 2-10 · 106–112.6 · Pip slides the cake off the shelf: it lands on Pumpkin's head. "Cake hat." A tiny victory dance; the
+  // door swings shut on them: THUNK.
+  const UI = 46;
+  function s2_9(t) {
+    const shut = seg(t, 112.0, 112.6);
+    cam(960, 790, .93, shake(t, 112.6, 10, .3));
+    // drawn in a 1920-wide world (top shelf y 700, bottom shelf y 1300), framed by the camera
+    fridgeInside(t);
+    // groceries: egg box, butter, milk carton (Pip's stairs)
+    paint(rrPts(830, 1180, 210, 120, 12), { wash: '#F1E6CF', sw: 1.4 }); for (let i = 0; i < 4; i++) paint(ellPts(860 + i * 50, 1176, 20, 26, 12), { wash: '#FFF8EC', sw: 1 });
+    paint(rrPts(1050, 1020, 170, 280, 10), { wash: '#F7D96A', sw: 1.4, shade: true, shadeK: .3 }); letter('BUTTER', 1135, 1150, 30, '#8A5A22', { font: '800 30px "Baloo 2", sans-serif' });
+    paint(rectPts(1230, 860, 160, 440), { wash: '#FFFFFF', sw: 1.4, shade: true, shadeK: .25 }); paint([[1230, 860], [1390, 860], [1350, 800], [1270, 800]], { wash: '#4F9BD9', sw: 1.4 }); letter('MILK', 1310, 1060, 40, '#4F9BD9', { font: '800 40px "Baloo 2", sans-serif' });
+    // Pip's route: floor -> eggs -> butter -> milk -> top shelf
+    const HOPS = [[98.6, [760, FI.floor], [930, 1180]], [99.3, [930, 1180], [1135, 1020]], [100.0, [1135, 1020], [1310, 800]], [100.7, [1310, 800], [1470, FI.top]]];
+    let pp = [760, FI.floor], prot = 0, air = false;
+    for (const [t0, a, b] of HOPS) { const k = seg(t, t0, t0 + .5); if (k > 0 && k < 1) { pp = arcPt(a, b, 120, ease(k)); air = true; } else if (k >= 1) pp = b; }
+    // the cake: on the top shelf, lifted (101.6), set down at the edge (105.6), pushed off -> Pumpkin's head (106.0-106.7)
+    const lift = ease(seg(t, 101.5, 102.0)), push2 = seg(t, 105.6, 106.0), drop = seg(t, 106.0, 106.7), onHead = t > 106.7;
+    const KX = t < 104.4 ? 640 : lerp(640, 800, easeOut(seg(t, 104.4, 104.8))), KXH = 800, headTop = FI.floor - 12.2 * UI;
+    let cake = null;
+    if (t < 105.6) cake = [lerp(1640, 1490, lift), lerp(FI.top, FI.top - 6.4 * UI, lift), lerp(1.05, .9, lift), true];
+    else if (drop <= 0) cake = [lerp(1490, 1260, push2), FI.top, 1.05, true];
+    else if (!onHead) { const p = arcPt([1260, FI.top], [KXH + 10, headTop + 20], 200, ease(drop)); cake = [p[0], p[1], 1.05 - .35 * drop, false]; }
+    // rays while it's held up
+    if (t > 101.8 && t < 105.6) { const k = seg(t, 101.8, 102.2); for (let i = 0; i < 8; i++) { const a = Math.PI / 2 + (i - 3.5) * .13; paint([[1490, -150], [1490 + Math.cos(a - .04) * 1300, -150 + Math.sin(a - .04) * 1300], [1490 + Math.cos(a + .04) * 1300, -150 + Math.sin(a + .04) * 1300]], { wash: '#FFF3B0', washOp: 90 * k, ink: null }); } glow(1490, 380, 380, '#FFF3B0', .6 * k); }
+    // Pumpkin: face in the jelly (leaning in) until 104.4 (SHLOP), then up, cake hat, dance
+    const stuck = t < 104.4, dance = seg(t, 109.4, 112.0);
+    const jx = 470;
+    pumpkin(KX, FI.floor, UI, { ...faces(t, [[98, 'strain'], [104.4, 'surprised', { eyes: 'wide' }], [105.0, 'neutral', { lookY: -1, lookX: 1 }], [106.7, 'surprised', { eyes: 'wide', lookY: -1 }], [107.4, 'proud'], [108.2, 'deadpan', { blush: .3 }], [109.4, 'happy']]),
+      rot: stuck ? -.22 + Math.sin(t * 7) * .03 : dance > 0 ? Math.sin(t * 9) * .12 : 0, dy: dance > 0 ? -Math.abs(Math.sin(t * 9)) * .4 : 0,
+      aL: stuck ? .9 + Math.sin(t * 14) * .5 : dance > 0 ? 1.3 : -1.1, aR: stuck ? .9 - Math.sin(t * 14) * .5 : dance > 0 ? 1.3 : -1.1,
+      sq: t > 106.7 && t < 107.2 ? .25 * Math.exp(-(t - 106.7) * 8) : 0, ...SPY,
+      draw: onHead ? (u, sw) => { push(); translate(.2 * u, -11.9 * u); scale(.8, .8); cakeSlice(0, 0, u / 46, false); pop(); } : undefined, who: 'pumpkin', boilKey: 'pk' });
+    const JB = FI.floor - 330;   // the jelly sits on a yogurt tub, at face height
+    paint(rrPts(jx - 130, JB, 260, 330, 16), { wash: '#FFFFFF', sw: 1.4, shade: true, shadeK: .2 }); paint(rectPts(jx - 130, JB + 90, 260, 80), { wash: '#F49AC1', ink: null }); letter('YOGURT', jx, JB + 132, 34, '#FFFFFF', { font: '800 34px "Baloo 2", sans-serif' });
+    jelly(jx, JB, .9, t, stuck ? 1 : Math.max(0, 1 - (t - 104.4) * 1.2));
+    if (t > 104.4) { pop2('SHLOP!', 560, 760, t, 104.4, 60, '#7ED957', .8); }
+    pip(pp[0], pp[1], UI, { ...faces(t, [[98, 'determined'], [101.4, 'surprised', { eyes: 'wide' }], [101.8, 'happy'], [103.4, 'smug'], [105.4, 'determined'], [106.7, 'happy']]), view: 'q', flip: t > 105.0 && t < 106.2,
+      rot: air ? Math.sin(t * 20) * .1 : 0, aL: lift > 0 && t < 105.6 ? 1.45 : dance > 0 ? 1.3 : -.6, aR: lift > 0 && t < 105.6 ? 1.45 : t > 105.6 && t < 106.1 ? .2 : dance > 0 ? 1.3 : -.4,
+      dy: dance > 0 ? -Math.abs(Math.sin(t * 9 + 1)) * .5 : 0, draw: ninjaMask(1), noShadow: air || pp[1] < FI.floor - 2, who: 'pip', boilKey: 'pip' });
+    if (cake) cakeSlice(cake[0], cake[1], cake[2], cake[3], t > 101.8 && t < 105.6 ? 1 : 0);
+    pop2('BONK', KXH + 140, 560, t, 106.7, 56, '#FFFFFF', .6);
+    camEnd();
+    // the door swings shut over the camera (from the right)
+    if (shut > 0) { const x = lerp(W + 40, -40, easeIn(shut)); paint(rectPts(x, -20, W + 80, H + 40), { wash: '#B8C2CC', sw: 3 }); paint(rrPts(x + 60, 300, 26, 420, 12), { wash: '#8E98A3', sw: 1 }); }
+  }
+
+  // 2-11 · 112.6–120 · THUNK. Pitch dark. Two pairs of eyes blink open, look at each other. "...Uh oh." Pumpkin's stomach
+  // GRRRWLs in the dark. Then a red glow creeps in around the edge of the door: the vacuum's eye. Hold.
+  function s2_11(t) {
+    paint(rectPts(-10, -10, W + 20, H + 20), { wash: '#06060E', ink: null });
+    const g = 116.6, gs = t > g && t < g + 1.0 ? Math.sin(t * 60) * 8 : 0;
+    const blink = (a) => { const k = t - a; return k < 0 ? 0 : k < .12 ? k / .12 : 1; };
+    const b2 = t > 114.0 && t < 114.12 ? .1 : 1, red = seg(t, 117.8, 118.4);
+    const kOpen = blink(113.3) * b2, pOpen = blink(113.6) * b2;
+    const kLook = t < 114.3 ? 0 : t < 116.6 ? .8 : t < 117.8 ? -.3 : .9, pLook = t < 114.3 ? 0 : t < 117.8 ? -.8 : .9;
+    const pup = red > 0 ? 1 - .55 * red : 1;
+    darkEyes(820 + gs, 520, 52, 64, 74, kLook, kOpen, pup);
+    darkEyes(1150, 640, 24, 30, 36, pLook, pOpen, pup);
+    if (t > g && t < g + 1.4) letter('GRRRWL', 820 + Math.sin(t * 60) * 6, 330, 72, '#E2463F', { stroke: '#2B2233', pop: (t - g) * 4, rot: -.08, alpha: 1 - seg(t - g, 1.0, 1.4), screen: true });
+    if (t > 112.6 && t < 113.3) letter('THUNK!', W / 2, H / 2, 120, '#FFFFFF', { stroke: '#2B2233', pop: seg(t, 112.6, 112.75) * 1.2, alpha: 1 - seg(t, 113.0, 113.3), screen: true });
+    if (red > 0) {
+      const p = .75 + .25 * Math.sin(t * 5);
+      paint(rectPts(W - 26, -10, 40, H + 20), { wash: '#FF2E2E', washOp: 255 * red * p, ink: null });
+      glow(W - 10, H / 2, 520, '#FF3A3A', .6 * red * p); glow(W - 10, H / 2, 200, '#FF8080', .5 * red * p);
+    }
+  }
+
   function placeholder(n) {
     return t => { paint(rectPts(-10, -10, W + 20, H + 20), { wash: '#2B2233', ink: null }); letter(`PART ${n} (not built yet)`, W / 2, H / 2, 80, '#FFFFFF', { screen: true }); };
   }
-  shots([[0, s1_1], [4, s1_2], [9, s1_3], [14, s1_4], [22, s1_5], [25, s1_6], [32, s1_7], [44, s1_8], [52, s1_9], [60, placeholder(2)], [120, placeholder(3)], [180, t => endScreen(t, 180, { hat: true })]]);
+  shots([[0, s1_1], [4, s1_2], [9, s1_3], [14, s1_4], [22, s1_5], [25, s1_6], [32, s1_7], [44, s1_8], [52, s1_9], [60, s2_1], [65, s2_2], [68, s2_34], [76, s2_5], [82, s2_6], [86, s2_7], [92, s2_8], [98, s2_9], [112.6, s2_11], [120, placeholder(3)], [180, t => endScreen(t, 180, { hat: true })]]);
 })();
