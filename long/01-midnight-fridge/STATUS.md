@@ -6,8 +6,8 @@
 - [x] step 2 (เสียง): 12 ประโยค Chatterbox · timing 0 flagged (แก้ `engine/timing.py` ให้อ่านเลขช็อตแบบ `1-2`, `E-1` ได้)
 - [x] ส่วนที่ 1: props (ครัว ตู้เย็น เค้ก แผนสีเทียน ชุดสายลับ ไฟฉายหุ่นยนต์ โคม) + 6 ช็อต · drycheck 0 · ผู้ใช้ OK ภาพนิ่ง · จัดจังหวะฉากฝันให้ตรงเสียง "Step one... CAKE" · แก้ไฟฉายหุ่นยนต์ให้กวาดพื้น · เรนเดอร์ `out/part1.mp4` (60 วิ, ภาพ + เสียงพูด ยังไม่มี SFX/เพลง)
 - [x] ส่วนที่ 2 v2 (เขียนใหม่ให้เร็ว): 10 ช็อต, เสียงพูดใหม่ 5 ประโยค (รวม 21, 0 flagged), SFX + เพลงส่วนที่ 2, มิกซ์ · ภาพนิ่ง `out/check/p2_stills.jpg` ผู้ใช้ OK · เรนเดอร์ `out/part2.mp4` (60 วิ, 1920x1080, เสียงครบ) + `out/part1-2.mp4` (ต่อสองส่วน 120 วิ)
-- [x] ส่วนที่ 3 v2 (เขียนใหม่ให้เร็ว): 8 ช็อต (ไล่ล่าตัดทุก 3 วิ), เสียงพูดใหม่ 4 ประโยค (รวม 25, 0 flagged), SFX + เพลงส่วนที่ 3 + End Screen, มิกซ์ · ภาพนิ่ง `out/check/p3_stills.jpg` **รอผู้ใช้ OK ก่อนเรนเดอร์วิดีโอ**
-- [ ] steps 7-9: SFX + เพลง + มิกซ์ + เรนเดอร์จริง + ปก 1280x720 + YOUTUBE.md + ENDSCREEN.md
+- [x] ส่วนที่ 3 v2 (เขียนใหม่ให้เร็ว): 8 ช็อต (ไล่ล่าตัดทุก 3 วิ), เสียงพูดใหม่ 4 ประโยค (รวม 25, 0 flagged), SFX + เพลงส่วนที่ 3 + End Screen, มิกซ์ · ภาพนิ่ง `out/check/p3_stills.jpg` ผู้ใช้ OK (แก้: โน้ตใหญ่ขึ้น, เบาะป้อมล้มแบนหลังผ้าห่มโดนดูด)
+- [x] steps 7-9: เรนเดอร์เต็มเรื่อง `out/full.mp4` (1920x1080, 200 วิ, ถอดรหัสครบ, `out/check/cuts_full.jpg`) · ปกเต็มเรื่อง `out/cover_full_ep_720.png` · `YOUTUBE_FULL.md` · `ENDSCREEN.md`
 
 
 
@@ -35,3 +35,7 @@ Same `short.html` + `src/vertical.js` as Part 1 (crop keyframes for 60-120 added
 the end badge NEXT: PART 3, and a red edge glow inside the picture for the dark ending). Render:
 `render_pw.mjs --page=short.html --range=60:120 --audio=out/audio/mix.wav --out=out/short_p2.mp4`. Checked: 1080x1920,
 60.0 s, decodes with no errors, out/check/short_p2_cuts.jpg.
+
+## Vertical Short of Part 3 (1080x1920, 60 s): `out/short_p3.mp4`
+Crop keyframes for 120-180 in `VKEYS`; title band PART 3; a "THE END ♥" badge for the last 2.2 s. Text: `YOUTUBE_PART3.md`.
+Checked: 1080x1920, 60.0 s, decodes with no errors, out/check/short_p3_cuts.jpg.
