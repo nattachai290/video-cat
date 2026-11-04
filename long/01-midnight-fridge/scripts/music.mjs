@@ -1,4 +1,4 @@
-// music.mjs: "The Midnight Fridge", 120 bpm (1 bar = 2 s, 30 bars per part, 100 bars total). Parts 1-2 (bars 0-59) done.
+// music.mjs: "The Midnight Fridge", 120 bpm (1 bar = 2 s, 30 bars per part, 100 bars total). All parts done (bars 0-89) + End Screen (bars 90-99).
 import { Track, SR, TAU, rng, noise, Biquad, env, fade } from '../../../engine/audio/synth.mjs';
 
 const BPM = 120, BEAT = .5, BAR = 2, E8 = .25, DUR = 200, tr = new Track(DUR);
@@ -41,6 +41,20 @@ for (let b = 52; b <= 53; b++) spy2(b, 7);                                      
 for (let b = 54; b <= 55; b++) { [72, 0, 76, 74, 72, 0, 67, 0].forEach((m, e) => m && !silent2(at(b, e)) && N(b, e, .25, pluck(hz(m + 2), .25, .7), { gain: .32, send: .2 })); [0, 4].forEach(e => N(b, e, .2, kick(), { gain: .5 })); [2, 6].forEach(e => N(b, e, .1, snare(b * 8 + e), { gain: .25 })); }   // 108-112 victory dance
 N(56, 2.6, 1.0, bass(hz(28), 1.0), { gain: .6 });                                    // the THUNK
 N(57, 0, 6, pad(hz(38), 6), { gain: .55 });                                           // 114-120 dark, ominous
+
+// ---------- PART 3 (bars 60-89) + END SCREEN (bars 90-99) ----------
+const silent3 = t => (t >= 120 && t < 120.4) || (t >= 123.6 && t < 124.4) || (t >= 151.4 && t < 158.4) || (t >= 160.9 && t < 165.6);
+function chase(b, up = 0) { for (let e = 0; e < 8; e++) { const tt = at(b, e); if (silent3(tt)) continue; N(b, e, .2, bass(hz((e % 2 ? 47 : 40) + up)), { gain: .45 }); if (e % 2 === 0) N(b, e, .2, kick(), { gain: .5 }); if (e % 4 === 2) N(b, e, .1, snare(b * 8 + e), { gain: .3 }); N(b, e, .2, pluck(hz([64, 67, 71, 67, 64, 67, 72, 71][e] + up), .18, .6), { gain: .3, pan: .2 }); } }
+N(60, 1, 2.0, pad(hz(38), 2.0), { gain: .5 });                                       // 120-124 caught
+for (let b = 62; b <= 69; b++) chase(b, b >= 66 ? 2 : 0);                            // 124-140 the chase
+[0, 2, 4].forEach((e, k) => N(70, e, .6, marimba(hz([72, 67, 64][k]), .7), { gain: .3, send: .5 }));   // 140-142 dizzy, flump
+for (let b = 71; b <= 74; b++) { [72, 0, 76, 79, 0, 76, 74, 0].forEach((m, e) => m && !silent3(at(b, e)) && N(b, e, .3, marimba(hz(m), .4), { gain: .28, send: .4 })); [0, 4].forEach(e => !silent3(at(b, e)) && N(b, e, .3, bass(hz(36)), { gain: .4 })); }   // 142-150 victory in the fort
+N(75, 0, 1.4, pad(hz(48), 1.4), { gain: .4 });                                       // 150-151.4 the first bite...
+// 151.4-158.4 silence (the squeak, the chewing, the sponge)
+N(79, 2, 2.5, pad(hz(52), 2.5), { gain: .4, send: .6 });                              // 159-161 the real cake (warm)
+for (let b = 83; b <= 89; b++) { [0, 4].forEach(e => N(b, e, 1.8, pad(hz([60, 65, 67, 60, 65, 67, 60][b - 83]), 1.8), { gain: .45, send: .6 })); [0, 2, 4, 6].forEach((e, k) => N(b, e, .5, marimba(hz([72, 76, 79, 76][k] + [0, 5, 7, 0, 5, 7, 0][b - 83]), .6), { gain: .22, send: .6 })); }   // 166-180 birthday warmth
+// End Screen (bars 90-99): the happy snack theme
+for (let b = 90; b <= 99; b++) { [72, 0, 76, 74, 72, 0, 67, 0].forEach((m, e) => m && N(b, e, .25, pluck(hz(m + (b % 2) * 2), .25, .7), { gain: .3, send: .2 })); [0, 4].forEach(e => N(b, e, .2, kick(), { gain: .45 })); [2, 6].forEach(e => N(b, e, .1, snare(b * 8 + e), { gain: .22 })); [0, 4].forEach(e => N(b, e, .3, bass(hz(36 + (b % 2) * 2)), { gain: .4 })); }
 
 tr.reverb(.25, 1);
 tr.write('out/audio/music.wav');

@@ -459,3 +459,64 @@ function darkEyes(x, y, rx, ry, gap, look = 0, open = 1, pupil = 1, lookY = 0) {
     if (open > .3) paint(ellPts(x + s * gap + look * rx * .45, y + lookY * ry * .4, rx * .42 * pupil, ry * .5 * pupil * open, 14), { wash: '#16142A', ink: null });
   }
 }
+
+// ---------- part 3 ----------
+// The vacuum's siren dome (on top of robotVac at (x, y) world, scale s): a red/blue light turning, with beams. on 0..1.
+function siren(x, y, s, t, on = 1) {
+  const top = [x, y - 62 * s];
+  paint(ellPts(top[0], top[1] - 6 * s, 30 * s, 10 * s, 16), { wash: '#2B2F38', sw: 1 });
+  const ph = Math.sin(t * 12), col = ph > 0 ? '#FF3A3A' : '#3A8BFF';
+  paint([...arcPts(top[0], top[1] - 8 * s, 24 * s, 30 * s, Math.PI, TAU, 12), [top[0] + 24 * s, top[1] - 8 * s]], { wash: on > 0 ? col : '#8E96A3', sw: 1.2 });
+  if (on > 0) {
+    glow(top[0], top[1] - 22 * s, 140 * s, col, .7 * on);
+    const a = t * 7;
+    for (const d of [0, Math.PI]) paint([[top[0], top[1] - 22 * s], [top[0] + Math.cos(a + d - .18) * 700 * s, top[1] - 22 * s + Math.sin(a + d - .18) * 200 * s], [top[0] + Math.cos(a + d + .18) * 700 * s, top[1] - 22 * s + Math.sin(a + d + .18) * 200 * s]], { wash: col, washOp: 50 * on, ink: null });
+  }
+}
+// A big ✗ or a dizzy spiral shown on the vacuum's "face" (its LED area). (x, y) = the robotVac position.
+function vacIcon(x, y, s, kind, t, k = 1) {
+  if (k <= 0) return;
+  const cx = x + 70 * s, cy = y - 26 * s;
+  if (kind === 'x') for (const d of [-1, 1]) inkLine([[cx - 22 * s * k, cy - 14 * s * k * d], [cx + 22 * s * k, cy + 14 * s * k * d]], 7 * s, '#FF3A3A', 'ink', 0);
+  if (kind === 'spiral') { const P = []; for (let i = 0; i < 30; i++) { const a = i * .5 + t * 8, r = i * .9 * s; P.push([cx + Math.cos(a) * r, cy + Math.sin(a) * r * .6]); } inkLine(P, 3 * s, '#FFE27A', 'ink', 0); }
+}
+// The cushion fort: two armchair cushions as walls and a blanket roof (draped between them). lift 0..1 raises the blanket.
+// Drawn in two halves so characters can sit inside: fortBack() before them, fortFront() after.
+const FORT = { x: 1380, y: 1560, w: 640 };
+function fortBack(t, lift = 0) {
+  const { x, y, w } = FORT;
+  paint(rrPts(x - w / 2 - 40, y - 640, w + 80, 640, 24), { wash: '#3C3466', washOp: 120 * (1 - lift), ink: null });   // the dark inside
+}
+function fortFront(t, lift = 0, suck = 0, to = [2000, 1500]) {
+  const { x, y, w } = FORT, ly = -lift * 420;
+  for (const s of [-1, 1]) { push(); translate(x + s * (w / 2 + 10), y - 290); rotate(s * .06); scale(1.4, 3.4); cushion(0, 0, Math.PI / 2, 1); pop(); }
+  if (suck >= 1) return;
+  // the blanket roof (a draped, scalloped shape); suck 0..1 shrinks it into the vacuum at `to`
+  push(); if (suck > 0) { const k = easeIn(suck); translate(lerp(0, to[0] - x, k), lerp(0, to[1] - (y - 640), k)); translate(x, y - 640); scale(1 - k * .95, 1 - k * .95); rotate(k * 2); translate(-x, -(y - 640)); }
+  const top = y - 700 + ly, P = [[x - w / 2 - 110, top + 90], ...arcPts(x, top + 20, w / 2 + 110, 70, Math.PI, TAU, 16), [x + w / 2 + 110, top + 90]];
+  for (let i = 0; i <= 8; i++) P.push([x + w / 2 + 110 - i * (w + 220) / 8, top + 110 + (i % 2) * 34]);
+  paint(P, { wash: '#7FB3C8', sw: 1.6, shade: true, shadeK: .3 });
+  for (let i = 1; i < 6; i++) inkLine([[x - w / 2 - 80 + i * (w + 160) / 6, top + 10], [x - w / 2 - 80 + i * (w + 160) / 6 + 10, top + 110]], 1.4, '#5E95AC', 'ink', .3);
+  pop();
+}
+// Soap bubbles floating up from (x, y): n bubbles, age in seconds.
+function bubbles(x, y, age, n = 6, seed = 1) {
+  if (age < 0) return;
+  for (let i = 0; i < n; i++) { const a = age - i * .25; if (a < 0 || a > 2.4) continue; const r = 14 + 14 * hash(i + seed); const bx = x + Math.sin(a * 2 + i) * 40 + (hash(i + seed + 3) - .5) * 90, by = y - a * 160;
+    paint(ellPts(bx, by, r, r, 16), { wash: '#DDF4FF', washOp: 70, sw: 1.4 }); paint(ellPts(bx - r * .35, by - r * .35, r * .25, r * .18, 8), { wash: '#FFFFFF', ink: null }); }
+}
+// A candle (stuck in a cake): (x, y) = its base. lit 0..1, flicker.
+function candle(x, y, s, t, lit = 1) {
+  paint(rrPts(x - 7 * s, y - 70 * s, 14 * s, 70 * s, 4), { wash: '#9CD6F5', sw: 1 });
+  for (let i = 0; i < 3; i++) inkLine([[x - 7 * s, y - 16 * s - i * 20 * s], [x + 7 * s, y - 24 * s - i * 20 * s]], 2.4 * s, '#FFFFFF', 'ink', 0);
+  if (lit > 0) { const f = 1 + .12 * Math.sin(t * 30); glow(x, y - 92 * s, 80 * s, '#FFD27A', .8 * lit); paint([[x, y - (112 * f) * s], [x + 10 * s, y - 86 * s], [x, y - 76 * s], [x - 10 * s, y - 86 * s]], { wash: '#FFB13B', sw: .8 }); paint(ellPts(x, y - 86 * s, 4 * s, 7 * s, 8), { wash: '#FFF3B0', ink: null }); }
+  else inkLine([[x, y - 72 * s], [x + 6 * s, y - 110 * s], [x - 4 * s, y - 150 * s]], 2, '#B9B4C8', 'ink', .5);   // smoke
+}
+// The wall calendar (living room): today circled in red, "PUMPKIN'S B-DAY". ring 0..1 draws the circle.
+function calendar(x, y, ring = 1) {
+  paint(rectPts(x - 110, y - 130, 220, 260), { wash: '#FFFFFF', sw: 1.6, shade: true, shadeK: .2 });
+  paint(rectPts(x - 110, y - 130, 220, 60), { wash: '#E2463F', sw: 1.2 });
+  letter('NOV', x, y - 100, 34, '#FFFFFF', { font: '800 34px "Baloo 2", sans-serif' });
+  for (let r = 0; r < 4; r++) for (let c = 0; c < 5; c++) paint(rectPts(x - 96 + c * 40, y - 56 + r * 44, 30, 30), { wash: '#EFE8DA', ink: null });
+  if (ring > 0) { const P = []; for (let i = 0; i <= 24 * ring; i++) { const a = i / 24 * TAU; P.push([x + 4 + Math.cos(a) * 36, y + 30 + Math.sin(a) * 30]); } inkLine(P, 6, '#E2463F', 'ink', 0); }
+}

@@ -15,9 +15,13 @@
   {"id": "d20", "who": "pip", "shot": "2-9", "t": 102.6, "text": "Got it!", "emo": "triumphant, thrilled", "exag": 0.7, "cfg": 0.35, "speed": 1.0, "pitch": 1.1},
   {"id": "d21", "who": "pumpkin", "shot": "2-10", "t": 108.2, "text": "Cake hat.", "emo": "deadpan, quietly proud", "exag": 0.45, "cfg": 0.5, "speed": 1.0, "pitch": 0.97},
   {"id": "d07", "who": "pip", "shot": "2-11", "t": 115.0, "text": "...Uh oh.", "emo": "small, dread", "exag": 0.5, "cfg": 0.45, "speed": 0.95, "pitch": 1.1},
-  {"id": "d08", "who": "pumpkin", "shot": "3-3", "t": 152.0, "text": "We did it.", "emo": "triumphant, out of breath", "exag": 0.6, "cfg": 0.4, "speed": 1.0, "pitch": 0.97},
-  {"id": "d09", "who": "pip", "shot": "3-3", "t": 155.0, "text": "Operation Cake... complete.", "emo": "proud, formal", "exag": 0.55, "cfg": 0.45, "speed": 1.0, "pitch": 1.1},
-  {"id": "d10", "who": "pumpkin", "shot": "3-4", "t": 165.0, "text": "...It's a sponge.", "emo": "crushed, deadpan", "exag": 0.5, "cfg": 0.5, "speed": 0.95, "pitch": 0.97},
+  {"id": "d22", "who": "pumpkin", "shot": "3-1", "t": 122.8, "text": "...Lamp?", "emo": "tiny hopeful whisper, frozen, caught red-handed", "exag": 0.45, "cfg": 0.5, "speed": 0.95, "pitch": 0.97},
+  {"id": "d23", "who": "pip", "shot": "3-2", "t": 125.3, "text": "RUN!", "emo": "panicked shout", "exag": 0.9, "cfg": 0.3, "speed": 1.0, "pitch": 1.1},
+  {"id": "d08", "who": "pumpkin", "shot": "3-4", "t": 143.0, "text": "We did it.", "emo": "triumphant, out of breath", "exag": 0.6, "cfg": 0.4, "speed": 1.0, "pitch": 0.97},
+  {"id": "d09", "who": "pip", "shot": "3-4", "t": 145.4, "text": "Operation Cake... complete.", "emo": "proud, formal", "exag": 0.55, "cfg": 0.45, "speed": 1.0, "pitch": 1.1},
+  {"id": "d10", "who": "pumpkin", "shot": "3-5", "t": 155.0, "text": "...It's a sponge.", "emo": "crushed, deadpan", "exag": 0.5, "cfg": 0.5, "speed": 0.95, "pitch": 0.97},
+  {"id": "d24", "who": "pumpkin", "shot": "3-7", "t": 167.4, "text": "...For me?", "emo": "choked up, touched, teary", "exag": 0.6, "cfg": 0.45, "speed": 0.95, "pitch": 0.97},
+  {"id": "d25", "who": "pip", "shot": "3-7", "t": 169.6, "text": "Happy birthday, Pumpkin.", "emo": "warm, gentle, smiling", "exag": 0.5, "cfg": 0.45, "speed": 1.0, "pitch": 1.1},
   {"id": "d11", "who": "pip", "shot": "E-1", "t": 181.0, "text": "More snacks? Pick one!", "emo": "cheerful, pointing at screen", "exag": 0.55, "cfg": 0.45, "speed": 1.0, "pitch": 1.1},
   {"id": "d12", "who": "pumpkin", "shot": "E-1", "t": 183.5, "text": "And subscribe!", "emo": "bright, forced cheer", "exag": 0.6, "cfg": 0.4, "speed": 1.05, "pitch": 0.97}
 ]
