@@ -2,7 +2,7 @@
 // Pumpkin, in a ninja headband and crayon moustache, frozen under a lampshade in the robot vacuum's searchlight; Pip hiding
 // behind a tiny plant; the glowing DO-NOT-EAT cake in the open fridge. Render: --loop=cover --still=0.6
 (() => {
-  LOOPS.cover = t => {
+  const coverScene = (t, title, pill, pillW = 300, tx = 560, ts = 150) => {
     paint(rectPts(-10, -10, W + 20, H + 20), { wash: '#1B1A40', ink: null });
     for (let i = 0; i < 70; i++) paint(ellPts(hash(i) * W, hash(i + 3) * H * .6, 2 + 2 * hash(i + 5), 2 + 2 * hash(i + 5), 6), { wash: '#FFFFFF', washOp: 110, ink: null });
     paint(rectPts(-10, 900, W + 20, 200), { wash: '#3A3560', ink: null });
@@ -24,9 +24,13 @@
     // Pip behind a tiny plant (left)
     pip(330, 1000, 52, { ...face('panic', { eyes: 'squeeze' }), view: 'q', aL: 1.2, aR: 1.2, boilKey: 'cp', draw: ninjaMask(1) });
     pottedPlant(360, 1020, .75);
-    letter("I'M A LAMP.", 560, 150, 150, '#FFFFFF', { font: '800 150px "Baloo 2", sans-serif', stroke: '#2B2233', rot: -.04, screen: true });
-    paint(rrPts(60, 250, 300, 96, 48), { wash: '#F2C14E', sw: 3 });
-    letter('PART 1', 210, 300, 64, '#2B2233', { font: '800 64px "Baloo 2", sans-serif', screen: true });
+    letter(title, tx, 150, ts, '#FFFFFF', { font: `800 ${ts}px "Baloo 2", sans-serif`, stroke: '#2B2233', rot: -.04, screen: true });
+    paint(rrPts(60, 250, pillW, 96, 48), { wash: '#F2C14E', sw: 3 });
+    letter(pill, 60 + pillW / 2, 300, 64, '#2B2233', { font: '800 64px "Baloo 2", sans-serif', screen: true });
   };
+  LOOPS.cover = t => coverScene(t, "I'M A LAMP.", 'PART 1');
+  // the full episode: same picture, a different hook
+  LOOPS.coverFull = t => coverScene(t, 'OPERATION: CAKE', 'FULL EPISODE', 470, 730, 136);
+  LOOPS.coverFull.len = 2;
   LOOPS.cover.len = 2;
 })();

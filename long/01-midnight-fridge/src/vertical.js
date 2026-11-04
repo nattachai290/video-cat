@@ -14,9 +14,14 @@ const VKEYS = [
   [76, 700, 0], [79.3, 1300, .3], [80.1, 950, .3], [82, 900, 0], [82.1, 1450, .8], [83.1, 1250, .4],
   [86, 760, 0], [87.3, 1100, .9], [88.2, 1450, .3], [90.6, 760, .5], [92, 960, 0], [95.1, 820, .5],
   [98, 760, 0], [99.6, 1250, 1.1], [104.2, 820, .3], [105.4, 1050, .5], [106.8, 950, .4], [109.4, 1130, .5], [112.6, 985, 0],
+  // part 3
+  [120.4, 1000, 0], [123.7, 1150, .2], [124.4, 1000, .2], [125, 1300, 0], [126.6, 800, .5], [129, 800, 0],
+  [132, 1500, 0], [132.6, 600, .9], [133.55, 1150, .15], [135, 1200, 0], [135.8, 600, 1.8], [138, 960, 0], [140, 700, .3],
+  [141, 980, 0], [150, 970, 0], [158, 880, 0], [159.6, 960, .4], [160.2, 1200, .5], [162.9, 960, .4], [164.2, 1180, .5], [166, 1250, 0], [167.1, 850, .4], [168.6, 1000, .6],
+  [172, 1150, 0], [173.0, 1350, .4], [174.2, 1050, .5],
 ];
 // which part a time belongs to (the title band and the end badge follow it)
-const vpart = t => t >= 60 ? 2 : 1;
+const vpart = t => t >= 120 ? 3 : t >= 60 ? 2 : 1;
 function vcx(t) {
   let x = VKEYS[0][1];
   for (const [k, cx, d] of VKEYS) { if (t < k) break; x = d ? lerp(x, cx, ease(seg(t, k, k + d))) : cx; }
@@ -45,7 +50,7 @@ frame = t => {
   _frame(t);
   VRAW = true; CTX.save(); CTX.setTransform(1, 0, 0, 1, 0, 0);
   const red = seg(t, 117.8, 118.4);
-  if (red > 0 && t < 120) { const p = .75 + .25 * Math.sin(t * 5); CTX.fillStyle = `rgba(255,46,46,${red * p})`; CTX.fillRect(VW - 22, VY0, 22, VBAND); glow(VW - 10, VY0 + VBAND / 2, 460, '#FF3A3A', .6 * red * p); }
+  if (red > 0 && t < 120.4) { const p = .75 + .25 * Math.sin(t * 5); CTX.fillStyle = `rgba(255,46,46,${red * p})`; CTX.fillRect(VW - 22, VY0, 22, VBAND); glow(VW - 10, VY0 + VBAND / 2, 460, '#FF3A3A', .6 * red * p); }
   vbands(t); CTX.restore();
   vsubs(t); vteaser(t); flushLetters();
   CTX.setTransform(1, 0, 0, 1, 0, 0); VRAW = false;
@@ -98,10 +103,10 @@ function vsubs(t) {
   });
 }
 // "NEXT: PART 2" badge in the top band for the last 2.2 s (57.8-60, i.e. 55.8-58 after the 2 s cut)
-const vteaserOn = t => (t >= 57.8 && t < 60) || (t >= 117.8 && t < 120);
+const vteaserOn = t => (t >= 57.8 && t < 60) || (t >= 117.8 && t < 120) || (t >= 177.8 && t < 180);
 function vteaser(t) {
   if (!vteaserOn(t)) return;
-  const t0 = t >= 117.8 ? 117.8 : 57.8; t = t - t0 + 57.8;   // same animation for each part's ending
+  const t0 = t >= 177.8 ? 177.8 : t >= 117.8 ? 117.8 : 57.8; t = t - t0 + 57.8;   // same animation for each part's ending
   const k = backOut(seg(t, 57.8, 58.1));
   CTX.save(); CTX.setTransform(1, 0, 0, 1, 0, 0); CTX.fillStyle = '#0E1236'; CTX.globalAlpha = clamp((t - 57.8) * 5);
   CTX.fillRect(0, 20, VW, VY0 - 30); CTX.restore();
@@ -109,7 +114,7 @@ function vteaser(t) {
   CTX.fillStyle = '#F2C14E'; CTX.strokeStyle = '#2B2233'; CTX.lineWidth = 6;
   CTX.beginPath(); CTX.roundRect(-250, -56, 500, 112, 56); CTX.fill(); CTX.stroke();
   CTX.fillStyle = '#2B2233'; CTX.font = '800 64px "Baloo 2", sans-serif'; CTX.textAlign = 'center'; CTX.textBaseline = 'middle';
-  CTX.fillText('NEXT: PART ' + (vpart(t0) + 1) + ' ▶', 0, 4); CTX.restore();
+  CTX.fillText(vpart(t0) === 3 ? 'THE END ♥' : 'NEXT: PART ' + (vpart(t0) + 1) + ' ▶', 0, 4); CTX.restore();
 }
 // Vertical cover for the Short (1080x1920), drawn straight onto the tall canvas (no crop, no bands).
 // Render: --page=short.html --loop=coverV --still=0.6 --out=out/cover_short.png
