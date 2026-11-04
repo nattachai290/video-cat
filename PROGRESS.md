@@ -18,7 +18,7 @@
 
 | เรื่อง | รูปแบบ | สถานะ |
 |---|---|---|
-| 12 · Pumpkin & Pip: Static Zap | Shorts 9:16, 45 s, การ์ตูนแบน | สตอรี่บอร์ด v1 รอผู้ใช้อนุมัติ · `stories/12-static-zap/STORYBOARD.md` |
+| 12 · Pumpkin & Pip: Static Zap | Shorts 9:16, 45 s, การ์ตูนแบน | **เสร็จ** · `stories/12-static-zap/out/video.mp4` + ปก + `YOUTUBE.md` |
 | 11 · Pumpkin & Pip: The Space Coaster | Shorts 9:16, 50 s, การ์ตูนแบน | **เสร็จ** · `stories/11-space-coaster/out/video.mp4` + ปก + `YOUTUBE.md` |
 | 10 · Pumpkin & Pip: The Sandwich | Shorts 9:16, 45 s, การ์ตูนแบน | **เสร็จ** · `stories/10-sandwich/out/video.mp4` + ปก + `YOUTUBE.md` |
 | 09 · Pumpkin & Pip: The Red Dot | Shorts 9:16, 45 s, การ์ตูนแบน | **เสร็จ** · `stories/09-red-dot/out/video.mp4` + ปก + `YOUTUBE.md` |
@@ -43,7 +43,8 @@
 - [x] ตอนที่ 7: The Red Dot (จังหวะเร็ว แอ็กชัน)
 - [x] ตอนที่ 8: The Sandwich
 - [x] ตอนที่ 9: The Space Coaster (ตัวละครใหม่ Dusty แรคคูน)
-- [ ] ตอนที่ 10: Static Zap (สตอรี่บอร์ด v1 รออนุมัติ)
+- [x] ตอนที่ 10: Static Zap
+- [ ] ตอนที่ 11 (ใช้ skill `pumpkin-pip-shorts`)
 - [ ] ถ้าจะกลับไปทำเรื่อง 02 ให้ย้ายมาเป็นสไตล์แบนและเลือกรูปแบบ (ยาว 16:9 หรือแบ่งเป็น Shorts)
 
 ## สิ่งที่สร้างไว้ใช้ซ้ำ
@@ -55,6 +56,8 @@
 - **RUNBOOK.md**: งานรันพร้อมพรอมต์ให้ Haiku (setup, voices, retake, cast-sheet, preview, check, final)
 
 ## บันทึกการตัดสินใจ
+
+- 2026-11-04 · ตอนที่ 10 "Static Zap" เสร็จ: ลูกโป่งถูหัวแมว ขนพอง โดนลูกบิดช็อต ของติดตัวจนเป็นก้อนกลิ้ง ลูกโป่งแตก ไฟสถิตย้ายไป Pip · `chargedPumpkin()` / `puffPip()` อยู่ใน props ของตอนนี้ (ใช้ซ้ำได้)
 
 - 2026-11-03 · เริ่มวิดีโอยาว 16:9 ~3 นาที ทำทีละ 3 ส่วน ส่วนละ 60 วิ + End Screen 20 วิ (ผู้ใช้เลือก) แยกโฟลเดอร์ `long/` จาก Shorts · ทำแค่สตอรี่บอร์ด + แนวทาง ให้ AI ตัวอื่นรันต่อ
 - 2026-11-03 · ผู้ใช้ขอให้ Pumpkin & Pip น่ารักขึ้น → เพิ่ม `cute` dial ใน `engine/cast/pumpkin_pip.js` (หัวโตขึ้น, ตาโต+ต่ำลง, หู Pip ใหญ่ขึ้น, แก้มชมพูถาวร, ประกายตา, เส้นบางลง) ล็อกค่าซีรีส์ที่ **0.6** · โมเดลชีตเทียบ 3 ระดับ: `stories/11-space-coaster/out/check/cute.jpg` · ยังไม่ได้เรนเดอร์วิดีโอตอนเก่าใหม่ (ตอน 11 ยังใส่ฮู้ดฉลามได้พอดี)
