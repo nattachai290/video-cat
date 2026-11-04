@@ -89,7 +89,7 @@
   // 1-04 · 28–45 · The slide! Down through the lost things. Pumpkin screams, stops to snap up a passing chip, CRUNCH, screams
   // again on the same note. A sign: "LOST PENS 40 KM". Pip, sliding behind: "So that's where they go." Light below...
   function s04(t) {
-    const lt = t - 28, s = lt * 520;
+    const turbo = seg(t, 41.6, 41.9), lt = t - 28, s = lt * 520 + (t > 41.6 ? (t - 41.6) * 1100 : 0);
     cam(960, 540 + Math.sin(t * 3) * 10, 1.0, [Math.sin(t * 30) * 3, 0]);
     slideTunnel(t, s);
     slideJunk(t, s);
@@ -99,11 +99,14 @@
     const chomp = t > 33.8 && t < 35.4;
     const cx = 960 + Math.sin(t * 2.2) * 120, cy = 560 + Math.sin(t * 1.3) * 40;
     if (t > 33.2 && t < 33.9) chip(lerp(1500, cx + 40, seg(t, 33.2, 33.85)), lerp(260, cy + 120, seg(t, 33.2, 33.85)), t * 6, 1.6);
-    pumpkin(cx, cy - 250, U * 1.1, { ...faces(t, [[28, 'panic', { mouth: 'O' }], [33.8, 'munching'], [35.4, 'panic', { mouth: 'O' }]]), rot: Math.PI + Math.sin(t * 4) * .2, aL: 1.3 + Math.sin(t * 20) * .2, aR: 1.3 + Math.cos(t * 20) * .2,
+    pumpkin(cx, cy - 250 + turbo * 40, U * 1.1, { ...faces(t, [[28, 'panic', { mouth: 'O' }], [33.8, 'munching'], [35.4, 'panic', { mouth: 'O' }], [41.3, 'greedy', { lookX: 1 }], [41.7, 'surprised', { eyes: 'wide', pupil: 0 }]]), sq: -.15 * turbo, rot: Math.PI + Math.sin(t * 4) * .2, aL: 1.3 + Math.sin(t * 20) * .2, aR: 1.3 + Math.cos(t * 20) * .2,
       ...(chomp ? { talk: .3 * Math.max(0, Math.sin(t * 25)) } : { who: 'pumpkin', talk: t < 33.8 || t > 35.4 ? .8 + .2 * Math.sin(t * 30) : 0 }), noShadow: true, boilKey: 'pk' });
     if (chomp) for (let i = 0; i < 4; i++) { const k = frac((t - 33.8) * 2 + i / 4); paint(ellPts(cx + 60 + i * 10, cy + 200 - k * 300, 7, 5, 6), { wash: '#F2C14E', ink: null }); }
     // Pip: from 38.5 a little way behind, deadpan, arms folded
     if (t > 38.5) { const k = ease(seg(t, 38.5, 39.3)); pip(cx - 330 + Math.sin(t * 2) * 30, lerp(-200, cy - 60, k), U * 1.1, { ...face('deadpan', { lookX: 1 }), rot: Math.PI * .1, aL: .1, aR: .1, scarfWind: 1, who: 'pip', noShadow: true, boilKey: 'pip' }); }
+    // the lost remote: floats up to his paw (40.8-41.3), he presses a button (41.6): TURBO
+    if (t > 40.6 && t < 43.2) { const k = ease(seg(t, 40.6, 41.3)); push(); translate(lerp(1650, cx + 190, k), lerp(1150, cy - 160, k)); rotate(lerp(2, .3, k)); remoteP(0, 0, 0); if (t > 41.6 && t < 41.8) glow(0, -62, 60, '#FF4A4A', 1); pop(); }
+    if (turbo > 0) { for (let i = 0; i < 12; i++) { const x = 100 + hash(i * 3) * 1720, y = frac(hash(i) + t * 3) * 1500 - 200; inkLine([[x, y], [x, y - 260]], 4, '#FFFFFF', 'ink', 0); } }
     // light rising from below near the end
     if (t > 43) paint(rectPts(-400, 1080 - (t - 43) * 600, 2800, 2000), { wash: CK.glow, washOp: 255 * seg(t, 43.5, 45), ink: null });
     camEnd();
@@ -147,12 +150,23 @@
   function s07(t) {
     const drop = 65.6;
     const z = t < 66.4 ? 1.9 : lerp(1.9, 1.15, ease(seg(t, 66.4, 67.6))), cx0 = t < 66.4 ? 760 : lerp(760, 960, ease(seg(t, 66.4, 67.6)));
-    if (t > 72.4 && t < 76) camT(1110, 2.0); else camT(cx0, z);
+    if (t > 72.4 && t < 75.4) camT(1110, 2.0); else if (t >= 75.4) camT(1000, 1.7); else camT(cx0, z);
     townSquare(t, { squash: 1 });
     crowd(t, { kneel: true });
     const turn = t > 70.4 && t < 72.2;
-    pumpkin(PKX, TFY, U, { ...faces(t, [[62, 'neutral', { lookX: -1, lookY: .5 }], [67, 'surprised', { lookX: -1 }], [69.4, 'sheepish', { lookX: 1 }], [72.2, 'sheepish', { lookX: -1, mouth: 'smile' }]]), view: turn ? 'q' : 'front', flip: false, sq: .22, aL: -1.2, aR: -1.2, boilKey: 'pk' });
-    pip(PIPX, TFY, U, { ...faces(t, [[62, 'deadpan', { lookX: -1 }], [72.8, 'sheepish', { lookX: -1 }], [75.6, 'deadpan']]), view: 'q', flip: true, aL: -.6, aR: -.6, who: 'pip', boilKey: 'pip' });
+    const shakeFoot = t > 77.3 && t < 79.5 ? Math.sin(t * 18) * .08 : 0;
+    pumpkin(PKX, TFY, U, { ...faces(t, [[62, 'neutral', { lookX: -1, lookY: .5 }], [67, 'surprised', { lookX: -1 }], [69.4, 'sheepish', { lookX: 1 }], [72.2, 'sheepish', { lookX: -1, mouth: 'smile' }], [77.3, 'surprised', { lookY: 1, lookX: -.5 }], [78.2, 'strain', { eyes: 'squeeze' }], [79.6, 'sheepish', { lookX: 1 }]]),
+      view: turn ? 'q' : 'front', flip: false, sq: t > 76.8 ? .05 : .22, rot: shakeFoot, dy: t > 77.3 && t < 79.5 ? -Math.abs(Math.sin(t * 9)) * 1.4 : 0, aL: t > 77.3 && t < 79.5 ? .9 : -1.2, aR: t > 77.3 && t < 79.5 ? .9 : -1.2, boilKey: 'pk' });
+    pip(PIPX, TFY, U, { ...faces(t, [[62, 'deadpan', { lookX: -1 }], [72.8, 'sheepish', { lookX: -1 }], [75.6, 'deadpan'], [79.9, 'deadpan', { eyes: 'closed' }]]), view: 'q', flip: true, aL: -.6, aR: -.6, who: 'pip', boilKey: 'pip' });
+    if (t > 79.9) paint(rrPts(PIPX - 50, TFY - 225, 100, 30, 8), { wash: '#C8363F', ink: PAL.ink, sw: 1.2 });   // tape across his face
+    // the red carpet: two bunnies unroll it from the left... it's sticky tape. It grabs his foot; he shakes; it flies onto Pip's face.
+    if (t > 75.4) {
+      const roll = lerp(260, 900, ease(seg(t, 75.5, 76.8))), stuck = t > 77.3 && t < 79.5, off = seg(t, 79.5, 79.9);
+      paint(rectPts(260, TFY + 6, roll - 260, 34), { wash: '#C8363F', ink: PAL.ink, sw: 1.2 });
+      if (t < 77) { paint(ellPts(roll, TFY - 10, 34, 40, 14), { wash: '#C8363F', ink: PAL.ink, sw: 1.4 }); for (let i = 0; i < 2; i++) dustBunny(roll - 80 - i * 70, TFY, U * .9, { ...face('strain'), seed: 30 + i, boilKey: 'rb' + i }); }
+      if (stuck) { const lift = Math.abs(Math.sin(t * 9)) * 1.4 * U; paint([[850, TFY + 30], [910, TFY + 30], [905, TFY - 8 - lift], [860, TFY - 8 - lift]], { wash: '#C8363F', ink: PAL.ink, sw: 1.4 }); }
+      if (off > 0 && off < 1) { const p = arcPt([890, TFY - 20], [PIPX + 10, TFY - 210], 40, off); paint(rrPts(p[0] - 40, p[1] - 14, 80, 28, 8), { wash: '#C8363F', ink: PAL.ink, sw: 1.2 }); }
+    }
     const kneel = seg(t, 67.0, 67.4);
     sirLint(640, TFY, U * 1.1, { ...faces(t, [[62, 'surprised', { lookY: -1, lookX: 1 }], [64.4, 'surprised', { lookY: -1, eyes: 'wide', pupil: .2 }], [66.2, 'happy', { blush: .6 }]]), view: 'q', sq: .2 * kneel, rot: .25 * kneel, lance: t < drop ? 1.5 : 1.5 + 1.4 * easeIn(seg(t, drop, drop + .4)), who: 'lint', boilKey: 'lint' });
     camEnd();
@@ -184,14 +198,21 @@
     camT(cx, z, [Math.sin(whip * Math.PI) * 300, 0]);
     palaceFront(t);
     // the receipt drops from the Queen's hand down the steps... and keeps going
-    if (t > 86.4) receipt(qx + 90, qy - 200, 120 + unroll * 760, t * .5);
+    if (t > 86.4) receipt(qx + 90, qy - 200, 120 + unroll * (STEP + 200), t * .5, false);
+    // ...and it keeps coming: along the floor to the left, round and round Sir Lint
+    const slide = ease(seg(t, 89.6, 91.6)), wrapK = seg(t, 91.6, 92.4);
+    if (t > 89.6) { const x1 = lerp(qx + 90, 250, slide); paint(rectPts(x1, TFY - 20, qx + 90 - x1, 40), { wash: '#FFFDF6', ink: PAL.ink, sw: 1.2 }); for (let i = 0; i < 8; i++) { const xx = x1 + 40 + i * 80; if (xx < qx + 60) inkLine([[xx, TFY - 4], [xx + 40, TFY - 4]], 2.5, '#B9B2A6', 'ink', 0); } }
     queenButton(qx, qy, U, { ...faces(t, [[82, 'proud'], [86, 'happy', { mouth: 'grin' }], [89.5, 'annoyed'], [91, 'proud', { mouth: 'grin' }], [93.6, 'neutral', { brow: .3 }], [100.4, 'determined', { mouth: 'grin' }], [104.6, 'proud']]),
       aL: t > 100.4 && t < 103 ? .9 : -.9, aR: t > 86.4 && t < 99 ? .4 : .5, flip: t > 100.4, view: t > 100.4 ? 'q' : 'front', who: 'queen', boilKey: 'queen' });
     const holding = t > 99.3;
     pumpkin(PK8, TFY, U, { ...faces(t, [[82, 'surprised', { lookX: 1, lookY: -.3 }], [87, 'surprised', { lookX: 1, lookY: .5 }], [99.3, 'greedy', { lookY: .5 }], [100.8, 'surprised', { eyes: 'wide', lookX: 1 }], [102.4, 'sheepish', { lookX: 1 }]]),
       view: 'q', aL: holding ? .45 : -1.2, aR: -1.2, armL: holding ? (u, sw) => cheesePuff(1.2 * u, 0, .3, .55) : undefined, boilKey: 'pk' });
     pip(PIP8, TFY, U, { ...faces(t, [[82, 'deadpan', { lookX: -1 }], [96, 'deadpan', { lookX: -1, browUp: .4 }], [101, 'surprised', { lookX: -1 }], [103.6, 'sheepish', { lookX: -1 }]]), view: 'q', flip: true, aL: t > 97.4 && t < 99 ? .6 : -.6, aR: -.6, who: 'pip', boilKey: 'pip' });
-    sirLint(250, TFY, U, { ...face('happy', { lookX: 1 }), view: 'q', boilKey: 'lint' });
+    const mum = t > 91.6, hopL = mum && t < 106 ? -Math.abs(Math.sin(t * 7)) * .5 : 0;
+    sirLint(250, TFY, U, { ...faces(t, [[82, 'happy', { lookX: 1 }], [91.6, 'surprised', { eyes: 'wide' }], [92.6, 'annoyed', { brow: .8 }]]), view: 'q', dy: hopL, boilKey: 'lint' });
+    if (mum) for (let i = 0; i < 5; i++) { const yy = TFY + hopL * U - 40 - i * 46 - (1 - wrapK) * 200; if (i === 3) continue; paint(rrPts(250 - 95, yy - 18, 190, 34, 10), { wash: '#FFFDF6', ink: PAL.ink, sw: 1.1 }); }   // the receipt wrapped round him (eyes left free)
+    // 105.4: one trumpeter tries a fanfare to close the ceremony: a squeak... and he bursts into dust
+    if (t > 105.2) { const b = seg(t, 106.4, 106.6); if (b < 1) { dustBunny(1220, TFY - STEP / 3, U, { ...face(t > 106 ? 'strain' : 'happy', { eyes: t > 106 ? 'squeeze' : 'open' }), seed: 9, flip: true, sq: -.2 * b, boilKey: 'tbx' }); paint([[1200, TFY - STEP / 3 - 150], [1110, TFY - STEP / 3 - 190], [1110, TFY - STEP / 3 - 130]], { wash: CK.coin, ink: PAL.ink, sw: 1.2 }); } puffCloud(1220, TFY - 140, 120, t - 106.5); }
     for (const [i, x] of [[0, 700], [1, 1220]]) if (t < 86) { dustBunny(x, TFY - STEP / 3, U, { ...face('happy'), seed: 8 + i, flip: i > 0, boilKey: 'tb' + i }); const d = i ? -1 : 1; paint([[x + d * 20, TFY - STEP / 3 - 150], [x + d * 110, TFY - STEP / 3 - 190], [x + d * 110, TFY - STEP / 3 - 130]], { wash: CK.coin, ink: PAL.ink, sw: 1.2 }); }   // trumpeters
     camEnd();
     if (cuPuff) {   // insert: the end of the receipt, full frame — the prophecy is a doodle of a cheese puff
@@ -212,13 +233,16 @@
     const crownOn = 110.0, pull = seg(t, 113.4, 114.2), slip = ease(seg(t, 119.8, 120.4)) * (1 - ease(seg(t, 123.4, 123.8))), cape = ease(seg(t, 124.5, 125.5));
     if (t > 119.6 && t < 123.8) cam(PKX, HEAD + 150, 2.6);        // close on the slipped crown
     else if (t > 114.8 && t < 118.6) camT(1050, 1.8);
+    else if (t > 126.9) camT(1180, 1.2);
     else camT(860, 1.3);
     throneRoom(t);
     crowd(t, { kneel: t < 126, cheer: t > 126 });
-    if (cape > 0) sockCape(PKX, TFY, U, { wind: t > 126 ? .4 : 0, dy: (1 - cape) * -3 });
+    const tripRot = t > 127.1 && t < 129.8 ? 1.4 * easeIn(seg(t, 127.1, 127.4)) * (1 - ease(seg(t, 129.2, 129.8))) : 0;
+    if (cape > 0) sockCape(PKX, TFY, U, { wind: t > 126 ? .4 : 0, dy: (1 - cape) * -3, rot: tripRot });
     const hasFork = pull > 0;
     pumpkin(PKX, TFY, U, { ...faces(t, [[108, 'sheepish'], [crownOn, 'surprised', { lookY: -1 }], [111.4, 'happy'], [113.4, 'strain', { eyes: 'squeeze' }], [114.4, 'deadpan', { lookX: 1 }], [117.4, 'neutral'], [120.2, 'proud', { mouth: 'grin' }], [125.6, 'determined', { mouth: 'grin' }]]),
-      crown: t > crownOn ? { slip } : false, sq: t < 112.8 ? .22 : 0, aR: hasFork ? (t > 125.6 ? 1.2 : lerp(-.4, .6, ease(pull))) : -1.2, aL: t > 125.6 ? .8 : -1.2,
+      crown: t > crownOn && !(t > 127.35 && t < 129.6) ? { slip } : false, sq: t < 112.8 ? .22 : 0, aR: hasFork ? (t > 125.6 ? 1.2 : lerp(-.4, .6, ease(pull))) : -1.2, aL: t > 125.6 ? .8 : -1.2,
+      rot: tripRot,
       armR: hasFork ? excalifork(t > 125.6 ? .8 : 0) : undefined, who: 'pumpkin', boilKey: 'pk' });
     // the stack of bunnies carrying the crown up (108-110)
     if (t < crownOn + .3) { const k = ease(seg(t, 108, crownOn)); for (let i = 0; i < 4; i++) dustBunny(PKX - 330 + i * 0, TFY - i * k * 95, U * .9, { ...face('strain'), seed: 11 + i, noShadow: i > 0, boilKey: 'st' + i }); if (t < crownOn) castCrown(PKX - 330, TFY - 4 * 95 * k - 60, U, true, 2); }
@@ -226,8 +250,11 @@
     if (t > 111 && pull < 1) marshmallowStone(PKX + 300, TFY, pull, t);
     else if (t > 111 && t < 118) marshmallowStone(PKX + 300, TFY, 1, t);
     queenButton(560, TFY, U, { ...faces(t, [[108, 'proud'], [110.8, 'happy', { mouth: 'grin' }], [114.6, 'neutral'], [116.6, 'annoyed', { mouth: 'flat' }], [118.4, 'proud']]), aR: t > 110.8 && t < 113 ? .9 : .5, who: 'queen', boilKey: 'queen' });
-    pip(PIPX + 120, TFY, U, { ...faces(t, [[108, 'deadpan', { lookX: -1 }], [121, 'sheepish', { lookX: -1 }], [126, 'deadpan', { lookX: -1 }]]), view: 'q', flip: true, aL: -.6, aR: -.6, boilKey: 'pip' });
+    { const hop = seg(t, 127.0, 127.35), px9 = PIPX + 120 + 330 * ease(hop); pip(px9, TFY - Math.sin(hop * Math.PI) * 120, U, { ...faces(t, [[108, 'deadpan', { lookX: -1 }], [121, 'sheepish', { lookX: -1 }], [126, 'deadpan', { lookX: -1 }], [127, 'surprised', { lookX: -1 }], [127.8, 'deadpan', { lookX: -1 }]]), view: 'q', flip: true, aL: hop > 0 && hop < 1 ? 1.2 : -.6, aR: hop > 0 && hop < 1 ? 1.2 : -.6, noShadow: hop > 0 && hop < 1, boilKey: 'pip' }); }
     burst(PKX + 300, TFY - 160, 160, (t - 113.8) / .4, 10, '#FFFFFF', 5);
+    // the trip: THUD (127.4), the crown rolls away to the right... a bunny rolls it back and pops it on his head (129.6)
+    if (t > 127.35 && t < 129.6) { const out = ease(seg(t, 127.35, 128.3)), back = ease(seg(t, 128.6, 129.5)), x = PKX + 520 + out * 380 - back * 380; castCrown(x, TFY - 6, U, true, 2, (t - 127.35) * 6 * (t < 128.3 ? 1 : -1)); if (t > 128.5) dustBunny(x + 100, TFY, U * .9, { ...face('strain'), seed: 40, flip: true, boilKey: 'cbn' }); }
+    burst(PKX + 300, TFY - 60, 220, (t - 127.4) / .4, 12, '#FFFFFF', 8);
     camEnd();
   }
 
@@ -235,12 +262,12 @@
   // A second wave zaps Sir Lint's shield: it's a cookie now. He eats that too. "My shield!" "Very brave shield." The crowd lifts
   // him up; Pip looks at us.
   function s10(t) {
-    const z1 = 137.0, z2 = 143.3, lift = ease(seg(t, 150, 151.2));
+    const z1 = 137.0, z2 = 143.3, lift = ease(seg(t, 150, 151.2)) * (1 - easeIn(seg(t, 153.0, 153.3)));
     if (t > 145.8 && t < 149.8) camT(760, 1.9); else camT(900, 1.3, [0, 0], lift * 90);
     palaceFront(t);
     crowd(t, { cheer: t > 140 });
     sockCape(PKX, TFY - lift * 120, U, { wind: .3 });
-    const wave = (t > 131.5 && t < 137.2) || (t > 142 && t < 143.4);
+    const wave = (t > 131.4 && t < 132.3) || (t > 134.4 && t < 137.2) || (t > 142 && t < 143.4);
     const eat1 = t > 138.4 && t < 139.6, eat2 = t > 144.6 && t < 146;
     pumpkin(PKX, TFY - lift * 120, U, { ...faces(t, [[130, 'determined'], [134.8, 'neutral', { lookY: .5 }], [z1, 'surprised', { lookX: 1, lookY: .5 }], [138.4, 'munching'], [139.6, 'proud'], [142, 'determined'], [z2, 'surprised', { lookX: -1 }], [144.6, 'munching'], [146, 'sheepish', { lookX: -1 }], [150, 'happy', { mouth: 'grin' }]]),
       crown: true, aR: wave ? .9 + Math.sin(t * 9) * .35 : eat1 || eat2 ? 1.6 : .4, armR: excalifork(wave ? 1 : 0), aL: eat1 || eat2 ? 1.6 : -1.1, noShadow: lift > 0,
@@ -248,6 +275,10 @@
     // the pebble (right) -> cracker; the shield -> cookie
     if (t < z1) pebble(PKX + 260, TFY); else if (t < 138.4) { const k = seg(t, z1, 138.4); const p = arcPt([PKX + 260, TFY - 30], [PKX - 10, TFY - 330], 200, ease(k)); crackerP(p[0], p[1], k * 6, 1.2); }
     burst(PKX + 260, TFY - 30, 150, (t - z1) / .4, 10, '#FFE27A', 6);
+    // 132.2: the first try fizzles: one sad spark wobbles over and zaps Pip's ear. Smoke.
+    if (t > 132.2 && t < 132.9) { const k = seg(t, 132.2, 132.9), p = arcPt([PKX + 230, TFY - 460], [PIPX + 70, TFY - 330], 120, k); glow(p[0], p[1], 60, '#FFE27A', .8); paint(starPts(p[0], p[1] + Math.sin(t * 40) * 10, 34, .4, 4), { wash: '#FFE27A', ink: PAL.ink, sw: 1.2 }); }
+    burst(PIPX + 70, TFY - 330, 110, (t - 132.9) / .35, 8, '#FFE27A', 9);
+    if (t > 132.9 && t < 135.6) for (let i = 0; i < 3; i++) { const f = frac((t - 132.9) * .8 + i / 3); paint(ellPts(PIPX + 80 + Math.sin(f * 7 + i) * 18, TFY - 360 - f * 160, 20 + f * 20, 16 + f * 16, 12), { wash: '#6E6A7A', washOp: 200 * (1 - f), ink: null }); }
     if (wave) { const a = .9 + Math.sin(t * 9) * .35; for (let i = 0; i < 6; i++) { const k = frac(t * 2 + i / 6); paint(starPts(PKX + 140 + Math.cos(a) * 260 * k + 100, TFY - 260 - Math.sin(a) * 260 * k, 12 * (1 - k), .4, 4), { wash: '#FFE27A', ink: null }); } }
     // Sir Lint at the left with his shield, then without
     const shieldGone = t > z2;
@@ -255,8 +286,10 @@
     if (shieldGone && t < 144.6) { const k = seg(t, z2 + .2, 144.5); const p = arcPt([640, TFY - 90], [PKX - 10, TFY - 330], 220, ease(k)); cookieP(p[0], p[1], k * 6, 1.1); }
     burst(640, TFY - 90, 120, (t - z2) / .4, 10, '#FFE27A', 7);
     // the crowd carries him (bunnies under his feet)
-    if (lift > 0) for (let i = 0; i < 5; i++) dustBunny(PKX - 160 + i * 80, TFY, U * .9, { ...face('happy', { eyes: 'happy' }), seed: 20 + i, dy: -Math.abs(Math.sin(t * 9 + i)) * .3, boilKey: 'lb' + i });
-    pip(PIPX + 120, TFY, U, { ...faces(t, [[130, 'deadpan', { lookX: -1 }], [139, 'deadpan', { lookX: -1, browUp: .5 }], [152, 'deadpan', { lookX: 0, lookY: 0 }]]), view: t > 152 ? 'front' : 'q', flip: t < 152, aL: -.6, aR: -.6, boilKey: 'pip' });
+    const buckle = seg(t, 152.6, 153.1), reform = seg(t, 153.6, 154.4);
+    if (lift > 0 && (buckle < 1 || reform > 0)) for (let i = 0; i < 5; i++) dustBunny(PKX - 160 + i * 80 + (reform > 0 ? (i - 2) * 140 * reform : 0), TFY, U * .9, { ...face(buckle > 0 && reform <= 0 ? 'strain' : 'happy', { eyes: buckle > 0 && reform <= 0 ? 'squeeze' : 'happy' }), seed: 20 + i, sq: .5 * buckle * (1 - reform), dy: buckle > 0 ? 0 : -Math.abs(Math.sin(t * 9 + i)) * .3, boilKey: 'lb' + i });
+    puffCloud(PKX, TFY - 60, 260, t - 153.1);
+    pip(PIPX + 120, TFY, U, { ...faces(t, [[130, 'deadpan', { lookX: -1 }], [132.9, 'surprised', { eyes: 'wide' }], [133.4, 'deadpan', { lid: .7 }], [139, 'deadpan', { lookX: -1, browUp: .5 }], [153.8, 'deadpan', { lookX: 0, lookY: 0 }]]), view: t > 153.8 ? 'front' : 'q', flip: t < 153.8, aL: -.6, aR: -.6, boilKey: 'pip' });
     camEnd();
   }
 
@@ -264,11 +297,11 @@
   // wakes!" Everyone scatters. Pumpkin dives behind tiny Pip. "You're hiding behind ME?" "You're the brave one. I'm the...
   // snack one." The red glare sweeps over them... and turns away. Title card: CHAPTER 2 · THE SOCK BRIDGE.
   function s11(t) {
-    if (t > 177.6) { titleCard(t, 'CHAPTER 2', 'THE SOCK BRIDGE', ease(seg(t, 178, 178.6))); return; }
+    if (t > 176.4) { titleCard(t, 'CHAPTER 2', 'THE SOCK BRIDGE', ease(seg(t, 176.6, 177.2))); return; }
     const thumps = [155.4, 156.8, 158.0], sh = thumps.reduce((a, b) => { const v = shake(t, b, 16, .4); return [a[0] + v[0], a[1] + v[1]]; }, [0, 0]);
-    const close = t > 165.6;
+    const close = t > 165.4;
     if (close) camT(1230, 1.9, sh); else camT(1000, 1.15, sh, 60);
-    const sweep = t > 171 && t < 175 ? Math.sin(seg(t, 171, 175) * Math.PI) : 0;
+    const sweep = t > 171.2 && t < 174.2 ? Math.sin(seg(t, 171.2, 174.2) * Math.PI) : 0;
     townGate(t, { dark: .55 * seg(t, 158, 160) * (1 - sweep * .6) });
     dragonEyes(1700 - (t > 174.5 ? (t - 174.5) * 600 : 0), TFY - 330, seg(t, 158.6, 159.4) * (t > 175 ? 1 - seg(t, 175, 176) : 1), t);
     if (sweep > 0) paint([[1700, TFY - 330], [600 + sweep * 300, 1100], [1300 + sweep * 300, 1100]], { wash: '#FF4A4A', washOp: 70 * sweep, ink: null });
@@ -276,10 +309,15 @@
     queenButton(560 - 900 * easeIn(seg(t, 161, 161.8)), TFY, U, { ...faces(t, [[155, 'surprised'], [160.3, 'panic', { mouth: 'O' }]]), who: 'queen', boilKey: 'queen' });
     sirLint(700 - 900 * easeIn(seg(t, 161.3, 162.1)), TFY, U * 1.1, { ...face('panic'), view: 'q', flip: true, noShield: true, boilKey: 'lint' });
     // the dive: Pumpkin hides behind Pip (Pip in front, tiny; Pumpkin crouched behind, peeking over)
-    const dive = seg(t, 162.6, 163.2), hid = t > 163.2;
+    const dive = seg(t, 165.0, 165.5), hid = t > 165.5;
     const px = PIPX - 60;
-    if (!hid) { const p = arcPt([PKX, TFY], [px + 170, TFY], 160, ease(dive)); sockCape(p[0], p[1], U, { wind: .6 }); pumpkin(p[0], p[1], U, { ...faces(t, [[155, 'surprised', { lookX: 1 }], [158.6, 'panic', { lookX: 1 }]]), crown: true, aR: 1.2, armR: excalifork(0), aL: 1.2, sq: dive > 0 ? -.2 : 0, noShadow: dive > 0, boilKey: 'pk' }); }
-    else { sockCape(px + 170, TFY, U, { wind: .2 }); pumpkin(px + 170, TFY, U, { ...faces(t, [[163.2, 'panic', { lookX: 1 }], [167.6, 'sheepish', { lookX: -1, lookY: .6 }], [174.6, 'surprised', { lookX: 1 }], [176.4, 'sheepish', { lookX: 1 }]]), crown: true, sq: .2 + Math.sin(t * 40) * .02, aL: .4, aR: .4, armR: excalifork(0), who: 'pumpkin', boilKey: 'pk' }); }
+    if (t < 165.0 && t > 162.4) {   // hide #1 behind the (much too thin) coin pillar; #2 a dust bunny held over his face
+      const one = t < 163.9, X = one ? 1420 : 1250;
+      sockCape(X, TFY, U, { wind: .3 }); pumpkin(X, TFY, U, { ...face(one ? 'panic' : 'sheepish', { lookX: -1 }), crown: true, aL: one ? -1.2 : 1.3, aR: one ? -1.2 : 1.3, armR: excalifork(0), sq: .05 + Math.sin(t * 40) * .02, boilKey: 'pk' });
+      if (one) for (let k = 0; k < 14; k++) paint(ellPts(1420, TFY - 20 - k * 38, 70, 20, 18), { wash: CK.coin, ink: PAL.ink, sw: 1.3 });
+      else dustBunny(X + 20, HEAD + 70, U * 1.1, { ...face('surprised'), seed: 3, noShadow: true, boilKey: 'hb' });
+    } else if (!hid) { const p = arcPt(t < 162.4 ? [PKX, TFY] : [1250, TFY], [px + 170, TFY], 160, ease(dive)); sockCape(p[0], p[1], U, { wind: .6 }); pumpkin(p[0], p[1], U, { ...faces(t, [[155, 'surprised', { lookX: 1 }], [158.6, 'panic', { lookX: 1 }]]), crown: true, aR: 1.2, armR: excalifork(0), aL: 1.2, sq: dive > 0 ? -.2 : 0, noShadow: dive > 0, boilKey: 'pk' }); }
+    else { sockCape(px + 170, TFY, U, { wind: .2 }); pumpkin(px + 170, TFY, U, { ...faces(t, [[165.5, 'panic', { lookX: 1 }], [167.6, 'sheepish', { lookX: -1, lookY: .6 }], [174.6, 'surprised', { lookX: 1 }], [176.4, 'sheepish', { lookX: 1 }]]), crown: true, sq: .2 + Math.sin(t * 40) * .02, aL: .4, aR: .4, armR: excalifork(0), who: 'pumpkin', boilKey: 'pk' }); }
     pip(px, TFY, U, { ...faces(t, [[155, 'surprised', { lookX: 1 }], [163.4, 'deadpan', { lookX: 1, lookY: -.5 }], [164.6, 'annoyed', { lookY: -1, lookX: 1 }], [169.4, 'deadpan', { lookY: -1 }]]), view: t > 164 ? 'q' : 'front', flip: true, aL: -.6, aR: -.6, who: 'pip', boilKey: 'pip' });
     camEnd();
   }
