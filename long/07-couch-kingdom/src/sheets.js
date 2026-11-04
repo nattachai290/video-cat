@@ -25,7 +25,7 @@
   LOOPS.lineup.len = 2;
   // the new town, wide, with the folk in it for scale
   LOOPS.town = t => {
-    camBegin(960, TFY - 445 / 1.0, 1.0);
+    camBegin(960, TFY - 445 / 0.85, 0.85);
     townSquare(t, {});
     sirLint(300, TFY, 40, { ...face('happy'), boilKey: 'tl' }); queenButton(640, TFY, 40, { ...face('proud'), boilKey: 'tq' });
     dustBunny(760, TFY, 40, { seed: 2, boilKey: 'tb' }); buttonFolk(1250, TFY, 40, { ...face('happy'), seed: 1, boilKey: 'tf' }); dustBunny(1560, TFY, 40, { seed: 4, boilKey: 'tb2' });
@@ -33,6 +33,11 @@
     camEnd();
   };
   LOOPS.town.len = 2;
+  const placeCam = () => camBegin(960, TFY - 445 / .85, .85);
+  LOOPS.place0 = t => { placeCam(); palaceFront(t); queenButton(960, TFY - STEP, 40, { ...face('proud'), boilKey: 'pq' }); pumpkin(560, TFY, 40, { ...face('surprised'), view: 'q', boilKey: 'pp' }); pip(1350, TFY, 40, { ...face('deadpan'), view: 'q', flip: true, boilKey: 'pi' }); camEnd(); };
+  LOOPS.place1 = t => { placeCam(); throneRoom(t); queenButton(560, TFY, 40, { ...face('happy'), boilKey: 'tq' }); pumpkin(960, TFY, 40, { ...face('proud'), crown: true, boilKey: 'tp' }); dustBunny(1300, TFY, 40, { seed: 3, boilKey: 'tb' }); camEnd(); };
+  LOOPS.place2 = t => { placeCam(); townGate(t, { dark: .3 }); pumpkin(800, TFY, 40, { ...face('panic'), view: 'q', boilKey: 'gp' }); pip(1050, TFY, 40, { ...face('surprised'), view: 'q', boilKey: 'gi' }); dragonEyes(2000, TFY - 300, 1, t); camEnd(); };
+  for (const k of ['place0', 'place1', 'place2']) LOOPS[k].len = 2;
 
   // a row: views then expressions of one character
   const row = (fn, gy, u, views, faces_, extra = {}) => {
