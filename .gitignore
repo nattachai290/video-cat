@@ -13,3 +13,10 @@ long/*/out/audio/
 long/*/out/voice/
 long/*/out/check/
 long/*/out/*.log
+analytics/
+__pycache__/
+*.pyc
+long/*/*/out/audio/
+long/*/*/out/voice/
+long/*/*/out/check/
+long/*/*/out/*.log

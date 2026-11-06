@@ -31,7 +31,7 @@ python3 -m venv .venv
 
 ```bash
 .venv/bin/pip install torch==2.6.0 torchaudio==2.6.0 --index-url https://download.pytorch.org/whl/cpu
-.venv/bin/pip install chatterbox-tts
+.venv/bin/pip install chatterbox-tts faster-whisper
 ```
 
 (Mac ใช้ `.venv/bin/pip install chatterbox-tts` ได้เลย จะใช้ GPU ของ Apple ให้อัตโนมัติ)
@@ -51,13 +51,14 @@ Report: `ok` หรือ error
 จาก `stories/<story>`:
 
 ```bash
-../../.venv/bin/python ../../engine/voice.py
+../../.venv/bin/python ../../engine/voice.py --takes 4
+../../.venv/bin/python -I ../../engine/pick_takes.py
 python3 ../../engine/timing.py
 node ../../engine/dialog.mjs
 ffmpeg -y -loglevel error -i out/audio/dialogue.wav -c:a libmp3lame -b:a 128k out/dialogue_preview.mp3
 ```
 
-Report: บรรทัดสุดท้ายของ timing.py (`N lines, X s of speech, K flagged`) และทุกบรรทัดที่มี TIGHT หรือ OVER ส่งไฟล์ `out/dialogue_preview.mp3` ให้ผู้ใช้
+Report: ประโยคที่ pick_takes.py ขึ้น `!! no take` (ถ้ามี), บรรทัดสุดท้ายของ timing.py (`N lines, X s of speech, K flagged`) และทุกบรรทัดที่มี TIGHT หรือ OVER ส่งไฟล์ `out/dialogue_preview.mp3` ให้ผู้ใช้
 Commit: `src/dialog.js`
 
 ## งาน: retake <story> <ids...>

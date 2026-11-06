@@ -4,7 +4,7 @@
 Run from a story folder after voice.py:
     python3 ../../engine/timing.py
 
-Reads STORYBOARD.md (shot rows "| 03 | 16–23 | ..."), scripts/lines.json (id, who, shot, t) and the takes in
+Reads STORYBOARD.md (shot rows "| 03 | 16–23 | ..." for Shorts, "| 1-2 | 6–14 | ..." / "| E-1 | 180–200 | ..." for long videos), scripts/lines.json (id, who, shot, t) and the takes in
 out/voice/raw/. Speech length is measured without the silence Piper adds at the start and end.
 For each line it prints: start, speech length, end, the shot's end, and the gap before the next line starts.
 Flags: OVER (runs past its shot or into the next line), TIGHT (less than 0.4 s to breathe or react after it).
@@ -32,7 +32,7 @@ def speech_span(path, thresh=0.02):
 
 def shots():
     out = {}
-    for m in re.finditer(r"^\|\s*(\d{2})\s*\|\s*([\d.]+)\s*[–-]\s*([\d.]+)\s*\|", (ROOT / "STORYBOARD.md").read_text(), re.M):
+    for m in re.finditer(r"^\|\s*(\d{2}|[0-9E]-\d+)\s*\|\s*([\d.]+)\s*[–-]\s*([\d.]+)\s*\|", (ROOT / "STORYBOARD.md").read_text(), re.M):
         out[m[1]] = (float(m[2]), float(m[3]))
     return out
 
@@ -45,7 +45,7 @@ def main():
         a, b = speech_span(ROOT / f"out/voice/raw/{ln['id']}_{ln['who']}.wav")
         dur = b - a
         end = ln["t"] + dur
-        s0, s1 = sh[ln["shot"]]
+        s0, s1 = sh.get(ln["shot"], (ln["t"], float("inf")))   # shot not in the storyboard table: check only the gap to the next line
         nxt = lines[i + 1]["t"] if i + 1 < len(lines) else float("inf")
         room = min(s1, nxt) - end
         flag = "OVER" if room < 0 or ln["t"] < s0 else "TIGHT" if room < GAP else ""
@@ -54,7 +54,7 @@ def main():
     print(f"{'id':4} {'who':8} {'shot':4} {'start':>6} {'len':>5} {'end':>6} {'shotEnd':>7} {'next':>6} {'room':>5}  flag")
     for r in rows:
         nx = "-" if r[7] == float("inf") else f"{r[7]:.1f}"
-        print(f"{r[0]:4} {r[1]:8} {r[2]:4} {r[3]:6.1f} {r[4]:5.2f} {r[5]:6.2f} {r[6]:7.1f} {nx:>6} {r[8]:5.2f}  {r[9]:5}  {r[10]}")
+        print(f"{r[0]:4} {r[1]:8} {r[2]:4} {r[3]:6.1f} {r[4]:5.2f} {r[5]:6.2f} {min(r[6], 9999):7.1f} {nx:>6} {r[8]:5.2f}  {r[9]:5}  {r[10]}")
     total = sum(r[4] for r in rows)
     print(f"\n{len(rows)} lines, {total:.1f} s of speech, {bad} flagged")
     sys.exit(1 if bad else 0)

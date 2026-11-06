@@ -12,12 +12,14 @@
 ## วิดีโอยาว 16:9 (`long/`)
 
 - แม่แบบ `long/_template` (1920x1080, 200 s, ซับล่างจอ, End Screen ใช้ซ้ำพร้อมช่องว่างสำหรับปุ่ม YouTube) + `long/GUIDE.md` (ขั้นตอน + พรอมต์ก๊อปวางให้ AI ตัวอื่นทำต่อ)
+- **ใหม่: 07 Kingdom Under the Couch** แฟนตาซีตลก ~15 นาที (5 บท × 3 นาที) · บทที่ 1 เสร็จ (`out/ch1.mp4` 3:25, คลิปละบท) · ต่อไปบทที่ 2 · `long/07-couch-kingdom/STORYBOARD.md`
 - สตอรี่บอร์ด 6 เรื่อง: 01 Midnight Fridge, 02 Snow Day, 03 Lost Ticket, 04 Attic Ghost, 05 Beach Day, 06 Big Race · ยังไม่ได้สร้าง (ผู้ใช้จะให้ AI ตัวอื่นทำ)
 
 ## สถานะตอนนี้
 
 | เรื่อง | รูปแบบ | สถานะ |
 |---|---|---|
+| 12 · Pumpkin & Pip: Static Zap | Shorts 9:16, 45 s, การ์ตูนแบน | **เสร็จ** · `stories/12-static-zap/out/video.mp4` + ปก + `YOUTUBE.md` |
 | 11 · Pumpkin & Pip: The Space Coaster | Shorts 9:16, 50 s, การ์ตูนแบน | **เสร็จ** · `stories/11-space-coaster/out/video.mp4` + ปก + `YOUTUBE.md` |
 | 10 · Pumpkin & Pip: The Sandwich | Shorts 9:16, 45 s, การ์ตูนแบน | **เสร็จ** · `stories/10-sandwich/out/video.mp4` + ปก + `YOUTUBE.md` |
 | 09 · Pumpkin & Pip: The Red Dot | Shorts 9:16, 45 s, การ์ตูนแบน | **เสร็จ** · `stories/09-red-dot/out/video.mp4` + ปก + `YOUTUBE.md` |
@@ -42,7 +44,8 @@
 - [x] ตอนที่ 7: The Red Dot (จังหวะเร็ว แอ็กชัน)
 - [x] ตอนที่ 8: The Sandwich
 - [x] ตอนที่ 9: The Space Coaster (ตัวละครใหม่ Dusty แรคคูน)
-- [ ] ตอนที่ 10 (ใช้ skill `pumpkin-pip-shorts`)
+- [x] ตอนที่ 10: Static Zap
+- [ ] ตอนที่ 11 (ใช้ skill `pumpkin-pip-shorts`)
 - [ ] ถ้าจะกลับไปทำเรื่อง 02 ให้ย้ายมาเป็นสไตล์แบนและเลือกรูปแบบ (ยาว 16:9 หรือแบ่งเป็น Shorts)
 
 ## สิ่งที่สร้างไว้ใช้ซ้ำ
@@ -54,6 +57,8 @@
 - **RUNBOOK.md**: งานรันพร้อมพรอมต์ให้ Haiku (setup, voices, retake, cast-sheet, preview, check, final)
 
 ## บันทึกการตัดสินใจ
+
+- 2026-11-04 · ตอนที่ 10 "Static Zap" เสร็จ: ลูกโป่งถูหัวแมว ขนพอง โดนลูกบิดช็อต ของติดตัวจนเป็นก้อนกลิ้ง ลูกโป่งแตก ไฟสถิตย้ายไป Pip · `chargedPumpkin()` / `puffPip()` อยู่ใน props ของตอนนี้ (ใช้ซ้ำได้)
 
 - 2026-11-03 · เริ่มวิดีโอยาว 16:9 ~3 นาที ทำทีละ 3 ส่วน ส่วนละ 60 วิ + End Screen 20 วิ (ผู้ใช้เลือก) แยกโฟลเดอร์ `long/` จาก Shorts · ทำแค่สตอรี่บอร์ด + แนวทาง ให้ AI ตัวอื่นรันต่อ
 - 2026-11-03 · ผู้ใช้ขอให้ Pumpkin & Pip น่ารักขึ้น → เพิ่ม `cute` dial ใน `engine/cast/pumpkin_pip.js` (หัวโตขึ้น, ตาโต+ต่ำลง, หู Pip ใหญ่ขึ้น, แก้มชมพูถาวร, ประกายตา, เส้นบางลง) ล็อกค่าซีรีส์ที่ **0.6** · โมเดลชีตเทียบ 3 ระดับ: `stories/11-space-coaster/out/check/cute.jpg` · ยังไม่ได้เรนเดอร์วิดีโอตอนเก่าใหม่ (ตอน 11 ยังใส่ฮู้ดฉลามได้พอดี)
