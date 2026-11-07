@@ -275,6 +275,8 @@ function pumpkin(x, y, u, o = {}) {
     paint(_P(u, [[s * gap * .6 + off, -7.1], [s * 2.6 * vf + off, -6.7], [s * 2.2 * vf + off, -6.2], [s * gap * .9 + off, -6.5]]), { fill: '#E2646B', fillOp: 90, bleed: .1, tex: .5, ink: null });
     if (s < 0) for (const by of [-6.3, -5.0]) paint(ellPts((s * (gap * .55 + .5) + off) * u, by * u, .28 * u, .28 * u, 10), { wash: C.button, ink: PAL.ink, sw: sw * .5 });
   }
+  rs('cape');
+  if (window.CAPE_NEXT && CAPE_NEXT.T === T) { const cn = CAPE_NEXT; window.CAPE_NEXT = null; cn.draw(u, sw, view, fat); }   // a worn cape (queued by sockCape): over the body, under the arms and head
   // near arm(s)
   // near arms. A raised arm (angle > .8) would vanish behind the big head, so it is drawn after the head instead.
   rs('arms');
@@ -404,6 +406,7 @@ function pumpkinSide(u, o, sw, k) {
   const vf = fat * (1 - puff * .12);
   paint(_P(u, [[-2.5 * vf, -6.55], [.9 * vf, -7.25], [2.2 * vf, -6.45], [1.7 * vf, -4.3], [-.9 * vf, -3.85], [-3.2 * vf, -4.9]]).map(([a, b]) => [a, b + bob]), { wash: C.vest, ink: PAL.ink, sw: sw * .85, curv: .25, shade: true, shadeK: .6 });
   for (const by of [-6.1, -4.9]) paint(ellPts(1.55 * u * vf, by * u + bob, .28 * u, .28 * u, 10), { wash: C.button, ink: PAL.ink, sw: sw * .5 });
+  rs('cape'); if (window.CAPE_NEXT && CAPE_NEXT.T === T) { const cn = CAPE_NEXT; window.CAPE_NEXT = null; push(); translate(0, bob); cn.draw(u, sw, 'side', fat); pop(); }
   rs('arm');
   const upR = (o.aR ?? -1) > .8;
   // a raised paw goes forward and up, past the face (straight up it would cover the face of the big profile head)
