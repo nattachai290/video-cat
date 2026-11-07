@@ -32,14 +32,17 @@ def speech_span(path, thresh=0.02):
 
 def shots():
     out = {}
-    for m in re.finditer(r"^\|\s*(\d{2}|[0-9E]-\d+)\s*\|\s*([\d.]+)\s*[–-]\s*([\d.]+)\s*\|", (ROOT / "STORYBOARD.md").read_text(), re.M):
+    sb = ROOT / "STORYBOARD.md"
+    if not sb.exists():   # a chapter folder without its own storyboard: only the gaps between lines are checked
+        return out
+    for m in re.finditer(r"^\|\s*(\d{2}|[0-9E]-\d+)\s*\|\s*([\d.]+)\s*[–-]\s*([\d.]+)\s*\|", sb.read_text(encoding="utf-8"), re.M):
         out[m[1]] = (float(m[2]), float(m[3]))
     return out
 
 
 def main():
     sh = shots()
-    lines = json.loads((ROOT / "scripts/lines.json").read_text())
+    lines = json.loads((ROOT / "scripts/lines.json").read_text(encoding="utf-8"))
     rows, bad = [], 0
     for i, ln in enumerate(lines):
         a, b = speech_span(ROOT / f"out/voice/raw/{ln['id']}_{ln['who']}.wav")
