@@ -488,11 +488,11 @@ function pip(x, y, u, o = {}) {
     push(); translate(.45 * u, -4.45 * u);
     const hs = 1 + cu * .16;
     push(); scale(hs, hs);
-    // the ear: big and round, tilted back, with a deep pink inside (like the front view's)
-    push(); translate(-.7 * u, -1.35 * u); rotate(-.28);
-    paint(ellPts(0, 0, 1.3 * u * (1 + cu * .1), 1.42 * u * (1 + cu * .1), 20), { wash: C.col, ink: PAL.ink, sw: sw * .8 });
-    paint(ellPts(.04 * u, .08 * u, .92 * u * (1 + cu * .1), 1.04 * u * (1 + cu * .1), 16), { wash: mixCol(C.inner, '#D98AA0', .35), ink: null });
-    paint(ellPts(.12 * u, .18 * u, .55 * u, .7 * u, 12), { wash: C.inner, washOp: 200, ink: null });
+    // the ear: a round-oval, smaller, sitting on the back of the head (only its upper half rises above it), tilted back, pink inside
+    push(); translate(-.82 * u, -.98 * u); rotate(-.32);
+    paint(ellPts(0, 0, .98 * u * (1 + cu * .1), 1.16 * u * (1 + cu * .1), 20), { wash: C.col, ink: PAL.ink, sw: sw * .8 });
+    paint(ellPts(.03 * u, .1 * u, .68 * u * (1 + cu * .1), .86 * u * (1 + cu * .1), 16), { wash: mixCol(C.inner, '#D98AA0', .3), ink: null });
+    paint(ellPts(.08 * u, .2 * u, .36 * u, .52 * u, 12), { wash: C.inner, washOp: 210, ink: null });
     pop();
     paint([[-1.1 * u, -.8 * u], [-.6 * u, -1.15 * u], [.4 * u, -.9 * u], [1.75 * u, .15 * u], [1.0 * u, .7 * u], [-.6 * u, .8 * u], [-1.2 * u, .2 * u]], { wash: C.col, ink: PAL.ink, sw, curv: .5 });
     paint(ellPts(1.8 * u, .15 * u, .2 * u, .18 * u, 10), { wash: C.nose, ink: PAL.ink, sw: sw * .4 });
