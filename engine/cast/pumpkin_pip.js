@@ -488,13 +488,13 @@ function pip(x, y, u, o = {}) {
     push(); translate(.45 * u, -4.45 * u);
     const hs = 1 + cu * .16;
     push(); scale(hs, hs);
-    // the ear: a round-oval, smaller, sitting on the back of the head (only its upper half rises above it), tilted back, pink inside
-    push(); translate(-.82 * u, -.98 * u); rotate(-.32);
-    paint(ellPts(0, 0, .98 * u * (1 + cu * .1), 1.16 * u * (1 + cu * .1), 20), { wash: C.col, ink: PAL.ink, sw: sw * .8 });
-    paint(ellPts(.03 * u, .1 * u, .68 * u * (1 + cu * .1), .86 * u * (1 + cu * .1), 16), { wash: mixCol(C.inner, '#D98AA0', .3), ink: null });
-    paint(ellPts(.08 * u, .2 * u, .36 * u, .52 * u, 12), { wash: C.inner, washOp: 210, ink: null });
-    pop();
     paint([[-1.1 * u, -.8 * u], [-.6 * u, -1.15 * u], [.4 * u, -.9 * u], [1.75 * u, .15 * u], [1.0 * u, .7 * u], [-.6 * u, .8 * u], [-1.2 * u, .2 * u]], { wash: C.col, ink: PAL.ink, sw, curv: .5 });
+    // the ear (in front of the back of the head, like the model sheet): a round ear, grey rim, a deeper pink on the back edge and a soft pink centre
+    push(); translate(-.62 * u, -1.12 * u); rotate(-.2);
+    paint(ellPts(0, 0, 1.02 * u * (1 + cu * .08), 1.08 * u * (1 + cu * .08), 20), { wash: C.col, ink: PAL.ink, sw: sw * .8 });
+    paint(ellPts(.02 * u, .05 * u, .78 * u, .84 * u, 16), { wash: '#D98AA0', ink: null });
+    paint(ellPts(.13 * u, .08 * u, .56 * u, .64 * u, 14), { wash: C.inner, ink: null });
+    pop();
     paint(ellPts(1.8 * u, .15 * u, .2 * u, .18 * u, 10), { wash: C.nose, ink: PAL.ink, sw: sw * .4 });
     const kinds = Array.isArray(o.eyes) ? o.eyes : [o.eyes || 'open', o.eyes || 'open'];
     push(); translate(.45 * u, -.25 * u); castEye(kinds[1], 1, .28 * u * (1 + cu * .22), .34 * u * (1 + cu * .22), { ...o, cute: cu }, sw * .8, C.col, '#3A3045', 'cat'); pop();
