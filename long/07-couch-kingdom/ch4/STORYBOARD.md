@@ -63,7 +63,7 @@
 | 42.5 | | **Pip**: "You knew." |
 | 44.0 | Sir Lint ถอดหมวกปลอกนิ้ว · ฝุ่นขุยลอยออกจากตัวเหมือนน้ำตา | **Sir Lint**: "I left out… one tiny detail." |
 | 47.5 | | **Pip**: "Who ordered this?" |
-| 49.0 | | **Sir Lint**: "The royal council." |
+| 49.0 | Sir Lint หยิบม้วนสารจาก Moth (บท 3) ออกมา โชว์ตราประทับกระดุม 4 รู | **Sir Lint**: "The royal council." |
 | 51.0 | | **Pip**: "And you just agreed?" |
 | 53.0 | พยายามยืดอกแต่ศักดิ์ศรีพัง | **Sir Lint**: "They said it was an honor." |
 | 55.5 | | **Pip** *(แหลม ตรง)*: "An honor for who?" |
