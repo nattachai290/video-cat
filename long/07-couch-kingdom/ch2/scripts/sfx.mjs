@@ -64,9 +64,9 @@ P(141.2, .2, squeak(1100, .2, 37), { gain: .3 });
 P(152.0, .5, (() => { const th = thud(200, .04, 28), c = crunch(29); return t => th(t) + c(t); })(), { gain: 1.1 });
 P(152.3, 8, creak(8, 30), { gain: .5 });
 P(160.8, .3, eep(2000), { gain: .4 }); P(160.5, .6, thud(80, .2, 38), { gain: .6 });
-for (const [i, t] of [[0, 161.0], [1, 161.3], [2, 161.6], [3, 161.9], [4, 162.2], [5, 162.5], [6, 162.8], [7, 163.4], [8, 165.0], [9, 162.6]]) { P(t, .3, crunch(40 + i), { gain: .5 }); P(t + .1, 1.0, whoosh(1.0, 600, 200, 50 + i), { gain: .15 }); }
+for (const [i, t] of [[0, 161.0], [1, 161.3], [2, 161.6], [3, 161.9], [4, 162.2], [5, 162.5], [9, 162.4], [6, 163.8], [7, 164.4], [8, 165.0]]) { P(t, .3, crunch(40 + i), { gain: .5 }); P(t + .1, 1.0, whoosh(1.0, 600, 200, 50 + i), { gain: .15 }); }
 for (let t = 162.4; t < 164.9; t += .16) P(t, .05, tap(1600, 120, t * 9), { gain: .25 });
-P(162.0, .5, whoosh(.5, 500, 2000, 31), { gain: .6 }); P(162.2, .8, motor(.8, 420), { gain: .6 });   // Pip leaps, Sir Lint just makes it
+P(161.8, .5, whoosh(.5, 500, 2000, 31), { gain: .6 }); P(162.0, .8, motor(.8, 420), { gain: .6 });   // Pip leaps, Sir Lint just makes it
 P(164.9, .5, whoosh(.5, 500, 2000, 32), { gain: .6 });                              // Pumpkin's leap
 P(165.4, .6, sweep(t => 700 - 300 * t, t => env(t, .01, .5) * .1), { gain: .4 });   // the hang-time "uh oh"
 // 2-7 the long fall (wind rising), SPLASH, bloops, the pop, the bubble

@@ -145,22 +145,22 @@
   }
 
   // ============ 2-6 · 135-166 · Quality Control (crossing the bridge; the collapse begins at 160) ============
-  const FALL = [[0, 161.0], [1, 161.3], [2, 161.6], [3, 161.9], [4, 162.2], [5, 162.5], [6, 162.8], [7, 163.4], [8, 165.0], [9, 162.6]];
-  const pk6 = t => t < 162.4 ? kf(t, [[135, 540], [137.6, 700], [143, 700], [144.5, 760], [149.2, 820], [150, 820], [153, 1000], [157, 1240], [160, 1310], [162.4, 1310]], lin) : kf(t, [[162.4, 1310], [164.9, 1450]], easeIn);
+  const FALL = [[0, 161.0], [1, 161.3], [2, 161.6], [3, 161.9], [4, 162.2], [5, 162.5], [9, 162.4], [6, 163.8], [7, 164.4], [8, 165.0]];   // plank 9 (at the far cliff) goes early: a gap to jump; the rest fall just behind Pumpkin as he runs
+  const pk6 = t => t < 162.4 ? kf(t, [[135, 540], [137.6, 700], [143, 700], [144.5, 760], [149.2, 820], [150, 820], [153, 1000], [157, 1130], [160, 1180], [162.4, 1180]], lin) : kf(t, [[162.4, 1180], [164.9, 1450]], easeIn);   // he stays well behind Pip and Sir Lint so nobody is hidden
   const pp6 = t => t < 161 ? kf(t, [[135, 710], [140, 900], [148, 900], [153, 1100], [157, 1380], [160, 1450]], lin) : 1450;
   function s6(t) {
     const kx = pk6(t), z = kf(t, [[135, 1.3], [137.8, 1.3], [138.8, 1.9], [140.5, 1.9], [141.4, 1.5], [149, 1.5], [149.6, 2.0], [151, 1.5], [152, 1.8], [153, 1.8], [154, 1.3], [159.4, 1.3], [160, 1.9], [160.9, 1.9], [161.4, 1.2], [166, 1.2]]);
     camC(t > 160.9 ? 1400 : clamp(kx + (z > 1.7 ? 80 : 260), 700, 1500), z, shake(t, 152, 10, .5));
-    canyon(t, { bites: [[1, kf(t, [[139.4, 0], [139.8, .5]])], [2, kf(t, [[149.4, 0], [149.9, .7]])], [7, kf(t, [[159.9, 0], [160.3, 1]])]], hair: 139.8, cracks: 152, shake: t > 152 ? 1 : 0, fall: FALL, eaten: 0 });
+    canyon(t, { bites: [[1, kf(t, [[139.4, 0], [139.8, .5]])], [2, kf(t, [[149.4, 0], [149.9, .7]])], [6, kf(t, [[159.9, 0], [160.3, 1]])]], hair: 139.8, cracks: 152, shake: t > 152 ? 1 : 0, fall: FALL, eaten: 0 });
     // the Troll and his twin wave goodbye at the entrance (in front)
     sockTroll(BR.x0 - 70, TFY + 90, U * 1.4, { flip: true, ...face('happy', { mouth: 'grin' }), bend: Math.sin(t * 4) * .6, rot: Math.sin(t * 4) * .05, boilKey: 'troll' });
     sockTroll(BR.x0 - 190, TFY + 90, U * 1.3, { pink: true, ...face('happy', { eyes: 'happy', mouth: 'smile' }), bend: Math.sin(t * 4 + 1) * .6, rot: Math.sin(t * 4 + 1) * .05, boilKey: 'twin' });
     // Sir Lint (crooked car) leads; he wobbles when the bridge shakes
-    const lx = t < 162.2 ? Math.min(pp6(t) + 260, 1500) : lerp(1500, 1900, ease(seg(t, 162.2, 163.0)));   // waits on the last plank, then just makes it
+    const lx = t < 162.0 ? Math.min(pp6(t) + 260, 1500) : lerp(1500, 1900, ease(seg(t, 162.0, 162.9)));   // waits on the last plank, then just makes it
     windupCar(lx, TFY, .9, t, { noFront: true, tilt: .1 + (t > 153 && t < 156 ? Math.sin(t * 25) * .05 : 0), moving: true, wheel: t * 8 });
     sirLint(lx, TFY - 130, U * .9, { ...faces(t, [[135, 'determined', { mouth: 'grin' }], [153.4, 'panic'], [157, 'surprised'], [161, 'panic']]), view: 'side', lance: .6, noShadow: true, boilKey: 'lint' });
     // Pip: ahead; turns to scold; leaps to the far side at 161
-    const leap = seg(t, 162.0, 162.9), pxp = t < 162 ? pp6(t) : lerp(1450, 1720, leap), py = TFY - Math.sin(leap * Math.PI) * 200;
+    const leap = seg(t, 161.8, 162.7), pxp = t < 161.8 ? pp6(t) : lerp(1450, 1720, leap), py = TFY - Math.sin(leap * Math.PI) * 200;
     const turned = (t > 141 && t < 148.4) || t > 163.1;
     mouse(pxp, py, { ...faces(t, [[135, 'neutral'], [140.8, 'surprised'], [141.2, 'annoyed'], [145.5, 'deadpan'], [149.5, 'neutral'], [152, 'surprised', { lookX: -1 }], [155, 'deadpan', { lookX: -1 }], [161, 'panic'], [163.5, 'angry']]),
       view: 'side', flip: turned, walk: (t > 135 && t < 141) || (t > 148.4 && t < 161) ? t * 5 : undefined, aL: t > 163 ? 1.1 : undefined, aR: t > 163 ? 1.1 : undefined, who: 'pip' });
@@ -170,7 +170,7 @@
     const walking = (t < 137.6 || (t > 143 && t < 149.2) || (t > 150 && t < 160) || run) ? t * (run ? 12 : 4) : undefined;
     const chew = (t > 139.5 && t < 140.6) || (t > 149.5 && t < 150.6) || (t > 160 && t < 160.8);
     hero(kxx, ky, { ...faces(t, [[135, 'greedy', { lookX: 1, lookY: -.3 }], [138.5, 'greedy'], [139.5, 'munching'], [140.6, 'surprised', { lookX: 1 }], [143.5, 'smug'], [145.5, 'sheepish'], [147.5, 'smug'], [149.5, 'munching'], [150.6, 'surprised', { lookY: -.5 }], [152.1, 'panic', { lookY: 1 }],
-      [155, 'sheepish'], [157.5, 'greedy'], [160, 'munching'], [160.8, 'surprised', { eyes: 'wide' }], [162.4, 'panic'], [164.9, 'determined', { mouth: 'grin' }], [165.75, 'surprised', { eyes: 'wide', pupil: 0 }]]), view: 'side', walk: air ? t * 14 : walking, aL: air ? 1.0 : undefined, aR: air ? 1.4 : undefined, noShadow: air,
+      [155, 'sheepish'], [157.5, 'greedy'], [160, 'munching'], [160.8, 'surprised', { eyes: 'wide' }], [162.4, 'panic'], [164.9, 'determined', { mouth: 'grin' }], [165.75, 'surprised', { eyes: 'wide', pupil: 0 }]]), view: 'side', walk: air ? t * 14 : walking, aL: air ? 1.0 : undefined, aR: air ? 1.4 : (t > 160 ? .5 : undefined), noShadow: air,
       ...(chew ? { talk: .3 * Math.max(0, Math.sin(t * 22)) } : { who: 'pumpkin' }) }, t, false);
     crumbsMouth(kxx + 120, HEAD + 100, t, 139.5, 140.5); crumbsMouth(kxx + 120, HEAD + 100, t, 149.5, 150.5); crumbsMouth(kxx + 120, HEAD + 100, t, 160, 160.7);
     if (run) speedLines(kxx - 60, TFY - 250, 1, t, 5, 200, 260);
