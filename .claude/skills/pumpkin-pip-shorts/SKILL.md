@@ -10,7 +10,8 @@ reusable. Reply to the user in Thai; write code, comments and dialogue in Englis
 
 ## What the user wants (decided, don't re-ask)
 
-- **Format:** YouTube Shorts, vertical 1080x1920, 45-60 s, a self-contained gag that **loops** (last frame = first frame).
+- **Format:** YouTube Shorts, vertical 1080x1920, **45-60 s chosen per story type** (user rule: fast action/slapstick ~45 s; deadpan or
+  story-driven pieces with more beats up to 52-60 s; pick the length in the storyboard and say why), a self-contained gag that **loops** (last frame = first frame).
 - **Style:** flat cartoon (solid colours, darker-rim outlines, soft shadow side). Engine: `engine/flat/`. Not watercolour.
 - **Cast:** Pumpkin (round orange tabby, red vest one size too small, bean arms) and Pip (tiny grey mouse, big ears,
   green scarf, cracker). Rig: `engine/cast/pumpkin_pip.js`. Same `u` for both keeps them in scale. Chibi look is the
@@ -98,7 +99,8 @@ then replace STORYBOARD, lines.json, props.js, scenes, sfx.mjs, music.mjs.
 ## Shorts rules
 
 - **Pacing (user feedback on story 08: "ยืด ไม่สนุก"):** a new gag every 3-4 s, every gag bigger than the last, no shots
-  of characters just walking in, cut on action, speed lines / whip pans / shakes, fast music (~138 bpm), 45 s is enough.
+  of characters just walking in, cut on action, speed lines / whip pans / shakes, fast music (~138 bpm). A longer
+  story must earn its extra seconds with extra gags, never by stretching shots.
 
 - Hook readable in the first 2 s with the sound off. Subtitles carry the dialogue.
 - Keep faces and subtitles out of the bottom ~350 px and the right-hand ~150 px (YouTube UI).
