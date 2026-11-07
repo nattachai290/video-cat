@@ -47,11 +47,22 @@ function moth(x, y, u, o = {}) {
   };
   // a wing seen side-on: a leaf rising from the back, tip leaning BACK (away from the head). ang: 0 = straight up,
   // negative = tipped back. Beat swings it from up-and-back (beat 1) down to level behind him (beat -1).
+  // side view: each wing has TWO parts like the front view: a long forewing on top and a rounder hindwing peeking out
+  // under/behind it (tipped further back). Both hinge at the shoulder and beat together.
   const leafWing = (ang, L, wash, spots = true) => {
-    push(); translate(-.45 * u, gy - .7 * u); rotate(ang);
-    paint([[0, 0], [-.35 * u, -.45 * L], [-.75 * u, -.92 * L], [-.15 * u, -1.02 * L], [.75 * u, -.9 * L], [.45 * u, -.45 * L], [.2 * u, -.05 * L]], { wash, ink: PAL.ink, sw: sw * .8, curv: .5, shade: true, shadeK: .5 });
-    inkLine([[-.6 * u, -.8 * L], [-.15 * u, -.97 * L], [.6 * u, -.86 * L]], sw * 1.4, C.wingLt, 'ink', .4);
-    if (spots) { paint(ellPts(.05 * u, -.7 * L, .28 * u, .3 * u, 12), { wash: C.furLt, ink: PAL.ink, sw: sw * .5 }); paint(ellPts(.07 * u, -.7 * L, .15 * u, .17 * u, 10), { wash: C.eye, ink: null }); paint(ellPts(0, -.75 * L, .05 * u, .05 * u, 6), { wash: '#FFFFFF', ink: null }); }
+    const ink = { ink: PAL.ink, sw: sw * .8, curv: .5, shade: true, shadeK: .5 };
+    // hindwing: shorter, round, swung ~25° further back
+    push(); translate(-.5 * u, gy - .5 * u); rotate(ang - .45);
+    const Lh = L * .68;
+    paint([[0, 0], [-.55 * u, -.3 * Lh], [-.85 * u, -.75 * Lh], [-.3 * u, -1.0 * Lh], [.5 * u, -.95 * Lh], [.75 * u, -.55 * Lh], [.3 * u, -.08 * Lh]], { wash: mixCol(wash, '#3A2F26', .12), ...ink });
+    if (spots) { paint(ellPts(.05 * u, -.65 * Lh, .22 * u, .24 * u, 12), { wash: C.furLt, ink: PAL.ink, sw: sw * .5 }); paint(ellPts(.07 * u, -.65 * Lh, .12 * u, .13 * u, 10), { wash: C.eye, ink: null }); }
+    pop();
+    // forewing: long, narrow at the root, broad at the tip, with the pale edge band
+    push(); translate(-.4 * u, gy - .75 * u); rotate(ang);
+    paint([[0, 0], [-.3 * u, -.45 * L], [-.65 * u, -.92 * L], [-.1 * u, -1.03 * L], [.7 * u, -.92 * L], [.4 * u, -.45 * L], [.18 * u, -.05 * L]], { wash, ...ink });
+    inkLine([[-.5 * u, -.82 * L], [-.1 * u, -.98 * L], [.55 * u, -.88 * L]], sw * 1.4, C.wingLt, 'ink', .4);
+    inkLine([[.05 * u, -.15 * L], [.1 * u, -.55 * L]], sw * .6, C.wingDk, 'ink', .3);   // a vein, so the forewing reads as a separate part
+    if (spots) { paint(ellPts(.08 * u, -.72 * L, .27 * u, .29 * u, 12), { wash: C.furLt, ink: PAL.ink, sw: sw * .5 }); paint(ellPts(.1 * u, -.72 * L, .15 * u, .16 * u, 10), { wash: C.eye, ink: null }); paint(ellPts(.03 * u, -.77 * L, .05 * u, .05 * u, 6), { wash: '#FFFFFF', ink: null }); }
     pop();
   };
   const sideAng = land ? -1.35 : -.55 - .85 * (.5 - .5 * beat), sideL = (land ? 2.4 : 3.0) * u;

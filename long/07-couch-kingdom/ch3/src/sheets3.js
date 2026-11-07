@@ -36,15 +36,14 @@
     floor(gy);
   };
   LOOPS.sheetMoth = t => {
-    bg(); title('Moth · the Royal Messenger', 'night moth · red courier sash · hovers · formal, cold, deep voice · always on official business');
+    bg(); title('Moth · the Royal Messenger', 'night moth · red courier sash · hovers · formal, cold, deep voice · every wing = forewing + hindwing (all views) · beat ≈ 0.42 s');
     row(moth, 380, 44, [['front', { flap: .25 }], ['3/4', { view: 'q', flap: .25 }], ['side', { view: 'side', flap: 0 }], ['3/4 flip', { view: 'q', flip: true, flap: .25 }], ['perched (wings folded)', { land: 1 }], ['carrying the scroll', { scroll: 1, flap: .1 }]], [], { ly: 50 });
     row(moth, 770, 44, [], [
       ['"Is the hero ready?"', { ...face('deadpan', { mouth: 'flat', browUp: .2 }), flap: .25, talk: .35 + .35 * Math.sin(t * 15) }],
       ['"He\'s the offering. Not a guest."', { ...face('annoyed', { brow: .8, lid: .6 }), flap: .25 }],
       ['"He ate your shield."', { ...face('deadpan', { lid: .7, brow: .1, lookX: -.5 }), flap: .25 }],
       ['flies off into the dark', { ...face('deadpan'), view: 'side', flip: true, flap: .1 }]]);
-    const gy = 1010; row(moth, gy, 26, [['wing up', { flap: .25 }], ['mid', { flap: 0 }], ['wing down', { flap: .75 }], ['mid', { flap: .5 }]], []);
-    note('flap cycle ≈ 0.42 s · four phases for the wing beat', 1500, gy - 20, 22);
+    const gy = 1010; row(moth, gy, 26, [['wing up', { flap: .25 }], ['mid', { flap: 0 }], ['wing down', { flap: .75 }], ['side up', { view: 'side', flap: .25 }], ['side mid', { view: 'side', flap: 0 }], ['side down', { view: 'side', flap: .75 }], ['side perched', { view: 'side', land: 1 }]], []);
   };
   LOOPS.sheetMoth.len = 2;
   // motion check: the wing beat and hover at the real speed (front, 3/4, side) + a pass across the frame
