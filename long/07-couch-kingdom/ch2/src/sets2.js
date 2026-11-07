@@ -53,11 +53,13 @@ function windupCar(x, y, s, t, o = {}) {
   paint([[-36, -112], [-24, -148], [20, -148], [20, -112]], { wash: '#BFE4F2', ink: PAL.ink, sw: 1.2 });
   paint(ellPts(110, -75, 14, 12, 10), { wash: '#FFE27A', ink: PAL.ink, sw: 1 });                                   // headlight
   for (const wx of (o.noFront ? [-70] : [-70, 70])) { paint(ellPts(wx, -30, 32, 32, 16), { wash: '#2B2233', ink: PAL.ink, sw: 1.4 }); paint(ellPts(wx, -30, 12, 12, 10), { wash: '#C9CED6', ink: null }); const a = (o.wheel ?? t * 8); inkLine([[wx, -30], [wx + Math.cos(a) * 26, -30 + Math.sin(a) * 26]], 3, '#C9CED6', 'ink', 0); }
-  // the wind-up key on the back
-  push(); translate(-130, -80); rotate(o.key || 0);
-  paint(rectPts(-30, -6, 30, 12), { wash: '#C9CED6', ink: PAL.ink, sw: 1.2 });
-  for (const sy of [-1, 1]) paint(ellPts(-44, sy * 20, 16, 22, 12), { wash: '#C9CED6', ink: PAL.ink, sw: 1.2 });
-  pop();
+  // the wind-up key on the back: its axle points out of the car (along x), so turning it spins the two wings round the x axis:
+  // seen from the side the wings swing up and down (cos) instead of rotating flat
+  { const kc = Math.cos(o.key || 0), ks = Math.sin(o.key || 0);
+    push(); translate(-130, -80);
+    paint(rectPts(-34, -5, 34, 10), { wash: '#C9CED6', ink: PAL.ink, sw: 1.2 });   // the axle
+    for (const sg of ks > 0 ? [-1, 1] : [1, -1]) paint(ellPts(-46, sg * 22 * kc, 12 + 4 * Math.abs(ks), 20 * (.35 + .65 * Math.abs(kc)), 12), { wash: sg * ks >= 0 ? '#C9CED6' : '#A8AEBA', ink: PAL.ink, sw: 1.2 });   // near wing in front
+    pop(); }
   if (o.moving) for (let i = 0; i < 3; i++) { const k = frac(t * 3 + i / 3); paint(ellPts(-150 - k * 120 * (o.back ? -1 : 1) * -1, -10 - k * 30, 14 * (1 - k) + 4, 10 * (1 - k) + 3, 8), { wash: '#EFE3CF', washOp: 180 * (1 - k), ink: null }); }
   pop();
 }
@@ -136,6 +138,17 @@ function riddleSign(x, y) {
 }
 // Oracle Cookie's tiny rolled map. open 0..1 (rolled -> unrolled), flipY -1..1 (upside down: the arrow still points right),
 // (x, y) = centre. Draws a red arrow.
+// Pumpkin's thought: a donut in a thought bubble (x, y = the bubble centre)
+function donutThought(x, y, k = 1) {
+  push(); translate(x, y); scale(k, k);
+  for (const [dx, dy, r] of [[-70, 95, 9], [-46, 62, 15]]) paint(ellPts(dx, dy, r, r, 12), { wash: '#FFFDF6', ink: PAL.ink, sw: 1.4 });
+  paint(ellPts(0, 0, 92, 70, 24), { wash: '#FFFDF6', ink: PAL.ink, sw: 1.6 });
+  paint(ellPts(0, 0, 50, 50, 22), { wash: '#D9A35C', ink: PAL.ink, sw: 1.6 });
+  paint(ellPts(0, -4, 44, 42, 22), { wash: '#F28FB0', ink: null });
+  for (const [a, b, c] of [[-24, -14, '#FFFFFF'], [18, -22, '#7AD3E8'], [26, 8, '#FFE27A'], [-14, 20, '#FFFFFF'], [6, 24, '#B8E86A']]) inkLine([[a, b], [a + 7, b + 3]], 3.2, c, 'ink', 0);
+  paint(ellPts(0, -2, 14, 14, 12), { wash: '#FFFDF6', ink: PAL.ink, sw: 1.4 });
+  pop();
+}
 function mapScroll(x, y, open = 1, flipY = 1, s = 1) {
   push(); translate(x, y); scale(s, s * (Math.abs(flipY) < .05 ? .05 : flipY));
   const h = lerp(26, 210, open), w = 130;
