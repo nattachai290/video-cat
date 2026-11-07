@@ -247,18 +247,28 @@ function dustBunny(x, y, u, o = {}) {
 // The sock cape: the troll's twin (same stripes), hanging from the shoulders BEHIND the body; it peeks out at both sides and
 // its green toe shows under him. Same x, y, u, view, flip, rot as pumpkin(). o.wind -1..1 blows it.
 function sockCape(x, y, u, o = {}) {
-  const C = { ...LOST, sock: LOST.sockPink }, sw = clamp(u / 15, .5, 3), view = o.view || 'front', side = view === 'side', q = view === 'q';
+  // A real pink sock worn as a cape: the ribbed cuff round his neck, the striped leg hanging down his back and the foot
+  // (heel patch, toe patch) sticking out sideways at the bottom, so it reads as the Sock Troll's other half.
+  const C = { ...LOST, sock: LOST.sockPink, sockDk: LOST.sockPinkDk }, sw = clamp(u / 15, .5, 3), view = o.view || 'front', side = view === 'side', q = view === 'q';
   const wind = o.wind ?? Math.sin(T * 2) * .12, wv = wind * u;
   push(); translate(x, y + (o.dy || 0) * u); if (o.rot) rotate(o.rot); scale(o.flip ? -1 : 1, 1);
-  let P;
-  if (side) P = [[.2 * u, -8.9 * u], [-1.6 * u, -8.4 * u], [-4.7 * u - 2 * wv, -1.1 * u], [-4.3 * u - 2.4 * wv, .05 * u], [-1.2 * u - wv, .05 * u], [0, -7.2 * u]];   // behind the upright (two-legged) profile
-  else { const o2 = q ? .5 * u : 0; P = [[-4.2 * u + o2, -8.0 * u], [4.2 * u + o2, -8.0 * u], [6.6 * u + o2 + wv, -1.2 * u], [6.1 * u + o2 + wv, .05 * u], [-6.1 * u + o2 + wv, .05 * u], [-6.6 * u + o2 + wv, -1.2 * u]]; }
-  paint(P, { wash: C.sock[2], ink: null, curv: .25 });
+  // outline in u: [x, y], y up is negative; the foot points +x (front/3-4) or back (-x, side)
+  const m = side ? -1 : 1, ox = side ? -.3 : q ? .5 : 0, lw = side ? 2.6 : 5.0, fw = side ? 5.2 : 7.0;
+  const sway = k => wv * k;   // the hem sways more than the cuff
+  const tw = side ? 1.4 : 3.3, raw = [[-tw, -7.9], [-lw * .85, -4.8], [-lw, -2.7], [-lw, 0], [fw * .6, 0], [fw, -.1], [fw + .8, -.8], [fw + .6, -1.9], [fw - .4, -2.5], [lw + .6, -2.9], [lw * .85, -4.8], [tw, -7.9]];
+  const P = raw.map(([a, b]) => [(ox + m * a) * u + sway(-b / 8 * 1.6) * (b < -4 ? 0 : 1) , b * u]).map(([a, b], i) => [a + (b > -3.2 * u ? wv * (1 - Math.abs(b) / (3.2 * u)) * .8 : 0), b]);
+  paint(P, { wash: C.sock[2], ink: null, curv: .35 });
   clipPoly(P, () => {
-    bands(-8 * u, 8 * u, -8.1 * u, -1.2 * u, 8, [C.sock[0], C.sock[2], C.sock[1], C.sock[2]]);
-    paint(rectPts(-8 * u, -1.2 * u, 16 * u, 2 * u), { wash: C.sock[0], ink: null });   // the toe end
+    bands(-14 * u, 14 * u, -8.1 * u, -.05 * u, 8, [C.sock[0], C.sock[2], C.sock[1], C.sock[2]]);            // the same stripes as the Troll
+    paint(ellPts((ox - m * (lw - .1)) * u, -1.3 * u, 1.3 * u, 1.4 * u, 16), { wash: C.sock[0], ink: null });               // heel patch
+    paint(ellPts((ox + m * (fw - .1)) * u, -1.1 * u, 1.3 * u, 1.25 * u, 16), { wash: C.sock[0], ink: null });                 // toe patch
+    paint(P.map(([px, py]) => [px * .92, py]), { wash: '#000000', washOp: 0, ink: null, shade: true, shadeK: .35 });
   });
-  paint(P, { ink: PAL.ink, sw, curv: .25 });
+  paint(P, { ink: PAL.ink, sw, curv: .35 });
+  // the ribbed cuff round the neck, with a little knot
+  const cw = (tw + .6) * 2 * u, cx0 = (ox - tw - .6) * u;
+  paint(rrPts(cx0, -8.7 * u, cw, 1.15 * u, .35 * u), { wash: C.sock[0], ink: PAL.ink, sw: sw * .9 });
+  for (let i = 0; i <= 10; i++) inkLine([[cx0 + (i + .5) * cw / 11, -8.62 * u], [cx0 + (i + .5) * cw / 11, -7.65 * u]], sw * .5, C.sockDk, 'ink', 0);
   pop();
 }
 // Excalifork: Pumpkin's right-paw hook. lit 0..1: a magic glow and sparkles at the tines.
