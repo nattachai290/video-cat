@@ -491,7 +491,9 @@ function pip(x, y, u, o = {}) {
     paint([[-1.1 * u, -.8 * u], [-.6 * u, -1.15 * u], [.4 * u, -.9 * u], [1.75 * u, .15 * u], [1.0 * u, .7 * u], [-.6 * u, .8 * u], [-1.2 * u, .2 * u]], { wash: C.col, ink: PAL.ink, sw, curv: .5 });
     // the ear (in front of the back of the head, like the model sheet): a round ear, grey rim, a deeper pink on the back edge and a soft pink centre
     push(); translate(-.62 * u, -1.12 * u); rotate(-.2);
-    paint(ellPts(0, 0, 1.02 * u * (1 + cu * .08), 1.08 * u * (1 + cu * .08), 20), { wash: C.col, ink: PAL.ink, sw: sw * .8 });
+    const ex = 1.02 * u * (1 + cu * .08), ey = 1.08 * u * (1 + cu * .08);
+    paint(ellPts(0, 0, ex, ey, 20), { wash: C.col, ink: null });
+    inkLine(arcPts(0, 0, ex, ey, Math.PI * .66, Math.PI * 1.98, 22), sw * .8, mixCol(PAL.ink, C.col, .5), 'ink', .4);   // no outline on the lower right, where the ear melts into the head
     paint(ellPts(.02 * u, .05 * u, .78 * u, .84 * u, 16), { wash: '#D98AA0', ink: null });
     paint(ellPts(.13 * u, .08 * u, .56 * u, .64 * u, 14), { wash: C.inner, ink: null });
     pop();
