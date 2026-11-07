@@ -13,7 +13,7 @@ Rebuild: `windows\2-make-chapter.bat` (chapter 2, option 3) or LOCAL.md steps 4-
 
 The quest begins! A fortune cookie gives the worst map ever ("Go right."), Sir Lint's wind-up car runs out every five seconds,
 and a dramatic Sock Troll guards the only bridge. Three riddles. One answer: snack. 🧦
-Then Pumpkin finds out his cape is someone's long-lost other half... and eats the bridge. 😹
+Then Pumpkin finds out his cape is someone's long-lost other half... and eats the bridge, one 'quality control' bite at a time. 😹
 
 Chapter 1: The Chosen One · Chapter 3: The Fizzy Swamp, coming next!
 
@@ -28,14 +28,13 @@ Made from scratch with code: picture, music and sound effects. Character voices 
 ## Chapters
 
 0:00 Snackatoon
-0:05 Go forth!
-0:19 The Oracle Cookie
-0:43 Onward!
-1:03 The Sock Troll
-1:13 Three riddles
-1:45 The other half
-2:15 The bridge
-2:45 The fall
+0:05 A hero's welcome
+0:20 The Oracle's map
+0:45 Onward! (backwards)
+1:05 The Sock Troll
+1:36 The other half
+2:15 Quality control
+2:46 The fall
 
 ## End Screen (from 3:05)
 
