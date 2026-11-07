@@ -253,26 +253,43 @@ function sockCape(x, y, u, o = {}) {
   window.CAPE_NEXT = { T, draw: (U, sw, view, fat) => capePanels(U, sw, view, fat, o.wind ?? Math.sin(T * 2) * .12) };
 }
 function capePanels(u, sw, view, fat, w) {
-  const C = { ...LOST, sock: LOST.sockPink, sockDk: LOST.sockPinkDk }, q = view === 'q', side = view === 'side', f = fat * .98;
-  const panel = (pts, toe) => {
+  // A cloak made of the pink sock: it wraps round the neck, covers the shoulders and back, hangs to the ground in a wide
+  // flare with a darker lining along the front edge, diagonal folds and a little gold clasp.
+  const C = { ...LOST, sock: LOST.sockPink, sockDk: LOST.sockPinkDk }, q = view === 'q', side = view === 'side', f = fat * .98, LINING = '#7A4146';
+  const panel = (pts, edge, ang, toe, folds) => {
     const P = through(pts.map(([a, b]) => [a * u, b * u]), 4);
     paint(P, { wash: C.sock[2], ink: null, curv: .3 });
     clipPoly(P, () => {
-      bands(-12 * u, 12 * u, -8.1 * u, 0, 13, [C.sock[0], C.sock[2], C.sock[1], C.sock[2]]);   // the same stripes as the Troll
-      paint(ellPts(toe[0] * u, toe[1] * u, 1.3 * u, .75 * u, 14), { wash: C.sock[0], ink: null });   // the toe patch at the hem
+      push(); translate(0, -5 * u); rotate(ang); translate(0, 5 * u);
+      bands(-16 * u, 16 * u, -16 * u, 6 * u, 24, [C.sock[0], C.sock[2], C.sock[1], C.sock[2]]);   // the Troll's stripes, set on the diagonal
+      pop();
+      paint(ellPts(toe[0] * u, toe[1] * u, 1.3 * u, .75 * u, 14), { wash: C.sock[0], ink: null });
+      // darker lining along the front edge (the inside of the cloak)
+      const E = through(edge.map(([a, b]) => [a * u, b * u]), 4), nx = edge.nx * u;
+      paint([...E, ...E.slice().reverse().map(([a, b]) => [a + nx, b])], { wash: LINING, ink: null });
       paint(P.map(([px, py]) => [px * .9, py]), { wash: '#000000', washOp: 0, ink: null, shade: true, shadeK: .35 });
+      for (const fl of folds) inkLine(through(fl.map(([a, b]) => [a * u, b * u]), 3), sw * .6, C.sockDk, 'ink', .3);   // folds
     });
     paint(P, { ink: PAL.ink, sw, curv: .3 });
   };
+  const clasp = (x, y) => { paint(ellPts(x * u, y * u, .42 * u, .42 * u, 12), { wash: '#F2C14E', ink: PAL.ink, sw: sw * .7 }); paint(ellPts((x - .1) * u, (y - .1) * u, .12 * u, .1 * u, 6), { wash: '#FFF2C4', ink: null }); };
   if (side) {
-    panel([[.9, -7.5], [-1.2, -7.2], [-3.3 * f, -5.2], [-4.1 * f + w * .6, -2.4], [-4.0 * f + w * 1.2, -.8], [-3.0 + w * 1.2, -.3], [-1.9 + w, -.8], [-1.2, -2.6], [-.5, -5.2], [.3, -7.0]], [-3.0 + w * 1.1, -.9]);
+    const edge = [[1.3, -6.9], [1.0, -5.2], [.1, -2.6], [-1.0, -.4]]; edge.nx = -.9;
+    panel([[1.3, -7.0], [-.6, -8.0], [-3.2, -6.2], [-4.8 * f, -3.0], [-6.2 + w * .8, -.5], [-5.2 + w * 1.2, .05], [-1.0 + w, -.3], [.1, -2.6], [1.0, -5.2]], edge, -.3, [-5.0 + w, -.6],
+      [[[-2.2, -6.6], [-3.2, -3.8], [-4.4, -1.2]], [[-1.2, -6.2], [-1.8, -3.4], [-2.6, -.8]]]);
+    clasp(1.35, -5.0);
     return;
   }
   const o2 = q ? .45 : 0;
   for (const s of [-1, 1]) {
     const x = a => s * a + o2;
-    panel([[x(3.4), -7.4], [x(5.0 * f), -5.4], [x(6.0 * f) + w * .6, -2.6], [x(6.5 * f) + w * 1.2, -.7], [x(5.0 * f) + w * 1.3, -.2], [x(2.5) + w * 1.2, -.7], [x(2.5), -2.6], [x(2.3), -5.4], [x(1.6), -7.5]], [x(4.6 * f) + w * 1.1, -.95]);
+    const edge = [[x(1.8), -7.4], [x(2.3), -5.4], [x(2.6), -2.6], [x(2.6), -.7]]; edge.nx = -s * .9;
+    panel([[x(3.4), -7.4], [x(5.0 * f), -5.4], [x(6.0 * f) + w * .6, -2.6], [x(6.6 * f) + w * 1.2, -.7], [x(5.0 * f) + w * 1.3, -.2], [x(2.6) + w * 1.2, -.7], [x(2.6), -2.6], [x(2.3), -5.4], [x(1.8), -7.4]], edge, s * .28, [x(4.6 * f) + w * 1.1, -.95],
+      [[[x(3.6), -6.4], [x(4.6), -3.6], [x(5.0), -.9]], [[x(3.0), -5.2], [x(3.4), -2.8], [x(3.6), -.8]]]);
   }
+  // a gold cord with a clasp across his chest
+  inkLine(through([[-2.4 + o2, -5.0], [0 + o2, -4.4], [2.4 + o2, -5.0]].map(([a, b]) => [a * u, b * u]), 3), sw * .8, '#C99A2E', 'ink', .3);
+  clasp(o2, -4.4);
 }
 // Excalifork: Pumpkin's right-paw hook. lit 0..1: a magic glow and sparkles at the tines.
 function excalifork(lit = 0) {
