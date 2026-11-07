@@ -65,7 +65,7 @@
   const scrollAt = t => 150 * (clamp(t, 45, 49.2) - 45) + 150 * (clamp(t, 62.5, 65) - 62.5);
   const lin = x => x;
   const carS = t => kf(t, [[45, 1260], [48, 1260], [49.2, 1080], [51.6, 1080], [53.4, 1330], [56.5, 1330], [57.6, 1000], [62.5, 1000], [64.8, 1560]], lin);
-  const pkS = t => kf(t, [[45, 760], [53.0, 760], [54.0, 1150], [57.9, 1150], [58.8, 760], [65, 760]], lin);
+  const pkS = t => kf(t, [[45, 760], [53.0, 760], [54.0, 1150], [65, 1150]], lin);
   const ppS = t => kf(t, [[45, 560], [49.2, 560], [50.4, 960], [51.6, 960], [52.8, 560], [56.0, 560], [56.8, 640], [61.0, 640], [61.9, 883], [62.5, 883], [63.0, 700], [65, 700]], lin);
   function s3(t) {
     const sc = scrollAt(t);
@@ -81,7 +81,7 @@
     sirLint(cx, TFY - 130, U * .9, { ...faces(t, [[45, 'determined', { mouth: 'grin' }], [48, 'sheepish'], [51.6, 'happy', { mouth: 'grin' }], [53.4, 'sheepish'], [56.5, 'panic', { eyes: 'wide' }], [57.8, 'dazed', { eyes: 'spiral' }], [62.5, 'surprised'], [63.4, 'determined', { mouth: 'grin' }]]),
       view: 'side', flip: back, lance: .6, rot: t > 48 && t < 49 ? .12 : 0, noShadow: true, who: 'lint', boilKey: 'lint' });
     const px = pkS(t), pwalk = ss(t) > 0 || Math.abs(pkS(t + .05) - pkS(t - .05)) > .5, hop = t > 56.5 && t < 57.4 ? Math.sin(seg(t, 56.5, 57.4) * Math.PI) * .9 : 0, leftward = pkS(t + .05) < pkS(t - .05) - .3;
-    hero(px, TFY, { ...faces(t, [[45, 'happy'], [53.5, 'strain', { eyes: 'squeeze' }], [56.5, 'surprised', { eyes: 'wide' }], [59.4, 'smug'], [61.6, 'neutral'], [63.4, 'surprised']]), view: 'side', flip: leftward,
+    hero(px, TFY, { ...faces(t, [[45, 'happy'], [53.5, 'strain', { eyes: 'squeeze' }], [56.5, 'surprised', { eyes: 'wide' }], [59.4, 'smug'], [61.6, 'neutral'], [63.4, 'surprised']]), view: 'side',
       walk: pwalk ? t * 4 : undefined, dy: -hop, aR: t > 45.8 && t < 47.8 ? 1.2 : t > 54.2 && t < 56.5 ? .3 + Math.sin(t * 14) * .2 : undefined, rot: t > 54.2 && t < 56.5 ? Math.sin(t * 30) * .02 : 0, who: 'pumpkin' }, t);
     const pp = ppS(t), pw = ss(t) > 0 || Math.abs(ppS(t + .05) - ppS(t - .05)) > .5;
     mouse(pp, TFY, { ...faces(t, [[45, 'neutral'], [48.8, 'deadpan'], [57.4, 'deadpan', { browUp: .5 }], [61.4, 'smug'], [63.6, 'deadpan', { lookX: 1 }]]), view: 'side', walk: pw ? t * 5 : undefined, aR: (t > 50.4 && t < 51.6) || (t > 61.9 && t < 62.5) ? .1 + Math.sin(t * 20) * .3 : undefined, who: 'pip' });
@@ -170,7 +170,7 @@
     const walking = (t < 137.6 || (t > 143 && t < 149.2) || (t > 150 && t < 160) || run) ? t * (run ? 12 : 4) : undefined;
     const chew = (t > 139.5 && t < 140.6) || (t > 149.5 && t < 150.6) || (t > 160 && t < 160.8);
     hero(kxx, ky, { ...faces(t, [[135, 'greedy', { lookX: 1, lookY: -.3 }], [138.5, 'greedy'], [139.5, 'munching'], [140.6, 'surprised', { lookX: 1 }], [143.5, 'smug'], [145.5, 'sheepish'], [147.5, 'smug'], [149.5, 'munching'], [150.6, 'surprised', { lookY: -.5 }], [152.1, 'panic', { lookY: 1 }],
-      [155, 'sheepish'], [157.5, 'greedy'], [160, 'munching'], [160.8, 'surprised', { eyes: 'wide' }], [162.4, 'panic'], [164.4, 'determined', { mouth: 'grin' }], [165.5, 'surprised', { eyes: 'wide', pupil: 0 }]]), view: 'side', walk: air ? t * 14 : walking, aL: air ? 1.0 : undefined, aR: air ? 1.4 : (t > 160 ? .5 : undefined), noShadow: air,
+      [155, 'sheepish'], [157.5, 'greedy'], [160, 'munching'], [160.8, 'surprised', { eyes: 'wide' }], [162.4, 'panic'], [164.4, 'determined', { mouth: 'grin' }], [165.5, 'surprised', { eyes: 'wide', pupil: 0 }]]), view: 'side', walk: air ? t * 14 : walking, aL: air ? -.6 : undefined, aR: air ? 1.4 : (t > 160 ? .1 : undefined), noShadow: air,
       ...(chew ? { talk: .3 * Math.max(0, Math.sin(t * 22)) } : { who: 'pumpkin' }) }, t, false);
     crumbsMouth(kxx + 120, HEAD + 100, t, 139.5, 140.5); crumbsMouth(kxx + 120, HEAD + 100, t, 149.5, 150.5); crumbsMouth(kxx + 120, HEAD + 100, t, 160, 160.7);
     if (run) speedLines(kxx - 60, TFY - 250, 1, t, 5, 200, 260);
@@ -187,7 +187,7 @@
       for (let i = 0; i < 14; i++) { const y = ((i * 180 - wall) % 2520 + 2520) % 2520 - 720; paint(rectPts(0, y, 260, 90), { wash: '#2A2440', ink: null }); paint(rectPts(W - 260, y + 90, 260, 90), { wash: '#2A2440', ink: null }); }
       for (let i = 0; i < 10; i++) { const x = 300 + hash(i) * 1320, y = frac(hash(i + 3) + t * 2.5) * 1400 - 200; inkLine([[x, y], [x, y - 220]], 3, '#FFFFFF', 'ink', 0); }
       glow(960, 1200, 700, SODA, .4 * k);
-      pumpkin(960, 700 + Math.sin(t * 3) * 30, U * 1.1, { ...faces(t, [[166, 'panic', { mouth: 'O' }], [168.6, 'surprised', { eyes: 'wide', pupil: 0 }]]), crown: true, rot: Math.sin(t * 2) * .3, aL: 1.3 + Math.sin(t * 20) * .2, aR: 1.3 + Math.cos(t * 20) * .2, armR: excalifork(0), who: 'pumpkin', noShadow: true, boilKey: 'pk' });
+      pumpkin(960, 700 + Math.sin(t * 3) * 30, U * 1.1, { ...faces(t, [[166, 'panic', { mouth: 'O' }], [168.6, 'surprised', { eyes: 'wide', pupil: 0 }]]), crown: true, rot: Math.sin(t * 2) * .3, aL: -.5 + Math.sin(t * 20) * .2, aR: 1.3 + Math.cos(t * 20) * .2, armR: excalifork(0), who: 'pumpkin', noShadow: true, boilKey: 'pk' });
       camEnd(); return;
     }
     const land = 169.5;

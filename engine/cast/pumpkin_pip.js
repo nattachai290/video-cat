@@ -410,7 +410,7 @@ function pumpkinSide(u, o, sw, k) {
   rs('arm');
   // The near arm is ONE arm whatever its angle: its root slides smoothly from the shoulder (hanging) to forward of it (raised),
   // so the paw with the fork never appears to jump to the other hand. Raised arms are drawn over the head.
-  const aRv = o.aR ?? (-1.25 - swing), kR = clamp((aRv + 1.25) / 2.2), upR = aRv > .3;
+  const aRv = o.aR ?? (-1.25 - swing), kR = clamp((aRv + .1) / 1.1), upR = aRv > .6;   // only a really raised arm slides forward and is drawn over the head
   const armR = () => castArm(lerp(shX, 2.0 * u * fat, kR * kR), shY, upR ? Math.min(aRv, .95) : aRv, 1, 3.0 * u, 1.4 * u, col, sw, o.armR, u);
   if (!upR) armR();
   // head
