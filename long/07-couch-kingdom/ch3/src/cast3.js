@@ -13,6 +13,8 @@
 //   fizzBubble(x, y, r, o)       a soda bubble (the giant ones that go pop)
 //   autograph(x, y, u, o)        the tiny autograph paper the Dust Bunny holds up
 //   redLight(x, y, r, k)         the far-off red light (the Dragon's eye / a clue)
+const HAIR = '#F0DFA6';   // a light (blond) hair: dark outline + pale core, so it reads on the dark swamp
+function hairLine(P, w, curv = .6) { inkLine(P, w * 2.2, PAL.ink, 'ink', curv); inkLine(P, w, HAIR, 'ink', curv); }
 const MOTH = { fur: '#CDB89A', furDk: '#A58E6E', furLt: '#E6D8BF', wing: '#8F7B66', wingDk: '#5E4E3E', wingLt: '#B7A38A', eye: '#2B2233', sash: '#B3202A', sashDk: '#7A1218', ant: '#6B5A48' };
 const WAX = { wax: '#B3202A', dk: '#7A1218', hi: '#D9505A', hole: '#5A0D12' };
 
@@ -23,10 +25,10 @@ function moth(x, y, u, o = {}) {
   const hov = land ? 0 : Math.sin(T * 2.6) * .18 * u;
   folkBegin(x, y, u, { ...o, noShadow: true }, 1.5);
   if (!o.noShadow) paint(ellPts(0, 0, (land ? .9 : 1.5) * u, .28 * u, 16), { wash: PAL.ink, washOp: land ? 70 : 45 + 10 * beat, ink: null });
-  const gy = land ? -1.0 * u : -2.7 * u + hov;           // body centre height
+  const gy = land ? -1.9 * u : -2.7 * u + hov;           // body centre height
   const wingOut = (d, far) => {                           // d = -1 left / +1 right (screen)
     // wing: big rounded triangle swept up and out; flapping squeezes it round the shoulder (cos) and lifts the tip
-    const open = land ? .28 : .55 + .45 * beat, lift = land ? 1.1 : (.2 + .8 * beat);
+    const open = land ? .28 : .72 + .28 * beat, lift = land ? 1.1 : (.25 + .75 * beat);   // never collapses to a sliver on the downstroke
     const sx = d * (side ? .2 : 1);
     push(); translate(sx * .55 * u, gy - .55 * u); scale(d * (side ? 1 : 1) * (far ? .8 : 1) * (side ? .35 : 1 - q * (d > 0 ? .25 : -.15)), 1);
     const sp = 2.5 * u * open, up = (1.1 + 1.2 * lift) * u;
@@ -43,17 +45,27 @@ function moth(x, y, u, o = {}) {
     for (let i = 0; i < 7; i++) paint(ellPts(sp * (.3 + .6 * hash(i + 2)), -up * (.1 + .6 * hash(i + 9)) + up * .3 * hash(i), .07 * u, .04 * u, 5), { wash: C.wingDk, washOp: 150, ink: null });
     pop();
   };
-  // side view: one wing seen edge-on-ish, hinged at the shoulder and swept back; it swings up and down as it beats
-  const sideWing = () => {
-    const ang = land ? 1.25 : .15 + .8 * (.5 + .5 * beat), L = 3.0 * u, Wd = 1.5 * u;
-    push(); translate(-.1 * u, gy - .55 * u); rotate(ang);
-    paint([[0, 0], [-.4 * u, -Wd * .6], [-L * .8, -Wd * 1.0], [-L, -Wd * .45], [-L * .95, Wd * .2], [-L * .4, Wd * .55]], { wash: C.wing, ink: PAL.ink, sw: sw * .8, curv: .6, shade: true, shadeK: .5 });
-    inkLine([[-L * .35, -Wd * .75], [-L * .8, -Wd * .75], [-L * .95, -Wd * .3]], sw * 1.4, C.wingLt, 'ink', .4);
-    paint(ellPts(-L * .62, -Wd * .2, .28 * u, .3 * u, 12), { wash: C.furLt, ink: PAL.ink, sw: sw * .5 });
-    paint(ellPts(-L * .62 + .02 * u, -Wd * .2, .15 * u, .17 * u, 10), { wash: C.eye, ink: null });
+  // a wing seen side-on: a leaf rising from the back, tip leaning BACK (away from the head). ang: 0 = straight up,
+  // negative = tipped back. Beat swings it from up-and-back (beat 1) down to level behind him (beat -1).
+  const leafWing = (ang, L, wash, spots = true) => {
+    push(); translate(-.45 * u, gy - .7 * u); rotate(ang);
+    paint([[0, 0], [-.35 * u, -.45 * L], [-.75 * u, -.92 * L], [-.15 * u, -1.02 * L], [.75 * u, -.9 * L], [.45 * u, -.45 * L], [.2 * u, -.05 * L]], { wash, ink: PAL.ink, sw: sw * .8, curv: .5, shade: true, shadeK: .5 });
+    inkLine([[-.6 * u, -.8 * L], [-.15 * u, -.97 * L], [.6 * u, -.86 * L]], sw * 1.4, C.wingLt, 'ink', .4);
+    if (spots) { paint(ellPts(.05 * u, -.7 * L, .28 * u, .3 * u, 12), { wash: C.furLt, ink: PAL.ink, sw: sw * .5 }); paint(ellPts(.07 * u, -.7 * L, .15 * u, .17 * u, 10), { wash: C.eye, ink: null }); paint(ellPts(0, -.75 * L, .05 * u, .05 * u, 6), { wash: '#FFFFFF', ink: null }); }
     pop();
   };
-  if (!side) { wingOut(-1, false); wingOut(1, false); } else sideWing();
+  const sideAng = land ? -1.35 : -.55 - .85 * (.5 - .5 * beat), sideL = (land ? 2.4 : 3.0) * u;
+  // perched, front view: the wings fold down beside him like a cloak (a tent shape), eyespots still showing
+  const foldWing = d => {
+    push(); translate(d * .45 * u, gy - .55 * u); scale(d, 1); rotate(-.18);
+    paint([[0, 0], [.8 * u, -.15 * u], [1.25 * u, .9 * u], [1.15 * u, 1.85 * u], [.55 * u, 2.05 * u], [.05 * u, 1.3 * u]], { wash: C.wing, ink: PAL.ink, sw: sw * .8, curv: .6, shade: true, shadeK: .5 });
+    inkLine([[1.0 * u, .4 * u], [1.15 * u, 1.3 * u], [.8 * u, 1.9 * u]], sw * 1.4, C.wingLt, 'ink', .4);
+    paint(ellPts(.75 * u, 1.05 * u, .26 * u, .28 * u, 12), { wash: C.furLt, ink: PAL.ink, sw: sw * .5 }); paint(ellPts(.77 * u, 1.05 * u, .14 * u, .16 * u, 10), { wash: C.eye, ink: null });
+    pop();
+  };
+  if (side) leafWing(sideAng + .4, sideL * .9, mixCol(C.wing, '#3A2F26', .35), false);   // far wing, a little behind
+  else if (land) { foldWing(-1); foldWing(1); }
+  else { wingOut(-1, false); wingOut(1, false); }
   // legs: six thin legs; the front pair clamp the scroll
   for (const [lx, ly, ang] of [[-.5, .3, .3], [.5, .3, -.3], [-.35, .55, .15], [.35, .55, -.15]]) inkLine([[lx * u * (side ? .5 : 1), gy + ly * u], [lx * u * 1.4 * (side ? .5 : 1), gy + (ly + 1.0) * u], [lx * u * 1.4 * (side ? .5 : 1) + ang * u * .6, gy + (ly + 1.35) * u]], sw * .9, C.ant, 'ink', .3);
   // body: a long fuzzy teardrop, a lighter chest tuft
@@ -63,6 +75,7 @@ function moth(x, y, u, o = {}) {
   // the courier sash: a thin red band across the chest, a tiny knot: his only decoration (he is on official business)
   paint([[-.7 * u, gy - .1 * u], [-.52 * u, gy - .26 * u], [.7 * u, gy + .42 * u], [.53 * u, gy + .58 * u]], { wash: C.sash, ink: PAL.ink, sw: sw * .6, curv: 0 });
   paint(ellPts(-.58 * u, gy - .22 * u, .13 * u, .11 * u, 8), { wash: C.sashDk, ink: PAL.ink, sw: sw * .5 });   // the knot
+  if (side) leafWing(sideAng, sideL, C.wing);   // near wing over the back
   // head: a small fuzzy ball with big feathered antennae
   const hx = side ? .55 * u : q * .22 * u, hy = gy - 1.25 * u;
   for (const d of side ? [1] : [-1, 1]) {
@@ -126,16 +139,16 @@ function royalScroll(x, y, W, o = {}) {
 function bittenShield(x, y, u, o = {}) {
   const C = LOST, sw = folkSW(u, o), R = 1.0 * u, q = o.view === 'q' ? 1 : 0;
   push(); translate(x, y); rotate(o.rot ?? -.1);
-  const bite = o.bite ?? 1, ba = o.biteAt ?? -.7, bw = .72;                  // the bite sits upper right (Pumpkin's paw came from the right)
+  const bite = o.bite ?? 1, ba = o.biteAt ?? -.7, bw = .9;                  // the bite sits upper right (Pumpkin's paw came from the right)
   const dep = dA => bite && dA < bw ? Math.sqrt(1 - (dA / bw) ** 2) * (1 - .1 * Math.abs(Math.cos(dA * 17))) : 0;   // round chomp with tooth scallops
   const angD = a => Math.abs(((a - ba + Math.PI) % TAU + TAU) % TAU - Math.PI);
-  const rim = []; for (let i = 0; i < 48; i++) { const a = i / 48 * TAU; const r = R * (i % 2 ? 1.06 : .98) - dep(angD(a)) * R * .62 * bite; rim.push([Math.cos(a) * r * (1 - q * .2), Math.sin(a) * r]); }
+  const rim = []; for (let i = 0; i < 48; i++) { const a = i / 48 * TAU; const r = R * (i % 2 ? 1.06 : .98) - dep(angD(a)) * R * .85 * bite; rim.push([Math.cos(a) * r * (1 - q * .2), Math.sin(a) * r]); }
   paint(rim, { wash: C.capDk, ink: PAL.ink, sw: sw * .7 });
-  const face = []; for (let i = 0; i < 32; i++) { const a = i / 32 * TAU; const r = Math.min(R * .82, R * (1.0 - dep(angD(a)) * .62 * bite) - R * .17); face.push([Math.cos(a) * r * (1 - q * .2), Math.sin(a) * r]); }
+  const face = []; for (let i = 0; i < 32; i++) { const a = i / 32 * TAU; const r = Math.min(R * .82, R * (1.0 - dep(angD(a)) * .85 * bite) - R * .17); face.push([Math.cos(a) * r * (1 - q * .2), Math.sin(a) * r]); }
   paint(face, { wash: C.cap, ink: null, shade: true, shadeK: .4 });
-  paint(starPts(0, 0, R * .45, .45, 5), { wash: '#F2C14E', ink: PAL.ink, sw: sw * .4 });
+  clipPoly(face, () => paint(starPts(0, 0, R * .45, .45, 5), { wash: '#F2C14E', ink: PAL.ink, sw: sw * .4 }));
   // tooth marks on the bite edge
-  if (bite) for (const d of [-.3, 0, .3]) { const a = ba + d, r = R * (1 - Math.sqrt(1 - (Math.abs(d) / bw) ** 2) * .62 * bite) - R * .17; paint(ellPts(Math.cos(a) * r, Math.sin(a) * r, .05 * u, .07 * u, 8), { wash: C.capDk, ink: null }); }
+  if (bite) for (const d of [-.3, 0, .3]) { const a = ba + d, r = R * (1 - Math.sqrt(1 - (Math.abs(d) / bw) ** 2) * .85 * bite) - R * .06; if (r < R * .25) continue; paint(ellPts(Math.cos(a) * r, Math.sin(a) * r, .08 * u, .1 * u, 8), { wash: C.capDk, ink: null }); }
   pop();
 }
 
@@ -145,15 +158,15 @@ function hairSpear(x, y, u, o = {}) {
   push(); translate(x, y); if (o.rot) rotate(o.rot);
   paint([[-.12 * u, -3.8 * u], [.12 * u, -3.8 * u], [.06 * u, 3.8 * u], [0, 4.3 * u], [-.06 * u, 3.8 * u]].map(([a, b]) => [b, a]), { wash: LOST.pick, ink: PAL.ink, sw: sw * .7 });   // toothpick lying along x
   // the knot and the long hair (dark, thin) trailing off the tail end
-  paint(ellPts(-3.85 * u, 0, .2 * u, .2 * u, 8), { wash: '#4A3326', ink: PAL.ink, sw: sw * .5 });
-  if (rope > 0) inkLine([[-3.85 * u, 0], [-5.3 * u, .5 * u * rope], [-7.2 * u, -.2 * u], [-9.4 * u, .4 * u * rope]], sw * .9, '#4A3326', 'ink', .6);
+  paint(ellPts(-3.85 * u, 0, .26 * u, .26 * u, 10), { wash: HAIR, ink: PAL.ink, sw: sw * .7 });   // the knot
+  if (rope > 0) hairLine([[-3.85 * u, 0], [-5.3 * u, .5 * u * rope], [-7.2 * u, -.2 * u], [-9.4 * u, .4 * u * rope]], sw * 1.6);
   pop();
 }
 function hairCoil(x, y, u, o = {}) {
   const sw = clamp(u / 16, .6, 2.6);
   push(); translate(x, y);
   paint(rectPts(-.9 * u, -.12 * u, .9 * u, .24 * u), { wash: '#C9CED6', ink: PAL.ink, sw: sw * .7 });   // the key's axle
-  for (let i = 0; i < 6; i++) inkLine(arcPts(-.45 * u, 0, (.35 + i * .07) * u, (.35 + i * .07) * u * .9, 0, TAU * .96, 14), sw * .8, '#4A3326', 'ink', .3);
+  for (let i = 0; i < 5; i++) hairLine(arcPts(-.45 * u, 0, (.35 + i * .09) * u, (.35 + i * .09) * u * .9, 0, TAU * .96, 16), sw * 1.1, .3);
   pop();
 }
 
@@ -183,14 +196,23 @@ function ledLamp(x, y, u, o = {}) {
   pop();
 }
 function jellyPlank(x, y, w, o = {}) {
-  const sw = 1.5, wob = o.wob || 0, bite = clamp(o.bite || 0), wv = clamp(o.wave || 0), n = 5, h = w * .11;
+  // a row of see-through green jelly cubes, side by side like planks. o.wob 0..1 jiggle, o.bite 0..1 (a bite out of the
+  // middle cube's top), o.wave 0..1 (a single bump lifting the cubes near the middle), o.n cubes
+  const n = o.n || 7, cw = w / n, h = cw * .62, wob = o.wob ?? .3, bite = clamp(o.bite || 0), wv = clamp(o.wave || 0), sw = clamp(cw / 50, .9, 2);
   push(); translate(x, y);
-  const top = []; for (let i = 0; i <= 30; i++) { const k = i / 30; top.push([k * w, -h - Math.sin(k * 7 + T * 6) * wob * 6 - wv * Math.exp(-(((k - .55) * 6) ** 2)) * h * 2.4 + bite * h * .8 * Math.sqrt(Math.max(0, 1 - ((k - .5) / .06) ** 2))]); }
-  const bot = [[w, 0], [0, 0]];
-  paint([...top, ...bot], { wash: '#7BE0A5', washOp: 205, ink: PAL.ink, sw, curv: .3, shade: true, shadeK: .35 });
-  for (let i = 0; i < n; i++) paint(ellPts(w * (.12 + i * .2), -h * .55, w * .04, h * .2, 8), { wash: '#FFFFFF', washOp: 90, ink: null });   // shine
-  inkLine([[w * .04, -h * .2], [w * .96, -h * .2]], 1.2, '#4DBE80', 'ink', .3);
-  if (bite) for (const d of [-.05, 0, .05]) inkLine([[w * (.5 + d), -h * (1 - .55 * bite)], [w * (.5 + d), -h * (1 - .8 * bite)]], 1.4, '#4DBE80', 'ink', 0);   // tooth marks
+  paint(rectPts(-6, 0, w + 12, h * .18), { wash: '#2B2233', washOp: 60, ink: null });   // contact shadow
+  for (let i = 0; i < n; i++) {
+    const k = (i + .5) / n, lift = wv * Math.exp(-(((k - .55) * 5) ** 2)) * h * 2.2, jig = Math.sin(T * 9 + i * 1.7) * wob * .08;
+    const x0 = i * cw + cw * .03, x1 = (i + 1) * cw - cw * .03, hh = h * (1 + jig) + lift * .35, yb = -lift * .65, yt = yb - hh;
+    const top = [];
+    for (let j = 0; j <= 12; j++) { const f = j / 12, xx = x0 + (x1 - x0) * f; let yy = yt + Math.sin(f * Math.PI) * -h * .06; if (bite && i === Math.floor(n / 2)) { const dd = (f - .5) / .32; if (Math.abs(dd) < 1) yy += Math.sqrt(1 - dd * dd) * hh * .55 * bite * (1 - .08 * Math.abs(Math.cos(dd * 9))); } top.push([xx, yy]); }
+    const P = [[x0, yb], [x1, yb], ...top.reverse()];
+    paint(P, { wash: '#7BE0A5', washOp: 190, ink: PAL.ink, sw, curv: .25 });
+    paint([[x0 + cw * .06, yb - hh * .05], [x1 - cw * .06, yb - hh * .05], [x1 - cw * .06, yb - hh * .32], [x0 + cw * .06, yb - hh * .32]], { wash: '#4DBE80', washOp: 120, ink: null });   // denser bottom
+    paint(rrPts(x0 + cw * .12, yt + hh * .14, cw * .1, hh * .45, cw * .05), { wash: '#FFFFFF', washOp: 150, ink: null });   // shine
+    for (let b = 0; b < 2; b++) paint(ellPts(x0 + cw * (.45 + .3 * hash(i * 3 + b)), yb - hh * (.3 + .4 * hash(i * 5 + b)), cw * .04, cw * .04, 8), { wash: '#E9FFF1', washOp: 170, ink: null });   // bubbles inside
+    if (bite && i === Math.floor(n / 2)) for (const d of [-.12, 0, .12]) inkLine([[x0 + (x1 - x0) * (.5 + d), yt + hh * .4 * bite], [x0 + (x1 - x0) * (.5 + d), yt + hh * .55 * bite]], sw, '#3C9C66', 'ink', 0);
+  }
   pop();
 }
 function fizzBubble(x, y, r, o = {}) {
@@ -217,9 +239,14 @@ function redLight(x, y, r, k = 1) {
 // soda stains for Pumpkin (his `draw` hook, body space): amber blotches, a drip, and clinging bubbles. k 0..1 = how soaked
 function sodaStains(k = 1) {
   return (u, sw) => {
-    const SODA = '#C9873A';
-    for (const [x, y, rx, ry] of [[-1.9, -4.2, .9, .6], [1.6, -3.1, .7, .9], [.4, -6.4, 1.1, .5], [-.7, -2.0, .8, .5]]) paint(ellPts(x * u, y * u, rx * u * k, ry * u * k, 12, .03 * u), { wash: '#B8741F', washOp: 120, ink: null });
-    for (const [x, y] of [[-2.2, -3.0], [2.0, -5.2], [.9, -1.4]]) { inkLine([[x * u, y * u], [x * u + .05 * u, (y + 1.0 * k) * u]], sw * 1.4, SODA, 'ink', 0); paint(ellPts(x * u + .05 * u, (y + 1.1 * k) * u, .13 * u, .17 * u, 8), { wash: SODA, ink: null }); }
-    for (const [x, y, r] of [[-2.0, -9.6, .22], [1.6, -9.9, .16], [2.8, -5.0, .2], [-2.6, -1.8, .15]]) { paint(ellPts(x * u, y * u, r * u, r * u, 12), { wash: '#F6D9A8', washOp: 130, ink: PAL.ink, sw: sw * .35 }); paint(ellPts((x - .3 * r) * u, (y - .3 * r) * u, r * .3 * u, r * .22 * u, 6), { wash: '#FFFFFF', ink: null }); }
+    const SODA = '#A8661A';
+    for (const [x, y, rx, ry] of [[-1.9, -4.2, .9, .6], [1.6, -3.1, .7, .9], [.4, -6.4, 1.1, .5], [-.7, -2.0, .8, .5], [2.3, -6.8, .5, .7]]) paint(ellPts(x * u, y * u, rx * u * k, ry * u * k, 12, .05 * u), { wash: SODA, washOp: 150 * k, ink: null });
+    // wet sheen: white streaks where the fur is slicked down
+    for (const [x, y, l] of [[-2.6, -5.6, 1.2], [2.6, -4.4, 1.0], [-1.6, -3.6, .8]]) inkLine([[x * u, y * u], [(x + .15) * u, (y + l) * u]], sw * 1.5, '#FFFFFF', 'ink', .3);
+    // drips running down and drops falling off the belly and paws
+    for (const [x, y, l] of [[-2.2, -3.0, 1.0], [2.0, -5.2, 1.2], [.9, -1.4, .7]]) { inkLine([[x * u, y * u], [x * u + .05 * u, (y + l * k) * u]], sw * 2, SODA, 'ink', 0); paint(ellPts(x * u + .05 * u, (y + l * k + .1) * u, .16 * u, .22 * u, 8), { wash: '#E5A955', ink: PAL.ink, sw: sw * .4 }); }
+    for (const [x, y] of [[-2.9, -.6], [2.8, -.9], [.3, .2]]) paint(ellPts(x * u, (y + .3 * frac(T * 1.5 + x)) * u, .13 * u * k, .18 * u * k, 8), { wash: '#E5A955', ink: PAL.ink, sw: sw * .35 });
+    // bubbles clinging to the fur
+    for (const [x, y, r] of [[-2.0, -9.6, .24], [1.6, -9.9, .18], [2.8, -5.0, .22], [-2.6, -1.8, .17], [-.9, -5.4, .14], [.8, -3.9, .2]]) { paint(ellPts(x * u, y * u, r * u, r * u, 12), { wash: '#F6D9A8', washOp: 150, ink: PAL.ink, sw: sw * .4 }); paint(ellPts((x - .3 * r) * u, (y - .3 * r) * u, r * .3 * u, r * .22 * u, 6), { wash: '#FFFFFF', ink: null }); }
   };
 }

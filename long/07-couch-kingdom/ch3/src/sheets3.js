@@ -14,7 +14,7 @@
   LOOPS.lineup3 = t => {
     bg(); title('Chapter 3 · The Fizzy Swamp · scale lineup (same u)');
     const u = 42, gy = 900, xs = [230, 600, 850, 1130, 1340, 1450, 1560];
-    pumpkin(xs[0], gy, u, stained({ ...face('soggy'), crown: true, wet: .7, aR: -.4, armR: excalifork(0), boilKey: 'l0' }, .8));
+    pumpkin(xs[0], gy, u, stained({ ...face('soggy'), crown: true, wet: 1, aR: -.4, armR: excalifork(0), boilKey: 'l0' }, 1));
     pipPack(xs[1], gy, u, {}); pip(xs[1], gy, u, { ...face('deadpan'), boilKey: 'l1' });
     sirLint(xs[2], gy, u, { ...face('determined'), noShield: true, boilKey: 'l2' }); bittenShield(xs[2] - 1.75 * u, gy - 1.45 * u, u);
     moth(xs[3], gy, u, { ...face('deadpan'), flap: .25, boilKey: 'l3' });
@@ -37,7 +37,7 @@
   };
   LOOPS.sheetMoth = t => {
     bg(); title('Moth · the Royal Messenger', 'night moth · red courier sash · hovers · formal, cold, deep voice · always on official business');
-    row(moth, 380, 44, [['front', { flap: .25 }], ['3/4', { view: 'q', flap: .25 }], ['side', { view: 'side', flap: 0 }], ['3/4 flip', { view: 'q', flip: true, flap: .25 }], ['perched', { land: 1 }], ['carrying the scroll', { scroll: 1, flap: .1 }]], [], { ly: 62 });
+    row(moth, 380, 44, [['front', { flap: .25 }], ['3/4', { view: 'q', flap: .25 }], ['side', { view: 'side', flap: 0 }], ['3/4 flip', { view: 'q', flip: true, flap: .25 }], ['perched (wings folded)', { land: 1 }], ['carrying the scroll', { scroll: 1, flap: .1 }]], [], { ly: 50 });
     row(moth, 770, 44, [], [
       ['"Is the hero ready?"', { ...face('deadpan', { mouth: 'flat', browUp: .2 }), flap: .25, talk: .35 + .35 * Math.sin(t * 15) }],
       ['"He\'s the offering. Not a guest."', { ...face('annoyed', { brow: .8, lid: .6 }), flap: .25 }],
@@ -47,12 +47,21 @@
     note('flap cycle ≈ 0.42 s · four phases for the wing beat', 1500, gy - 20, 22);
   };
   LOOPS.sheetMoth.len = 2;
+  // motion check: the wing beat and hover at the real speed (front, 3/4, side) + a pass across the frame
+  LOOPS.mothFly = t => {
+    paint(rectPts(-20, -20, W + 40, H + 40), { wash: '#1E1A2B', ink: null });
+    ledLamp(960, 1000, 50, { flick: .3 });
+    moth(360, 560, 50, { ...face('deadpan'), boilKey: 'm0' }); moth(960, 560, 50, { ...face('deadpan'), view: 'q', boilKey: 'm1' }); moth(1560, 560, 50, { ...face('deadpan'), view: 'side', boilKey: 'm2' });
+    const px = -200 + (t % 3) / 3 * 2400; moth(px, 900 - Math.sin(t * 2) * 40, 28, { ...face('deadpan'), view: 'side', boilKey: 'm3' });
+    windupCar(1500, 1000, .6, t, { noFront: true, tilt: .1 }); moth(1500 - 130 * .6 - 30, 1000 - 80 * .6 + 18, 26, { ...face('deadpan'), land: 1, noShadow: true, boilKey: 'm4' });
+  };
+  LOOPS.mothFly.len = 3;
 
   // ---- the heroes as they are in chapter 3 ----
   LOOPS.sheetHeroes = t => {
     bg(); title('Chapter 3 continuity · the heroes', 'Pumpkin: NO cape · crown + Excalifork · soda-soaked (dries in ch4) · limps after the spear      Sir Lint: bitten shield');
     const gy = 500, u = 27;
-    [['soaked, front', { view: 'front', wet: .85, ...face('soggy') }], ['3/4', { view: 'q', wet: .85, ...face('soggy') }], ['side · limp', { view: 'side', wet: .7, walk: .15, ...face('annoyed') }], ['3/4 flip', { view: 'q', flip: true, wet: .85, ...face('soggy') }], ['"Ow! Third time\'s the butt!"', { wet: .8, ...face('panic', { mouth: 'O', talk: .8 }) }], ['bites the shield', { wet: .6, ...face('greedy') }], ['asleep, hugging the bag', { wet: .35, eyes: 'closed', brow: -.3, mouth: 'smile', blush: .5 }]].forEach(([nm, o], i) => {
+    [['soaked, front', { view: 'front', wet: 1, ...face('soggy') }], ['3/4', { view: 'q', wet: 1, ...face('soggy') }], ['side · limp', { view: 'side', wet: 1, walk: .15, ...face('annoyed') }], ['3/4 flip', { view: 'q', flip: true, wet: 1, ...face('soggy') }], ['"Ow! Third time\'s the butt!"', { wet: 1, ...face('panic', { mouth: 'O', talk: .8 }) }], ['bites the shield', { wet: .6, ...face('greedy') }], ['asleep, hugging the bag', { wet: .35, eyes: 'closed', brow: -.3, mouth: 'smile', blush: .5 }]].forEach(([nm, o], i) => {
       const x = 140 + i * 273; pumpkin(x, gy, u, stained({ crown: true, armR: excalifork(0), aR: -.6, ...o, boilKey: 'h' + i }, o.wet)); label(nm, x, gy + 40, 20);
     });
     floor(gy);
