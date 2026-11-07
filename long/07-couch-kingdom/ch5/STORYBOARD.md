@@ -171,7 +171,7 @@
 | 185.5 | Pumpkin มอง Pip · ชี้ไปที่ Pip | **Pumpkin**: "No. The small one did." |
 | 188.5 | Pip ตกใจนิด ๆ แล้วยิ้ม · **Pip มองกล้อง** | |
 | 190.5 | | **Queen**: "Then you shall both be rewarded!" |
-| 193.0 | Queen เสียงเบาลง อึกอัก (ปิดช่องโหว่ royal council) | **Queen** *(อึกอัก)*: "And about the… dinner plans." |
+| 193.0 | Queen เสียงเบาลง อึกอัก ซ่อนม้วนสารที่มี**ตราราชสำนัก** (asset กลาง ดูสเปกใน `STORYBOARD.md` หัวข้อ "ตราราชสำนัก") ไว้ข้างหลัง (ปิดช่องโหว่ royal council) | **Queen** *(อึกอัก)*: "And about the… dinner plans." |
 | 196.0 | | **Pumpkin** *(มีความหวัง)*: "Is it still on?" |
 | 197.5 | Queen, Sir Lint, Pip มองหน้ากัน · Queen กระแอม | **Queen**: "…Name your reward, hero." |
 | 200.0 | Pumpkin คิดหนัก | **Pumpkin**: "A seat. Near the kitchen." |
