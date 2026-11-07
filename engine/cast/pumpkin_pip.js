@@ -494,8 +494,8 @@ function pip(x, y, u, o = {}) {
     const ex = 1.02 * u * (1 + cu * .08), ey = 1.08 * u * (1 + cu * .08);
     paint(ellPts(0, 0, ex, ey, 20), { wash: C.col, ink: null });
     inkLine(arcPts(0, 0, ex, ey, Math.PI * .66, Math.PI * 1.98, 22), sw * .8, mixCol(PAL.ink, C.col, .5), 'ink', .4);   // no outline on the lower right, where the ear melts into the head
-    paint(ellPts(.02 * u, .05 * u, .78 * u, .84 * u, 16), { wash: '#D98AA0', ink: null });
-    paint(ellPts(.13 * u, .08 * u, .56 * u, .64 * u, 14), { wash: C.inner, ink: null });
+    paint(ellPts(-.1 * u, .05 * u, .78 * u, .84 * u, 16), { wash: '#D98AA0', ink: null });
+    paint(ellPts(.0 * u, .08 * u, .56 * u, .64 * u, 14), { wash: C.inner, ink: null });
     pop();
     paint(ellPts(1.8 * u, .15 * u, .2 * u, .18 * u, 10), { wash: C.nose, ink: PAL.ink, sw: sw * .4 });
     const kinds = Array.isArray(o.eyes) ? o.eyes : [o.eyes || 'open', o.eyes || 'open'];
