@@ -23,18 +23,18 @@ function bars(t0, t1, style, key = 0) {
     for (let e = 0; e < 8; e++) N(t + e * .25, .05, shaker(b * 8 + e + 400), { gain: .18, pan: -.3 });
   }
 }
-const C = 5;
+// absolute clip time: titles 0-5, chapter 5-185, End Screen 185-205
 bars(0, 5, 'march', 0);
-bars(C + 0, C + 14, 'march', 0);       // the send-off
-bars(C + 14, C + 38, 'mystery', 0);    // the Oracle
-bars(C + 38, C + 58, 'town', 2);       // the road
-bars(C + 58, C + 68, 'dark', 0);       // the canyon, the troll
-bars(C + 68, C + 98, 'quiz', 0);       // riddles
-bars(C + 100, C + 113, 'mystery', -2); // sobbing
-bars(C + 115.4, C + 124, 'sweet', 0);  // the reunion
-bars(C + 130, C + 140, 'town', 0);     // crossing
-bars(C + 146, C + 158, 'chase', 5);    // RUN
-bars(C + 163.4, C + 169.4, 'dark', -3);// the fall
-bars(185, 205, 'town', 0);             // End Screen
+bars(5, 20, 'march', 0);       // 2-1 the crumb welcome
+bars(20, 45, 'mystery', 0);    // 2-2 the Oracle's map
+bars(45, 65, 'town', 2);       // 2-3 the road
+bars(65, 76, 'dark', 0);       // 2-4 the troll
+bars(76, 95, 'quiz', 0);       // the riddles
+bars(96, 119, 'mystery', -2);  // 2-5 sobbing, the cape
+bars(120.5, 130, 'sweet', 0);  // the reunion
+bars(135, 152, 'town', 0);     // 2-6 crossing
+bars(152, 166, 'chase', 5);    // CRACK, the collapse, the run
+bars(166, 169.5, 'dark', -3);  // the fall
+bars(185, 205, 'town', 0);     // End Screen
 tr.reverb(.22, 1);
 tr.write('out/audio/music.wav');
