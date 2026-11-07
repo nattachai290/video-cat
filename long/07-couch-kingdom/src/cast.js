@@ -251,7 +251,7 @@ function sockCape(x, y, u, o = {}) {
   const wind = o.wind ?? Math.sin(T * 2) * .12, wv = wind * u;
   push(); translate(x, y + (o.dy || 0) * u); if (o.rot) rotate(o.rot); scale(o.flip ? -1 : 1, 1);
   let P;
-  if (side) P = [[-.2 * u, -8.2 * u], [-2.0 * u, -7.6 * u], [-6.4 * u - 2 * wv, -.9 * u], [-6.0 * u - 2.4 * wv, .05 * u], [-2.0 * u - wv, .05 * u], [-.4 * u, -6.6 * u]];
+  if (side) P = [[.2 * u, -8.9 * u], [-1.6 * u, -8.4 * u], [-4.7 * u - 2 * wv, -1.1 * u], [-4.3 * u - 2.4 * wv, .05 * u], [-1.2 * u - wv, .05 * u], [0, -7.2 * u]];   // behind the upright (two-legged) profile
   else { const o2 = q ? .5 * u : 0; P = [[-4.2 * u + o2, -8.0 * u], [4.2 * u + o2, -8.0 * u], [6.6 * u + o2 + wv, -1.2 * u], [6.1 * u + o2 + wv, .05 * u], [-6.1 * u + o2 + wv, .05 * u], [-6.6 * u + o2 + wv, -1.2 * u]]; }
   paint(P, { wash: C.sock[2], ink: null, curv: .25 });
   clipPoly(P, () => {

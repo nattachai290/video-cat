@@ -220,7 +220,7 @@ function pumpkin(x, y, u, o = {}) {
   const sq = o.sq || 0, dy = (o.dy || 0) * u;
   x += (o.dx || 0) * u;
 
-  rs('shadow'); if (!o.noShadow) castShadow(x, y, u * (side ? 5 : 4.6) * fat, u, o.dy);
+  rs('shadow'); if (!o.noShadow) castShadow(x, y, u * (side ? 4.0 : 4.6) * fat, u, o.dy);
   push(); translate(x, y + dy); if (o.rot) rotate(o.rot);
   scale((o.flip ? -1 : 1) * (1 + sq * .6), 1 - sq);
   // fur outline: smooth, wet (spiky drips), or puffed (a ragged ball)
@@ -363,33 +363,50 @@ function castCrown(cx, cy, u, spec, sw, tilt = 0) {
   pop();
 }
 
-// Pumpkin in profile, facing right: a long round body, the head at the front, four stubby legs (walk), the tail behind.
+// Pumpkin in profile, facing right: upright on two legs like the front view (the body stands, the head sits on top),
+// two feet that step (walk = leg phase), the near arm swings in front of the body, the far arm behind; the tail behind.
 function pumpkinSide(u, o, sw, k) {
   const { col, dk, lt, C, fat, wet, puff, talk, rs, furry, cu } = k;
-  const walk = o.walk;
+  const walk = o.walk, ph = (walk ?? 0) * TAU, stepping = walk != null;
+  const bob = (stepping ? -Math.abs(Math.sin(ph)) * .28 * u : 0) - .85 * u;   // the body stands on short legs that show
+  const fdk = mixCol(col, dk, .45);
+  // legs: [phase offset, far]; the foot slides forward/back and lifts on the forward swing
+  const leg = (off, far) => {
+    const p = ph + off * TAU, fx = stepping ? Math.sin(p) * 1.35 : 0, lift = stepping ? Math.max(0, Math.cos(p)) * .55 : 0;
+    const x0 = (far ? -.55 : .35) * u * fat, c = far ? fdk : col;
+    paint(rrPts(x0 + fx * u * .55 - .6 * u, -1.6 * u + bob, 1.2 * u, 1.3 * u - lift * u - bob, .5 * u), { wash: c, ink: PAL.ink, sw: sw * .8 });
+    paint(ellPts(x0 + fx * u + .45 * u, -.42 * u - lift * u, 1.25 * u, .52 * u, 14, u * .03), { wash: c, fill: far ? null : lt, fillOp: 80, tex: .5, ink: PAL.ink, sw: sw * .8 });
+  };
+  push(); translate(0, 0);
   rs('tail');
   const ts = Math.sin(T * 1.8) * .4;
-  paint(ribbon(_P(u, [[-3.6 * fat, -4.2], [-5.4 * fat, -4.6 + ts * .5], [-6.1 * fat, -6.6 + ts], [-5.4 * fat, -8.1 + ts + wet * 2.5]]), u * (1.2 + puff * .8 - wet * .4), u * (.75 + puff * .6 - wet * .3)), { wash: col, ink: PAL.ink, sw: sw * .85 });
-  rs('legs');
-  const legs = [[-2.4, 1], [2.2, 1], [-1.6, 0], [3.0, 0]];
-  legs.forEach(([lx, far], i) => {
-    let sx = 0, h = 1.9;
-    if (walk != null) { const ph = (walk + [0, .5, .5, 0][i]) * TAU; sx = Math.sin(ph) * .6; h = 1.9 - Math.max(0, Math.cos(ph)) * .7; }
-    paint(rrPts((lx * fat * .9 + sx - .55) * u, -h * u - .3 * u, 1.1 * u, h * u + .3 * u, .5 * u), { wash: far ? mixCol(col, dk, .45) : col, ink: PAL.ink, sw: sw * .8 });
-  });
+  if (!o.noTail) paint(ribbon(_P(u, [[-2.6 * fat, -2.6], [-4.6 * fat, -3.0 + ts * .3], [-5.6 * fat, -4.8 + ts * .6], [-5.2 * fat, -6.6 + ts + wet * 1.8], [-4.3 * fat, -7.3 + ts + wet * 2.2]]).map(([a, b]) => [a, b + bob]), u * (1.2 + puff * .8 - wet * .4), u * (.7 + puff * .6 - wet * .3)), { wash: col, ink: PAL.ink, sw: sw * .85 });
+  rs('legs'); leg(.5, 1);
+  rs('armFar');
+  const swing = stepping ? Math.sin(ph) * .4 : 0, shX = .7 * u * fat, shY = -6.3 * u + bob;
+  castArm(shX - .6 * u, shY, o.aL ?? (-1.25 + swing), 1, 3.0 * u, 1.4 * u, fdk, sw, o.armL, u);
+  rs('legsNear'); leg(0, 0);
   rs('body');
-  const body = furry(ellPts(0, -3.9 * u, 4.7 * u * fat, 3.0 * u * (1 + k.belly * .25), 28, u * .04), 0, -3.9 * u, puff * 1.2 + wet * .3);
+  const bcx = 0, bcy = -3.95 * u + bob, brx = 3.55 * u * fat, bry = 3.7 * u * (1 - k.belly * .02);
+  const body = furry(ellPts(bcx, bcy, brx, bry, 28, u * .04), bcx, bcy, puff * 1.2 + wet * .3);
   paint(body, { wash: col, ink: null, shade: true });
-  paint(ellPts(.6 * u, -2.6 * u, 3.4 * u * fat, 1.4 * u * (1 + k.belly * .4), 18), { wash: lt, washOp: 230, ink: null });
-  for (let i = 0; i < 4; i++) { const sx = (-2.6 + i * 1.3) * u * fat; inkLine([[sx, -6.6 * u], [sx + .35 * u, -5.6 * u], [sx + .15 * u, -4.9 * u]], sw * 1.2, C.stripe, 'ink', .5); }
+  paint(ellPts(bcx + 1.25 * u * fat, -3.1 * u + bob, 2.15 * u * fat * (1 + k.belly * .15), 2.5 * u, 20), { wash: lt, washOp: 230, ink: null });   // belly, toward the front
+  for (let i = 0; i < 3; i++) { const sx = -brx + u * (.3 + i * .08), sy = -5.4 * u + i * 1.1 * u + bob; inkLine([[sx, sy], [sx + u * .9, sy + u * .25], [sx + u * 1.4, sy + u * .1]], sw * 1.2, C.stripe, 'ink', .5); }   // back stripes
   paint(body, { ink: PAL.ink, sw });
-  rs('vest');
-  paint(_P(u, [[-1.2 * fat, -6.75], [2.8 * fat, -6.6], [3.3 * fat, -4.4], [2.2 * fat, -3.5], [-.6 * fat, -4.0]]), { wash: C.vest, ink: PAL.ink, sw: sw * .85, curv: .25, shade: true, shadeK: .6 });
+  rs('vest');   // one size too small: it covers the back and shoulder and stops short of the belly
+  const vf = fat * (1 - puff * .12);
+  paint(_P(u, [[-2.5 * vf, -6.55], [.9 * vf, -7.25], [2.2 * vf, -6.45], [1.7 * vf, -4.3], [-.9 * vf, -3.85], [-3.2 * vf, -4.9]]).map(([a, b]) => [a, b + bob]), { wash: C.vest, ink: PAL.ink, sw: sw * .85, curv: .25, shade: true, shadeK: .6 });
+  for (const by of [-6.1, -4.9]) paint(ellPts(1.55 * u * vf, by * u + bob, .28 * u, .28 * u, 10), { wash: C.button, ink: PAL.ink, sw: sw * .5 });
   rs('arm');
-  // no dangling arm in profile (with four legs it read as six limbs): only when a paw is raised or holds something
-  if (o.armR || (o.aR != null && o.aR > -.9)) castArm(2.6 * u * fat, -5.6 * u, o.aR ?? -1.14, 1, 2.8 * u, 1.3 * u, col, sw, o.armR, u);
+  const upR = (o.aR ?? -1) > .8;
+  // a raised paw goes forward and up, past the face (straight up it would cover the face of the big profile head)
+  const armR = () => upR ? castArm(2.0 * u * fat, shY, Math.min(o.aR, .95), 1, 3.0 * u, 1.4 * u, col, sw, o.armR, u)
+                         : castArm(shX, shY, o.aR ?? (-1.25 - swing), 1, 3.0 * u, 1.4 * u, col, sw, o.armR, u);
+  if (!upR) armR();
+  pop();
+  push(); translate(0, bob);
   rs('head');
-  push(); translate(3.5 * u * fat, -7.6 * u);
+  push(); translate(.75 * u, -8.45 * u + puff * -.4 * u);
   const hs = 1 + cu * .15;
   push(); scale(hs, hs);
   const hx = 2.9 * u * (1 + puff * .15), hy = 2.75 * u * (1 + puff * .12);
@@ -417,6 +434,8 @@ function pumpkinSide(u, o, sw, k) {
   if (o.crown) castCrown(-.1 * u, -2.45 * u, u * .95, o.crown, sw, .1);
   pop();
   pop();
+  pop();
+  rs('armsUp'); if (upR) { push(); translate(0, 0); armR(); pop(); }
 }
 
 // ---------- Pip ----------
@@ -428,33 +447,37 @@ function pip(x, y, u, o = {}) {
   const talk = o.talk ?? (o.who && typeof SPEAK === 'function' ? SPEAK(o.who, T) : 0);
   const sq = o.sq || 0, dy = (o.dy || 0) * u, wind = o.scarfWind ?? 0;
   x += (o.dx || 0) * u;
-  rs('shadow'); if (!o.noShadow) castShadow(x, y, u * (side ? 2.6 : 2.1), u, o.dy);
+  rs('shadow'); if (!o.noShadow) castShadow(x, y, u * (side ? 2.0 : 2.1), u, o.dy);
   push(); translate(x, y + dy); if (o.rot) rotate(o.rot);
   scale((o.flip ? -1 : 1) * (1 + sq * .6), 1 - sq);
   // tail: long, thin, curling along the ground and up
   rs('tail');
   const tw = Math.sin(T * 2.1) * .35;
-  const tailP = side ? [[-1.7, -1.2], [-3.2, -.6], [-4.6, -.9 + tw * .5], [-5.4, -2.0 + tw], [-5.0, -2.8 + tw]]
+  const tailP = side ? [[-1.0, -.7], [-2.2, -.3], [-3.3, -.7 + tw * .5], [-3.9, -1.9 + tw], [-3.5, -2.7 + tw]]
                      : [[.9, -.6], [2.2, -.3], [3.4, -.8 + tw * .4], [3.9, -2.0 + tw], [3.3, -2.8 + tw]];
   paint(ribbon(_P(u, tailP), u * .32, u * .12), { wash: C.tail, ink: PAL.ink, sw: sw * .6 });
 
   if (side) {
-    rs('legs');
-    [[-1.0, 1], [.9, 1], [-.6, 0], [1.3, 0]].forEach(([lx, far], i) => {
-      let sx = 0, h = .8;
-      if (o.walk != null) { const ph = (o.walk + [0, .5, .5, 0][i]) * TAU; sx = Math.sin(ph) * .5; h = .8 - Math.max(0, Math.cos(ph)) * .35; }
-      const lc = far ? C.dk : C.col, px = (lx + sx) * u, top = -1.6 * u, py = -(.8 - h) * u - .12 * u;   // a short grey leg...
-      paint(rrPts(lx * u - .26 * u + sx * u * .5, top, .52 * u, py - top + .05 * u, .24 * u), { wash: lc, ink: PAL.ink, sw: sw * .6 });
-      paint(ellPts(px + .12 * u, py, .34 * u, .17 * u, 10), { wash: far ? mixCol(C.tail, C.dk, .4) : C.tail, ink: PAL.ink, sw: sw * .5 });   // ...with a little pink paw
-    });
-    push(); translate(0, -.4 * u);   // body up a little so the legs show
+    // upright on two legs like the front view; walk = leg phase (feet step, the body bobs, the arms swing)
+    const ph = (o.walk ?? 0) * TAU, stepping = o.walk != null, bob = (stepping ? -Math.abs(Math.sin(ph)) * .14 * u : 0) - .3 * u;
+    const leg = (off, far) => {
+      const p = ph + off * TAU, fx = stepping ? Math.sin(p) * .6 : 0, lift = stepping ? Math.max(0, Math.cos(p)) * .28 : 0;
+      const x0 = (far ? -.25 : .15) * u, lc = far ? C.dk : C.col;
+      paint(rrPts(x0 + fx * u * .55 - .26 * u, -.9 * u + bob, .52 * u, .75 * u - lift * u - bob, .24 * u), { wash: lc, ink: PAL.ink, sw: sw * .6 });
+      paint(ellPts(x0 + fx * u + .22 * u, -.18 * u - lift * u, .6 * u, .24 * u, 10), { wash: far ? mixCol(C.tail, C.dk, .4) : C.tail, ink: PAL.ink, sw: sw * .5 });
+    };
+    const swing = stepping ? Math.sin(ph) * .4 : 0;
+    rs('legs'); leg(.5, 1);
+    rs('armFar'); castArm(.05 * u, -2.75 * u + bob, o.aL ?? (-1.25 + swing), 1, 1.3 * u, .6 * u, C.dk, sw, o.armL, u);
+    rs('legsNear'); leg(0, 0);
+    push(); translate(0, bob);
     rs('body');
-    paint(ellPts(0, -1.85 * u, 2.1 * u, 1.45 * u, 22, u * .03), { wash: C.col, ink: PAL.ink, sw, shade: true });
-    paint(ellPts(.6 * u, -1.3 * u, 1.2 * u, .6 * u, 14), { wash: C.lt, washOp: 220, ink: null });
+    paint(ellPts(0, -1.75 * u, 1.3 * u, 1.75 * u, 22, u * .03), { wash: C.col, ink: PAL.ink, sw, shade: true });
+    paint(ellPts(.55 * u, -1.35 * u, .65 * u, 1.0 * u, 14), { wash: C.lt, washOp: 220, ink: null });
     rs('scarf'); pipScarf(u, sw, C, wind, 1, 'side');
-    rs('arm'); castArm(1.3 * u, -2.5 * u, o.aR ?? -1.14, 1, 1.3 * u, .6 * u, C.col, sw, o.cracker ? pipCracker : o.armR, u);
+    rs('arm'); castArm(.35 * u, -2.75 * u, o.aR ?? (-1.25 - swing), 1, 1.3 * u, .6 * u, C.col, sw, o.cracker ? pipCracker : o.armR, u);
     rs('head');
-    push(); translate(1.9 * u, -3.4 * u);
+    push(); translate(.45 * u, -4.45 * u);
     const hs = 1 + cu * .16;
     push(); scale(hs, hs);
     paint(ellPts(-.5 * u, -1.25 * u, 1.05 * u * (1 + cu * .15), 1.15 * u * (1 + cu * .15), 18), { wash: C.col, ink: PAL.ink, sw: sw * .8 });   // the ear
@@ -522,7 +545,7 @@ function pip(x, y, u, o = {}) {
 
 // The scarf: a band round the neck and one long end that hangs, or streams back in the wind (wind -1..1).
 function pipScarf(u, sw, C, wind, q, view) {
-  const side = view === 'side', cx = side ? 1.3 * u : q * .2 * u, cy = side ? -3.05 * u : -3.25 * u;
+  const side = view === 'side', cx = side ? .3 * u : q * .2 * u, cy = side ? -3.3 * u : -3.25 * u;
   paint(ellPts(cx, cy, (side ? 1.0 : 1.35) * u, .42 * u, 16, u * .03), { wash: C.scarf, ink: PAL.ink, sw: sw * .8, shade: true });
   for (let k = -1; k <= 1; k++) inkLine([[cx + k * .45 * u, cy - .3 * u], [cx + k * .45 * u + .1 * u, cy + .3 * u]], sw * .5, C.scarfDk, 'inkfine', 0);
   const w = wind, fl = Math.sin(T * (4 + Math.abs(w) * 6)), ox = side ? cx - .6 * u : cx + .55 * u;
