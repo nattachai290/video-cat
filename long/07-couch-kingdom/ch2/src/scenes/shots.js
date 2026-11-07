@@ -90,15 +90,15 @@
   }
 
   // ============ 2-4 · 65-95 · The Sock Troll's riddles (canyon) ============
-  const TX = 600;   // the troll stands at the head of the bridge
+  const TX = 700;   // the troll stands at the head of the bridge (a little in from the cliff edge, so the heroes keep a gap from him)
   const troll = (t, o = {}) => sockTroll(TX, BR.deck + 20 + (o.dyp || 0), U * 1.25 * (o.sc || 1), { flip: true, ...o, boilKey: 'troll' });
   const fingers = (n, t) => { for (let j = 0; j < n; j++) { const x = TX - 96 + j * 24, y = TFY - 395 - Math.sin(t * 6 + j) * 4; paint(rrPts(x - 8, y, 16, 54, 8), { wash: '#FFF8EC', ink: PAL.ink, sw: 1.4 }); inkLine([[x - 4, y + 36], [x + 4, y + 36]], 1.6, '#3E8C82', 'ink', 0); } };
   function s4(t) {
-    const [, cx, z] = cutAt(t, [[65, 520, 1.5], [66, 640, 2.0], [70, 700, 1.5], [72, 640, 2.0], [76.3, 400, 2.1], [77.9, 640, 2.0], [84, 400, 2.1], [86, 640, 2.0], [90.4, 520, 1.5], [91.5, 690, 2.6], [92.5, 400, 2.1], [93.8, 640, 2.0]]);
+    const [, cx, z] = cutAt(t, [[65, 450, 1.3], [66, 560, 1.6], [70, 560, 1.5], [72, 560, 1.6], [76.3, 300, 1.9], [77.9, 560, 1.6], [84, 300, 1.9], [86, 560, 1.6], [90.4, 450, 1.3], [91.5, 720, 2.4], [92.5, 300, 1.9], [93.8, 560, 1.6]]);
     camC(cx, z, shake(t, 65.2, 12));
     canyon(t);
-    windupCar(60, TFY, .8, t, { noFront: true, tilt: .1 });
-    sirLint(60, TFY - 120, U * .8, { ...face('sheepish'), view: 'q', noShadow: true, boilKey: 'lint' });
+    windupCar(-70, TFY, .8, t, { noFront: true, tilt: .1 });
+    sirLint(-70, TFY - 120, U * .8, { ...face('sheepish'), view: 'q', noShadow: true, boilKey: 'lint' });
     const sk = backOut(seg(t, 70, 70.5)); if (sk > 0) { push(); translate(TX + 290, TFY); scale(sk); translate(-(TX + 290), -TFY); riddleSign(TX + 290, TFY); pop(); }
     const gurgle = t > 90.5 && t < 92.0 ? Math.sin(t * 50) * .08 : 0;
     troll(t, { ...faces(t, [[65, 'smug', { mouth: 'smirk' }], [78, 'surprised'], [79.5, 'determined', { mouth: 'smirk' }], [86.2, 'panic', { mouth: 'O' }], [88, 'smug', { mouth: 'smirk' }], [90.5, 'surprised', { eyes: 'wide' }], [93.8, 'sheepish', { mouth: 'wobble' }]]),
@@ -106,21 +106,21 @@
     fingers(t < 71 ? 0 : t < 72 ? 3 : t < 80 ? 1 : t < 88 ? 2 : t < 93.8 ? 3 : 0, t);
     if (t > 90.5 && t < 92) for (let i = 0; i < 3; i++) inkLine(arcPts(TX - 40, BR.deck - 150, 40 + i * 20, 20 + i * 10, 0, Math.PI, 6), 2.5, '#FFFFFF', 'ink', 0);   // the growl
     const belly = (t > 70 && t < 71) || (t > 90.5 && t < 92.9) ? { lookX: 1, lookY: .5 } : {};
-    hero(330, TFY, { ...faces(t, [[65, 'neutral', { lookX: 1 }], [66, 'surprised', { eyes: 'wide', lookX: 1 }], [70, 'greedy', { lookX: 1, lookY: .5 }], [72.5, 'neutral', { lookX: 1 }], [76.5, 'sheepish', { lookX: 1 }], [78, 'happy'], [80, 'neutral', { lookX: 1 }], [83.4, 'proud'], [92.9, 'deadpan', { lookX: 1, lookY: -.3 }], [94, 'neutral', { lookX: 1 }]]), ...belly,
+    hero(230, TFY, { ...faces(t, [[65, 'neutral', { lookX: 1 }], [66, 'surprised', { eyes: 'wide', lookX: 1 }], [70, 'greedy', { lookX: 1, lookY: .5 }], [72.5, 'neutral', { lookX: 1 }], [76.5, 'sheepish', { lookX: 1 }], [78, 'happy'], [80, 'neutral', { lookX: 1 }], [83.4, 'proud'], [92.9, 'deadpan', { lookX: 1, lookY: -.3 }], [94, 'neutral', { lookX: 1 }]]), ...belly,
       view: 'q', aR: t > 83.4 && t < 85.6 ? 1.0 : -1.1, who: 'pumpkin' }, t);
-    mouse(170, TFY, { ...faces(t, [[65, 'deadpan', { lookX: 1 }], [86, 'surprised', { lookX: 1 }], [87, 'deadpan', { lookX: 1 }]]), ...belly, view: 'q', who: 'pip' });
-    if (t > 83.4 && t < 85.6) { paint(ellPts(440, HEAD + 40, 60, 60, 20), { wash: '#D9A35C', ink: PAL.ink, sw: 1.6 }); paint(ellPts(440, HEAD + 40, 20, 20, 12), { wash: '#272138', ink: PAL.ink, sw: 1.2 }); }   // the donut
+    mouse(70, TFY, { ...faces(t, [[65, 'deadpan', { lookX: 1 }], [86, 'surprised', { lookX: 1 }], [87, 'deadpan', { lookX: 1 }]]), ...belly, view: 'q', who: 'pip' });
+    if (t > 83.4 && t < 85.6) { paint(ellPts(340, HEAD + 40, 60, 60, 20), { wash: '#D9A35C', ink: PAL.ink, sw: 1.6 }); paint(ellPts(340, HEAD + 40, 20, 20, 12), { wash: '#272138', ink: PAL.ink, sw: 1.2 }); }   // the donut
     camEnd();
   }
 
   // ============ 2-5 · 95-135 · The Missing Half ============
   const stepAside = t => ease(seg(t, 130.7, 132.3));
   function s5(t) {
-    const [, cx, z] = cutAt(t, [[95, 640, 2.0], [99.6, 330, 2.2], [100.7, 640, 2.0], [101.4, 330, 2.2], [102.0, 200, 2.2], [103.8, 330, 2.0], [107.3, 200, 2.2], [109.2, 640, 2.0], [112.3, 330, 1.9], [115.3, 230, 2.2], [118.6, 330, 1.9], [120.3, 520, 1.7], [124.4, 540, 1.9], [127.2, 330, 1.9], [130.2, 560, 1.6], [133, 480, 1.5]]);
+    const [, cx, z] = cutAt(t, [[95, 560, 1.6], [99.6, 230, 2.0], [100.7, 560, 1.6], [101.4, 230, 2.0], [102.0, 120, 2.0], [103.8, 230, 1.8], [107.3, 120, 2.0], [109.2, 560, 1.6], [112.3, 230, 1.8], [115.3, 150, 2.0], [118.6, 230, 1.8], [120.3, 430, 1.6], [124.4, 520, 1.8], [127.2, 230, 1.8], [130.2, 450, 1.5], [133, 400, 1.4]]);
     camC(cx, z);
     canyon(t);
-    windupCar(60, TFY, .8, t, { noFront: true, tilt: .1 });
-    sirLint(60, TFY - 120, U * .8, { ...face('sheepish'), view: 'q', noShadow: true, boilKey: 'lint' });
+    windupCar(-70, TFY, .8, t, { noFront: true, tilt: .1 });
+    sirLint(-70, TFY - 120, U * .8, { ...face('sheepish'), view: 'q', noShadow: true, boilKey: 'lint' });
     const slow = t > 120.5 && t < 124.5, hug = t >= 124.5, k = ease(seg(t, 120.5, 124.5)), sa = stepAside(t);
     // the troll: sobbing, jumps for joy at 109.5, runs to his twin in slow motion, hugs and spins, then steps aside (towards the camera)
     const hop = t > 109.5 && t < 111.3 ? Math.abs(Math.sin(seg(t, 109.5, 111.3) * Math.PI * 2)) * .8 : 0, sob = t < 109.5 ? Math.sin(t * 9) * .06 : 0, spin = hug && t < 130.5 ? Math.sin((t - 124.5) * 5) * .22 : 0;
@@ -133,14 +133,14 @@
     // 119.0 the cape comes off: he holds it out folded (no face showing), it drops to the ground and unfolds (119.6-120.2):
     // it is the pink sock, button eyes open (120.2), the lashes blink once (120.45), then the slow-motion run (120.5)
     const cape = t < 119.0, shiver = t > 127.5 && t < 131 ? Math.sin(t * 60) * .02 : 0, back = ease(seg(t, 112.5, 114.5)) * 70 - ease(seg(t, 119, 120)) * 70;
-    hero(330 - back + (t > 132 ? (t - 132) * 90 : 0), TFY, { ...faces(t, [[95, 'sheepish', { lookX: 1 }], [102.0, 'neutral', { lookX: 1 }], [104, 'determined', { mouth: 'flat' }], [107.5, 'embarrassed'], [112.5, 'sheepish'], [115.5, 'sheepish', { lookX: 1 }], [119.6, 'surprised', { eyes: 'wide', lookX: 1 }], [120.6, 'sad'], [127.5, 'soggy', { lid: .4 }], [130.5, 'happy', { blush: .7 }]]),
+    hero(230 - back + (t > 132 ? (t - 132) * 90 : 0), TFY, { ...faces(t, [[95, 'sheepish', { lookX: 1 }], [102.0, 'neutral', { lookX: 1 }], [104, 'determined', { mouth: 'flat' }], [107.5, 'embarrassed'], [112.5, 'sheepish'], [115.5, 'sheepish', { lookX: 1 }], [119.6, 'surprised', { eyes: 'wide', lookX: 1 }], [120.6, 'sad'], [127.5, 'soggy', { lid: .4 }], [130.5, 'happy', { blush: .7 }]]),
       view: t > 132 ? 'side' : 'q', walk: t > 132 ? t * 4 : undefined, aL: t > 104 && t < 119 ? -.2 : -1.1, aR: t > 104 && t < 119 ? -.2 : t > 119 && t < 119.5 ? .1 : t > 127.5 && t < 131 ? -.2 + Math.sin(t * 50) * .05 : -1.1, rot: shiver, who: 'pumpkin' }, t, cape);
-    if (t > 127.5 && t < 131) for (let i = 0; i < 3; i++) inkLine([[290 + i * 40, HEAD + 40], [295 + i * 40, HEAD + 10]], 2.5, '#BFE4F2', 'ink', 0);   // shiver lines
-    mouse(170 + (t > 132 ? (t - 132) * 100 : 0), TFY, { ...faces(t, [[95, 'sheepish', { lookX: 1 }], [100, 'deadpan', { lookX: 1 }], [107.5, 'deadpan', { lookX: 1, lid: .6 }], [115.5, 'neutral', { lookX: 1 }], [119.6, 'surprised', { lookX: 1 }], [120.6, 'happy', { eyes: 'happy' }], [127.5, 'deadpan', { lookX: 1 }], [131, 'happy']]),
+    if (t > 127.5 && t < 131) for (let i = 0; i < 3; i++) inkLine([[190 + i * 40, HEAD + 40], [195 + i * 40, HEAD + 10]], 2.5, '#BFE4F2', 'ink', 0);   // shiver lines
+    mouse(70 + (t > 132 ? (t - 132) * 100 : 0), TFY, { ...faces(t, [[95, 'sheepish', { lookX: 1 }], [100, 'deadpan', { lookX: 1 }], [107.5, 'deadpan', { lookX: 1, lid: .6 }], [115.5, 'neutral', { lookX: 1 }], [119.6, 'surprised', { lookX: 1 }], [120.6, 'happy', { eyes: 'happy' }], [127.5, 'deadpan', { lookX: 1 }], [131, 'happy']]),
       view: t > 132 ? 'side' : 'q', walk: t > 132 ? t * 5 : undefined, who: 'pip' });
     // in front of Pumpkin: the folded cape he hands over, then the pink sock that unfolds on the ground and runs to the troll
-    if (t > 119.0 && t < 119.6) { push(); translate(lerp(400, 430, seg(t, 119, 119.4)), HEAD + 130 + seg(t, 119.3, 119.6) * 180); rotate(-.3 + seg(t, 119, 119.6)); capeFolded(); pop(); }
-    if (t > 119.6) sockTroll(lerp(430, 470, k), BR.deck + 20 + sa * 70 - (slow ? Math.abs(Math.sin((t - 120.5) * 3)) * 14 : 0), U * 1.15 * (1 + sa * .12), { pink: true, ...face(t < 120.2 ? 'neutral' : 'happy', { eyes: t < 120.2 || (t > 120.45 && t < 120.6) ? 'closed' : t > 121.4 ? 'happy' : 'open', mouth: t < 120.2 ? 'flat' : 'smile' }), sq: t < 120.2 ? .6 * (1 - ease(seg(t, 119.6, 120.2))) : 0, rot: spin, boilKey: 'twin' });
+    if (t > 119.0 && t < 119.6) { push(); translate(lerp(300, 330, seg(t, 119, 119.4)), HEAD + 130 + seg(t, 119.3, 119.6) * 180); rotate(-.3 + seg(t, 119, 119.6)); capeFolded(); pop(); }
+    if (t > 119.6) sockTroll(lerp(330, 560, k), BR.deck + 20 + sa * 70 - (slow ? Math.abs(Math.sin((t - 120.5) * 3)) * 14 : 0), U * 1.15 * (1 + sa * .12), { pink: true, ...face(t < 120.2 ? 'neutral' : 'happy', { eyes: t < 120.2 || (t > 120.45 && t < 120.6) ? 'closed' : t > 121.4 ? 'happy' : 'open', mouth: t < 120.2 ? 'flat' : 'smile' }), sq: t < 120.2 ? .6 * (1 - ease(seg(t, 119.6, 120.2))) : 0, rot: spin, boilKey: 'twin' });
     camEnd();
   }
 
