@@ -202,6 +202,14 @@ function castArm(sx, sy, a, dir, len, w, col, sw, hook, u) {
   if (hook) { push(); translate(ex, ey); rotate(dir < 0 ? Math.PI + a : -a); if (dir < 0) scale(1, -1); hook(u, sw); pop(); }
 }
 
+// One paw as a single shape: a short leg that widens into a rounded foot (toe toward +x, mirrored by dir), so it grows out of
+// the body instead of an oval stuck on the bottom. (cx, gy) = centre of the leg at the ground; k scales it (1 = Pumpkin).
+function castFoot(cx, gy, u, dir, col, sw, k = 1, top = 1.9, toe = 1.15) {
+  const P = [[-.62, -top], [-.7, -.9], [-.6, -.25], [.15, 0], [.9 * toe, -.1], [1.25 * toe, -.5], [1.0 * toe, -.98], [.62, -1.15], [.62, -top]].map(([a, b]) => [cx + dir * a * u * k, gy + b * u * k]);
+  paint(through(P, 5), { wash: col, ink: PAL.ink, sw: sw * .8 });
+  for (const d of [.62, .98]) inkLine([[cx + dir * (d * toe + .12) * u * k, gy - .22 * u * k], [cx + dir * (d * toe + .08) * u * k, gy - .62 * u * k]], sw * .55, mixCol(col, '#2A1A30', .5), 'inkfine', 0);   // toe lines
+}
+
 function castShadow(x, y, rx, u, dyU) {
   const f = 1 - Math.min(.55, Math.abs(dyU || 0) * .05);
   paint(ellPts(x, y + u * .1, rx * f, u * .65 * f, 22), { fill: PAL.ink, fillOp: 85, bleed: .25, tex: .3, border: .1, ink: null });
@@ -241,7 +249,7 @@ function pumpkin(x, y, u, o = {}) {
   }
   // feet
   rs('feet');
-  for (const s of [-1, 1]) paint(ellPts((s * 1.9 + q * .5) * u * Math.min(fat, 1.15), -.45 * u, 1.2 * u, .6 * u, 14, u * .03), { wash: col, fill: lt, fillOp: 80, tex: .5, ink: PAL.ink, sw: sw * .8 });
+  for (const s of [-1, 1]) castFoot((s * 1.9 + q * .5) * u * Math.min(fat, 1.15), 0, u, s, col, sw, 1, 1.5);
   // far arm (3/4 view hides most of it behind the body)
   rs('armFar');
   const shY = -6.4 * u, shX = 3.15 * u * fat;
@@ -374,8 +382,7 @@ function pumpkinSide(u, o, sw, k) {
   const leg = (off, far) => {
     const p = ph + off * TAU, fx = stepping ? Math.sin(p) * 1.35 : 0, lift = stepping ? Math.max(0, Math.cos(p)) * .55 : 0;
     const x0 = (far ? -.55 : .35) * u * fat, c = far ? fdk : col;
-    paint(rrPts(x0 + fx * u * .55 - .6 * u, -1.6 * u + bob, 1.2 * u, 1.3 * u - lift * u - bob, .5 * u), { wash: c, ink: PAL.ink, sw: sw * .8 });
-    paint(ellPts(x0 + fx * u + .45 * u, -.42 * u - lift * u, 1.25 * u, .52 * u, 14, u * .03), { wash: c, fill: far ? null : lt, fillOp: 80, tex: .5, ink: PAL.ink, sw: sw * .8 });
+    castFoot(x0 + fx * u * .9, -lift * u, u, 1, c, sw, 1, (1.9 + bob / u * -1) + .2 - .0, 1.0);
   };
   push(); translate(0, 0);
   rs('tail');
@@ -462,9 +469,7 @@ function pip(x, y, u, o = {}) {
     const ph = (o.walk ?? 0) * TAU, stepping = o.walk != null, bob = (stepping ? -Math.abs(Math.sin(ph)) * .14 * u : 0) - .3 * u;
     const leg = (off, far) => {
       const p = ph + off * TAU, fx = stepping ? Math.sin(p) * .6 : 0, lift = stepping ? Math.max(0, Math.cos(p)) * .28 : 0;
-      const x0 = (far ? -.25 : .15) * u, lc = far ? C.dk : C.col;
-      paint(rrPts(x0 + fx * u * .55 - .26 * u, -.9 * u + bob, .52 * u, .75 * u - lift * u - bob, .24 * u), { wash: lc, ink: PAL.ink, sw: sw * .6 });
-      paint(ellPts(x0 + fx * u + .22 * u, -.18 * u - lift * u, .6 * u, .24 * u, 10), { wash: far ? mixCol(C.tail, C.dk, .4) : C.tail, ink: PAL.ink, sw: sw * .5 });
+      castFoot(((far ? -.25 : .15) + fx) * u, -lift * u, u, 1, far ? mixCol(C.col, C.dk, .5) : C.col, sw * .8, .5, 1.9, 1.0);
     };
     const swing = stepping ? Math.sin(ph) * .4 : 0;
     rs('legs'); leg(.5, 1);
@@ -499,7 +504,7 @@ function pip(x, y, u, o = {}) {
   }
 
   rs('feet');
-  for (const s of [-1, 1]) paint(ellPts((s * .75 + q * .2) * u, -.2 * u, .55 * u, .25 * u, 10), { wash: C.tail, ink: PAL.ink, sw: sw * .6 });
+  for (const s of [-1, 1]) castFoot((s * .75 + q * .2) * u, 0, u, s, C.col, sw * .8, .42, 1.2, 1.0);
   rs('body');
   const bcx = q * .15 * u;
   paint(ellPts(bcx, -1.75 * u, 1.55 * u, 1.75 * u, 22, u * .03), { wash: C.col, ink: PAL.ink, sw, shade: true });

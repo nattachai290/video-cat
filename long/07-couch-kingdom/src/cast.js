@@ -247,28 +247,26 @@ function dustBunny(x, y, u, o = {}) {
 // The sock cape: the troll's twin (same stripes), hanging from the shoulders BEHIND the body; it peeks out at both sides and
 // its green toe shows under him. Same x, y, u, view, flip, rot as pumpkin(). o.wind -1..1 blows it.
 function sockCape(x, y, u, o = {}) {
-  // A real pink sock worn as a cape: the ribbed cuff round his neck, the striped leg hanging down his back and the foot
-  // (heel patch, toe patch) sticking out sideways at the bottom, so it reads as the Sock Troll's other half.
+  // A pink sock worn as a cape, hanging straight down Pumpkin's BACK: only its flared edges show beside his body. The ribbed
+  // cuff is at the neck, the toe (rounded, with a patch) at the hem. Nothing sticks out on the floor.
   const C = { ...LOST, sock: LOST.sockPink, sockDk: LOST.sockPinkDk }, sw = clamp(u / 15, .5, 3), view = o.view || 'front', side = view === 'side', q = view === 'q';
   const wind = o.wind ?? Math.sin(T * 2) * .12, wv = wind * u;
   push(); translate(x, y + (o.dy || 0) * u); if (o.rot) rotate(o.rot); scale(o.flip ? -1 : 1, 1);
-  // outline in u: [x, y], y up is negative; the foot points +x (front/3-4) or back (-x, side)
-  const m = side ? -1 : 1, ox = side ? -.3 : q ? .5 : 0, lw = side ? 2.6 : 5.0, fw = side ? 5.2 : 7.0;
-  const sway = k => wv * k;   // the hem sways more than the cuff
-  const tw = side ? 1.4 : 3.3, raw = [[-tw, -7.9], [-lw * .85, -4.8], [-lw, -2.7], [-lw, 0], [fw * .6, 0], [fw, -.1], [fw + .8, -.8], [fw + .6, -1.9], [fw - .4, -2.5], [lw + .6, -2.9], [lw * .85, -4.8], [tw, -7.9]];
-  const P = raw.map(([a, b]) => [(ox + m * a) * u + sway(-b / 8 * 1.6) * (b < -4 ? 0 : 1) , b * u]).map(([a, b], i) => [a + (b > -3.2 * u ? wv * (1 - Math.abs(b) / (3.2 * u)) * .8 : 0), b]);
-  paint(P, { wash: C.sock[2], ink: null, curv: .35 });
+  const ox = side ? -.4 : q ? .4 : 0, hw = side ? 1.7 : 5.5, tw = side ? 1.0 : 3.4, bot = -.9;
+  const lean = b => side ? -2.2 * (b + 8) / 8 : 0;   // in profile the cape trails back from the neck
+  const P = through([[ox - tw, -8.0], [ox - hw * .95 + wv * .002, -4.8], [ox - hw + wv * .5 / u, -2.2], [ox - hw * .8 + wv * .8 / u, bot - .5], [ox + wv * .9 / u, bot + .25], [ox + hw * .8 + wv * .8 / u, bot - .5],
+    [ox + hw + wv * .5 / u, -2.2], [ox + hw * .95, -4.8], [ox + tw, -8.0]].map(([a, b]) => [(a + lean(b)) * u, b * u]), 5);
+  paint(P, { wash: C.sock[2], ink: null, curv: .3 });
   clipPoly(P, () => {
-    bands(-14 * u, 14 * u, -8.1 * u, -.05 * u, 8, [C.sock[0], C.sock[2], C.sock[1], C.sock[2]]);            // the same stripes as the Troll
-    paint(ellPts((ox - m * (lw - .1)) * u, -1.3 * u, 1.3 * u, 1.4 * u, 16), { wash: C.sock[0], ink: null });               // heel patch
-    paint(ellPts((ox + m * (fw - .1)) * u, -1.1 * u, 1.3 * u, 1.25 * u, 16), { wash: C.sock[0], ink: null });                 // toe patch
+    bands(-14 * u, 14 * u, -8.1 * u, 0, 9, [C.sock[0], C.sock[2], C.sock[1], C.sock[2]]);    // the same stripes as the Troll
+    paint(ellPts((ox + lean(bot) + wv * .8 / u) * u, bot * u, hw * .62 * u, 1.25 * u, 16), { wash: C.sock[0], ink: null });   // the toe patch
     paint(P.map(([px, py]) => [px * .92, py]), { wash: '#000000', washOp: 0, ink: null, shade: true, shadeK: .35 });
   });
-  paint(P, { ink: PAL.ink, sw, curv: .35 });
-  // the ribbed cuff round the neck, with a little knot
-  const cw = (tw + .6) * 2 * u, cx0 = (ox - tw - .6) * u;
-  paint(rrPts(cx0, -8.7 * u, cw, 1.15 * u, .35 * u), { wash: C.sock[0], ink: PAL.ink, sw: sw * .9 });
-  for (let i = 0; i <= 10; i++) inkLine([[cx0 + (i + .5) * cw / 11, -8.62 * u], [cx0 + (i + .5) * cw / 11, -7.65 * u]], sw * .5, C.sockDk, 'ink', 0);
+  paint(P, { ink: PAL.ink, sw, curv: .3 });
+  // ribbed cuff round the neck
+  const cw = (tw + .5) * 2 * u, cx0 = (ox - tw - .5) * u;
+  paint(rrPts(cx0, -8.6 * u, cw, 1.1 * u, .35 * u), { wash: C.sock[0], ink: PAL.ink, sw: sw * .9 });
+  for (let i = 0; i <= 8; i++) inkLine([[cx0 + (i + .5) * cw / 9, -8.5 * u], [cx0 + (i + .5) * cw / 9, -7.6 * u]], sw * .5, C.sockDk, 'ink', 0);
   pop();
 }
 // Excalifork: Pumpkin's right-paw hook. lit 0..1: a magic glow and sparkles at the tines.
