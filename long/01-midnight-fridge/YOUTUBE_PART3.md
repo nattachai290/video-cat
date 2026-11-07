@@ -1,6 +1,6 @@
 # YouTube upload: The Midnight Fridge · Part 3 (Short)
 
-Video: `out/short_p3.mp4` (vertical 1080x1920, 60 s, "THE END ♥" badge at the end)
+Video: `out/short_p3.mp4` (vertical 1080x1920, 60 s, "THE END ♥" badge at the end) · Cover: `out/cover_short_p3.png` (1080x1920, "IT'S A SPONGE." / PART 3; `--page=short.html --loop=coverV3 --still=0.6`)
 
 ## Title (pick one)
 

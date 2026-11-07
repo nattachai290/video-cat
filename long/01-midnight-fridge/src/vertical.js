@@ -45,7 +45,7 @@ letter = (txt, x, y, size, col, o = {}) => {
 subs = () => {};                         // the 16:9 subtitles are replaced by vsubs() below
 const _frame = frame;
 frame = t => {
-  if (window.LOOP === LOOPS.coverV || window.LOOP === LOOPS.coverV2) { VRAW = true; _frame(t); VRAW = false; return; }
+  if (window.LOOP === LOOPS.coverV || window.LOOP === LOOPS.coverV2 || window.LOOP === LOOPS.coverV3) { VRAW = true; _frame(t); VRAW = false; return; }
   VCX = clamp(vcx(t), 400, 1520);
   _frame(t);
   VRAW = true; CTX.save(); CTX.setTransform(1, 0, 0, 1, 0, 0);
@@ -173,3 +173,32 @@ LOOPS.coverV2 = t => {
   letter('PART 2', VW / 2, 430, 64, '#2B2233', { font: '800 64px "Baloo 2", sans-serif', screen: true });
 };
 LOOPS.coverV2.len = 2;
+// Vertical cover for the Part 3 Short: "IT'S A SPONGE." Pumpkin, deadpan, a bitten sponge cake in his paw, soap bubbles
+// floating out of his mouth; Pip with a bubble on his nose; the vacuum glowing behind with the real cake and its candle.
+// Render: --page=short.html --loop=coverV3 --still=0.6 --out=out/cover_short_p3.png
+LOOPS.coverV3 = t => {
+  paint(rectPts(-10, -10, VW + 20, VH + 20), { wash: '#2A2650', ink: null });
+  for (let i = 0; i < 60; i++) paint(ellPts(hash(i + 21) * VW, hash(i + 24) * 560, 2 + 2.5 * hash(i + 5), 2 + 2.5 * hash(i + 5), 6), { wash: '#FFFFFF', washOp: 100, ink: null });
+  paint(rectPts(-10, 1580, VW + 20, 400), { wash: '#5A4540', ink: null });
+  for (let i = 0; i < 5; i++) inkLine([[-10, 1640 + i * 60], [VW + 10, 1640 + i * 60]], 2, '#4A3833', 'ink', 0);
+  // the vacuum with the real cake + candle, behind on the right (the surprise)
+  glow(900, 1380, 300, '#FFD27A', .55);
+  robotVac(900, 1600, .9, t, { led: 'blue', blink: false });
+  cakeSlice(890, 1545, .8, false, .6); candle(880, 1455, .9, t, 1);
+  // Pumpkin, deadpan, chewing
+  pumpkin(430, 1700, 62, { ...face('deadpan', { mouth: 'O', lookX: .3 }), aL: -1.1, aR: .9, headband: '#262A33', mustache: true, boilKey: 'cv3' });
+  // the sponge cake held up in his paw, with sponge pores
+  push(); translate(790, 1250); rotate(-.12); cakeSlice(0, 0, .95, false); pop();
+  for (let i = 0; i < 9; i++) paint(ellPts(725 + hash(i + 40) * 130, 1175 + hash(i + 43) * 60, 5 + 4 * hash(i + 3), 4 + 3 * hash(i + 4), 8), { wash: '#D9B97A', ink: null });
+  // soap bubbles floating out of his mouth
+  for (let i = 0; i < 6; i++) { const r = 12 + 6 * i + 8 * hash(i + 60), bx = 420 - i * 34 + Math.sin(i * 1.7) * 40, by = 1250 - i * 120; paint(ellPts(bx, by, r, r, 18), { wash: '#DDF4FF', washOp: 80, sw: 1.8 }); paint(ellPts(bx - r * .35, by - r * .35, r * .25, r * .18, 8), { wash: '#FFFFFF', ink: null }); }
+  // Pip, deadpan, a big bubble on his nose
+  pip(170, 1720, 52, { ...face('deadpan'), view: 'q', aL: -.6, aR: -.4, draw: ninjaMask(1), boilKey: 'cpv3' });
+  paint(ellPts(212, 1512, 34, 34, 20), { wash: '#DDF4FF', washOp: 80, sw: 1.8 }); paint(ellPts(201, 1500, 8, 6, 8), { wash: '#FFFFFF', ink: null });
+  letter('squeak!', 860, 1020, 60, '#F49AC1', { stroke: '#2B2233', rot: .1, screen: true });
+  letter("IT'S A", VW / 2, 190, 120, '#FFFFFF', { font: '800 120px "Baloo 2", sans-serif', stroke: '#2B2233', rot: -.04, screen: true });
+  letter('SPONGE.', VW / 2, 330, 170, '#F7D96A', { font: '800 170px "Baloo 2", sans-serif', stroke: '#2B2233', rot: -.04, screen: true });
+  paint(rrPts(VW / 2 - 150, 450, 300, 96, 48), { wash: '#F2C14E', sw: 3 });
+  letter('PART 3', VW / 2, 500, 64, '#2B2233', { font: '800 64px "Baloo 2", sans-serif', screen: true });
+};
+LOOPS.coverV3.len = 2;
