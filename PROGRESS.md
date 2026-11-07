@@ -1,6 +1,7 @@
 # PROGRESS
 
 บันทึกความคืบหน้าของโปรเจกต์ video-cat (ล่าสุดอยู่บนสุดของแต่ละหัวข้อ) · วิธีทำตอนใหม่: `.claude/skills/pumpkin-pip-shorts/SKILL.md`
+· รันอัดเสียง/มิกซ์/เรนเดอร์บนเครื่องตัวเอง: `LOCAL.md`
 
 ## ช่อง YouTube
 
