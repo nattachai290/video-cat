@@ -408,6 +408,134 @@ function pumpkinSide(u, o, sw, k) {
   for (const by of [-6.1, -4.9]) paint(ellPts(1.55 * u * vf, by * u + bob, .28 * u, .28 * u, 10), { wash: C.button, ink: PAL.ink, sw: sw * .5 });
   rs('cape'); if (window.CAPE_NEXT && CAPE_NEXT.T === T) { const cn = CAPE_NEXT; window.CAPE_NEXT = null; push(); translate(0, bob); cn.draw(u, sw, 'side', fat); pop(); }
   rs('arm');
+  // The near arm is ONE arm whatever its angle: its root slides smoothly from the shoulder (hanging) to forward of it (raised),
+  // so the paw with the fork never appears to jump to the other hand. Raised arms are drawn over the head.
+  const aRv = o.aR ?? (-1.25 - swing), kR = clamp((aRv + .1) / 1.1), upR = aRv > .6;   // only a really raised arm slides forward and is drawn over the head
+  const armR = () => castArm(lerp(shX, 2.0 * u * fat, kR * kR), shY, upR ? Math.min(aRv, .95) : aRv, 1, 3.0 * u, 1.4 * u, col, sw, o.armR, u);
+  if (!upR) armR();
+  // head
+  rs('head');
+  push(); translate(q * .55 * u, -8.5 * u + puff * -.4 * u);
+  const hs = 1 + cu * .17;
+  const hx = 3.35 * u * (1 + puff * .18 - wet * .1) * hs, hy = 2.85 * u * (1 + puff * .12 - wet * .05) * hs, fx = q * 1.0 * u;
+  push(); scale(hs, hs);
+  for (const s of [-1, 1]) {   // ears (the head covers their bases)
+    // wet: the ears slide in toward the crown and fold down, so their bases stay inside the head (no floating flaps)
+    const far = q && s < 0, droop = wet * .9, ex = s * 1.95 * u + fx * .5 - (far ? .35 * u : 0) - s * wet * .8 * u;
+    const tip = [ex + s * .65 * u * (1 + cu * .2) + s * droop * u * .6, (-3.85 * u - cu * .3 * u) + droop * 1.3 * u];
+    paint([[ex - 1.1 * u, -1.6 * u], tip, [ex + 1.1 * u, -1.7 * u]], { wash: far ? mixCol(col, dk, .3) : col, ink: PAL.ink, sw: sw * .85 });
+    paint([[ex - .55 * u, -1.9 * u], [lerp(ex, tip[0], .85), lerp(-1.9 * u, tip[1], .8)], [ex + .55 * u, -1.95 * u]], { wash: C.inner, ink: null });
+  }
+  pop();
+  const head = furry(ellPts(0, 0, hx, hy, 26, u * .04).map(([a, b], i) => {
+    const ang = Math.atan2(b / hy, a / hx), cheek = Math.abs(Math.sin(ang)) < .45 && b > -hy * .1 ? .18 * u : 0;   // cheek tufts
+    return [a + Math.sign(a) * cheek * (i % 2 ? 1 : .4), b];
+  }), 0, 0, puff * 1.1 + wet * .25);
+  paint(head, { wash: col, ink: null, shade: true, shadeK: .8 });
+  for (const k of [-1, 0, 1]) inkLine([[fx * .4 + k * .45 * u, -2.75 * u], [fx * .4 + k * .5 * u, -2.05 * u]], sw * 1.15, C.stripe, 'ink', 0);   // the M
+  for (const s of [-1, 1]) inkLine([[s * hx * .97, -.5 * u], [s * (hx - .9 * u), -.35 * u]], sw * 1.05, C.stripe, 'ink', .3);
+  paint(head, { ink: PAL.ink, sw });
+  // face
+  rs('face');
+  pumpkinFace(u, o, sw, fx, q, { col, lt, C, talk, wet, cu, hx, hy });
+  pop();
+  rs('armsUp'); if (upL) armL(); if (upR) armR();
+  rs('draw'); if (o.draw) o.draw(u, sw);
+  pop();
+  rs('emote'); if (o.emote && typeof emote === 'function') emote(o.emote, x + (o.flip ? -1 : 1) * 3.8 * u, y + dy - 12.6 * u, u * .9, o.emoteK ?? 1, o.emoteAge ?? T);
+  rs('after');
+}
+
+function pumpkinFace(u, o, sw, fx, q, k) {
+  const C = k.C, cu = k.cu || 0, kinds = Array.isArray(o.eyes) ? o.eyes : [o.eyes || 'open', o.eyes || 'open'];
+  const fy = cu * .15 * u, eg = 1 + cu * .3;   // cute: the whole muzzle slides down, the eyes grow
+  // muzzle
+  paint(ellPts(fx - .62 * u, .95 * u + fy, .78 * u, .55 * u, 14), { wash: k.lt, ink: null });
+  paint(ellPts(fx + .62 * u, .95 * u + fy, .78 * u, .55 * u, 14), { wash: k.lt, ink: null });
+  const blush = clamp((o.blush || 0) + cu * .3);
+  if (blush) for (const s of [-1, 1]) paint(ellPts(fx + s * 2.05 * u * (s < 0 ? 1 - q * .2 : 1), .55 * u + fy * .5, (.75 + cu * .1) * u, (.4 + cu * .05) * u, 14), { wash: '#E8607A', washOp: 150 * blush, ink: null });
+  for (const s of [-1, 1]) {
+    const far = q && s < 0, ex = fx + s * 1.35 * u * (far ? .82 : 1), ey = -.35 * u + cu * .2 * u, rx = .78 * u * (far ? .82 : 1) * eg, ry = .88 * u * eg;
+    push(); translate(ex, ey); castEye(kinds[s < 0 ? 0 : 1], s, rx, ry, { ...o, cute: cu }, sw, k.col, C.iris, 'cat'); pop();
+    castBrow(ex, ey, 1.25 * u * (far ? .8 : 1) * eg, 1.25 * u * eg, s, o.brow || 0, (o.browUp || 0) + (s < 0 ? o.browL || 0 : o.browR || 0), sw);
+  }
+  // nose and mouth
+  paint([[fx - .32 * u, .42 * u + fy], [fx + .32 * u, .42 * u + fy], [fx, .72 * u + fy]], { wash: C.nose, ink: PAL.ink, sw: sw * .55 });
+  push(); translate(fx, .72 * u + fy); castMouth(o.mouth || 'w', k.talk, 1.15 * u, sw); pop();
+  for (const s of [-1, 1]) castWhiskers(fx + s * 1.05 * u, .95 * u + fy, s, 3.0 * u * (q && s < 0 ? .7 : 1), sw, k.wet * .8 + (o.mouth === 'frown' ? .3 : 0));
+  castAccessories(u, o, sw, fx, q, fy, k.hx, k.hy);
+}
+// Face accessories that must follow the face (front / 3/4): mustache (true or a colour), headband (a colour, tied at the back).
+function castAccessories(u, o, sw, fx, q, fy, hx = 3.35 * u, hy = 2.85 * u) {
+  if (o.headband) {
+    // A band round the forehead: on a round head it bows DOWN in the middle and its ends hug the head outline (clipped to
+    // the head), tied in a knot at the side (the back side in 3/4 view) with two tails that flap.
+    const c = o.headband === true ? '#262A33' : o.headband, cx = fx * .3, th = .62 * u;
+    const top = x => -2.95 * u + .5 * u * (1 - Math.min(1, ((x - cx) / hx) ** 2));   // centre lower than the ends
+    const P = []; for (let i = 0; i <= 16; i++) { const x = -hx * 1.1 + i / 16 * hx * 2.2; P.push([x, top(x)]); }
+    push(); CTX.beginPath(); ellPts(0, 0, hx * 1.01, hy * 1.01, 32).forEach(([x, y], i) => i ? CTX.lineTo(x, y) : CTX.moveTo(x, y)); CTX.closePath(); CTX.clip();
+    paint([...P, ...P.slice().reverse().map(([x, y]) => [x, y + th])], { wash: c, ink: PAL.ink, sw: sw * .8 });
+    inkLine(P.map(([x, y]) => [x, y + th * .45]), sw * .7, mixCol(c, '#FFFFFF', .25), 'ink', 0);   // a fold line, so it reads as cloth
+    pop();
+    const side = q ? -1 : 1, kx = side * hx * .93, ky = top(kx) + th * .5, fl = Math.sin(T * 6) * .22 * u;
+    for (const d of [-1, 1]) paint(ribbon([[kx, ky], [kx + side * 1.0 * u, ky + .35 * u * d + fl], [kx + side * 1.9 * u, ky + .55 * u * d - fl], [kx + side * 2.4 * u, ky + .35 * u * d + fl]], .42 * u, .18 * u), { wash: c, ink: PAL.ink, sw: sw * .6 });
+    paint(ellPts(kx, ky, .42 * u, .38 * u, 12), { wash: c, ink: PAL.ink, sw: sw * .7 });
+  }
+  if (o.mustache) {
+    const c = o.mustache === true ? '#262A33' : o.mustache, my = .66 * u + (fy || 0);
+    for (const s of [-1, 1]) paint(ribbon([[fx, my], [fx + s * .7 * u, my + .12 * u], [fx + s * 1.35 * u, my - .1 * u], [fx + s * 1.5 * u, my - .45 * u]], .42 * u, .16 * u), { wash: c, ink: PAL.ink, sw: sw * .5 });
+  }
+  if (o.crown) castCrown(fx * .3, -hy * .86, u, o.crown, sw, q ? .12 : 0);
+}
+// A bottle-cap crown: a gold cap (crimped rim, a dent on top) sitting on the crown of the head at (cx, cy) = its base centre.
+// spec.slip 0..1 slides it down the face (1 = over the eyes, the "blind with power" gag). tilt: radians.
+function castCrown(cx, cy, u, spec, sw, tilt = 0) {
+  const c = (spec && spec.col) || '#F2C14E', dk = mixCol(c, '#8A5A12', .45), slip = (spec && spec.slip) || 0;
+  push(); translate(cx, cy + slip * 2.75 * u); rotate(tilt + (spec && spec.tilt || 0)); scale(1 + slip * .15, 1 + slip * .15);
+  const w = 1.5 * u, h = .62 * u, n = 12, rim = [];
+  for (let i = 0; i <= n * 2; i++) { const x = -w - .12 * u + i / (n * 2) * (w + .12 * u) * 2; rim.push([x, i % 2 ? .12 * u : -.05 * u]); }   // crimped bottom edge
+  paint([...rim, [w * .97, -h], [-w * .97, -h]], { wash: c, ink: PAL.ink, sw: sw * .8, shade: true, shadeK: .55 });
+  for (let i = 1; i < n * 2; i += 2) { const x = -w + i / (n * 2) * w * 2; inkLine([[x * .97, .08 * u], [x * .95, -h * .35]], sw * .5, dk, 'ink', 0); }   // the crimps (short: a cap, not a cupcake case)
+  paint(ellPts(0, -h, w * .97, .3 * u, 18), { wash: mixCol(c, '#FFFFFF', .25), ink: PAL.ink, sw: sw * .7 });   // the top
+  paint(ellPts(-.35 * u, -h - .02 * u, .32 * u, .1 * u, 10), { wash: '#FFF2C4', ink: null });                  // shine
+  pop();
+}
+
+// Pumpkin in profile, facing right: upright on two legs like the front view (the body stands, the head sits on top),
+// two feet that step (walk = leg phase), the near arm swings in front of the body, the far arm behind; the tail behind.
+function pumpkinSide(u, o, sw, k) {
+  const { col, dk, lt, C, fat, wet, puff, talk, rs, furry, cu } = k;
+  const walk = o.walk, ph = (walk ?? 0) * TAU, stepping = walk != null;
+  const bob = (stepping ? -Math.abs(Math.sin(ph)) * .28 * u : 0) - .85 * u;   // the body stands on short legs that show
+  const fdk = mixCol(col, dk, .45);
+  // legs: [phase offset, far]; the foot slides forward/back and lifts on the forward swing
+  const leg = (off, far) => {
+    const p = ph + off * TAU, fx = stepping ? Math.sin(p) * 1.35 : 0, lift = stepping ? Math.max(0, Math.cos(p)) * .55 : 0;
+    const x0 = (far ? -.55 : .35) * u * fat, c = far ? fdk : col;
+    castFoot(x0 + fx * u * .9, -lift * u, u, 1, c, sw, 1, (1.9 + bob / u * -1) + .2 - .0, 1.0);
+  };
+  push(); translate(0, 0);
+  rs('tail');
+  const ts = Math.sin(T * 1.8) * .4;
+  if (!o.noTail) paint(ribbon(_P(u, [[-2.6 * fat, -2.6], [-4.6 * fat, -3.0 + ts * .3], [-5.6 * fat, -4.8 + ts * .6], [-5.2 * fat, -6.6 + ts + wet * 1.8], [-4.3 * fat, -7.3 + ts + wet * 2.2]]).map(([a, b]) => [a, b + bob]), u * (1.2 + puff * .8 - wet * .4), u * (.7 + puff * .6 - wet * .3)), { wash: col, ink: PAL.ink, sw: sw * .85 });
+  rs('legs'); leg(.5, 1);
+  rs('armFar');
+  const swing = stepping ? Math.sin(ph) * .4 : 0, shX = .7 * u * fat, shY = -6.3 * u + bob;
+  castArm(shX - .6 * u, shY, o.aL ?? (-1.25 + swing), 1, 3.0 * u, 1.4 * u, fdk, sw, o.armL, u);
+  rs('legsNear'); leg(0, 0);
+  rs('body');
+  const bcx = 0, bcy = -3.95 * u + bob, brx = 3.55 * u * fat, bry = 3.7 * u * (1 - k.belly * .02);
+  const body = furry(ellPts(bcx, bcy, brx, bry, 28, u * .04), bcx, bcy, puff * 1.2 + wet * .3);
+  paint(body, { wash: col, ink: null, shade: true });
+  paint(ellPts(bcx + 1.25 * u * fat, -3.1 * u + bob, 2.15 * u * fat * (1 + k.belly * .15), 2.5 * u, 20), { wash: lt, washOp: 230, ink: null });   // belly, toward the front
+  for (let i = 0; i < 3; i++) { const sx = -brx + u * (.3 + i * .08), sy = -5.4 * u + i * 1.1 * u + bob; inkLine([[sx, sy], [sx + u * .9, sy + u * .25], [sx + u * 1.4, sy + u * .1]], sw * 1.2, C.stripe, 'ink', .5); }   // back stripes
+  paint(body, { ink: PAL.ink, sw });
+  rs('vest');   // one size too small: it covers the back and shoulder and stops short of the belly
+  const vf = fat * (1 - puff * .12);
+  paint(_P(u, [[-2.5 * vf, -6.55], [.9 * vf, -7.25], [2.2 * vf, -6.45], [1.7 * vf, -4.3], [-.9 * vf, -3.85], [-3.2 * vf, -4.9]]).map(([a, b]) => [a, b + bob]), { wash: C.vest, ink: PAL.ink, sw: sw * .85, curv: .25, shade: true, shadeK: .6 });
+  for (const by of [-6.1, -4.9]) paint(ellPts(1.55 * u * vf, by * u + bob, .28 * u, .28 * u, 10), { wash: C.button, ink: PAL.ink, sw: sw * .5 });
+  rs('cape'); if (window.CAPE_NEXT && CAPE_NEXT.T === T) { const cn = CAPE_NEXT; window.CAPE_NEXT = null; push(); translate(0, bob); cn.draw(u, sw, 'side', fat); pop(); }
+  rs('arm');
   const upR = (o.aR ?? -1) > .8;
   // a raised paw goes forward and up, past the face (straight up it would cover the face of the big profile head)
   const armR = () => upR ? castArm(2.0 * u * fat, shY, Math.min(o.aR, .95), 1, 3.0 * u, 1.4 * u, col, sw, o.armR, u)

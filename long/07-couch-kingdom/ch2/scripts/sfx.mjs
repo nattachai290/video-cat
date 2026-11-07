@@ -45,14 +45,14 @@ P(65, 30, noiseBand(22, 260, .6, 30, 1, 2, 1.2), { gain: .35 });
 P(65.2, .5, thud(60, .3, 23), { gain: 1 });
 P(66.0, .4, thud(90, .1, 24), { gain: .5 });
 P(70.0, .4, boing(300, .4), { gain: .4 });                                          // the sign pops up
-for (const t of [78.4, 86.6, 94.4]) P(t, .8, (() => { const c = clang(1320); return x => c(x) * .5; })(), { gain: .6 });
-P(90.5, 1.5, gurgle(1.5), { gain: .8 });
+for (const t of [78.4, 86.6, 94.8]) P(t, .8, (() => { const c = clang(1320); return x => c(x) * .5; })(), { gain: .6 });
+P(90.5, 2.0, gurgle(2.0), { gain: .8 });
 P(83.4, .3, pop(900, 25), { gain: .5 });                                            // the donut
 // 2-5 sobbing, the cape flies, slow-mo reunion with a sweet chime and hearts, teeth chattering
 for (let t = 96; t < 109; t += .7) P(t, .3, squeak(500 + (t * 40 % 120), .3, Math.round(t * 3)), { gain: .12 });
 P(100.7, .3, pop(1100, 26), { gain: .4 });                                           // the thought bubble
 P(109.5, .4, boing(260, .4), { gain: .5 }); P(110.0, 1.0, squeak(1600, .4, 27), { gain: .3 });
-P(119.0, 1.4, whoosh(1.4, 400, 1400, 28), { gain: .5 });
+P(119.3, .4, whoosh(.4, 400, 1400, 28), { gain: .4 }); P(119.7, .5, poof(), { gain: .4 }); P(120.2, .3, sparkle(70), { gain: .5 }); P(120.45, .15, eep(3200), { gain: .3 });   // drop, unfold, eyes open, the blink
 for (let i = 0; i < 8; i++) P(120.5 + i * .55, 1.2, sweep(t => [523, 659, 784, 1046][i % 4], t => env(t, .01, .5) * .2), { gain: .5 });
 for (let i = 0; i < 6; i++) P(121.2 + i * .8, .1, pop(1600, 29 + i), { gain: .3 });
 P(124.5, .3, sparkle(35), { gain: .5 });
@@ -64,17 +64,17 @@ P(141.2, .2, squeak(1100, .2, 37), { gain: .3 });
 P(152.0, .5, (() => { const th = thud(200, .04, 28), c = crunch(29); return t => th(t) + c(t); })(), { gain: 1.1 });
 P(152.3, 8, creak(8, 30), { gain: .5 });
 P(160.8, .3, eep(2000), { gain: .4 }); P(160.5, .6, thud(80, .2, 38), { gain: .6 });
-for (const [i, t] of [[0, 161.0], [1, 161.3], [2, 161.6], [3, 161.9], [4, 162.2], [5, 162.5], [6, 162.8], [7, 163.4], [8, 165.0], [9, 165.3]]) { P(t, .3, crunch(40 + i), { gain: .5 }); P(t + .1, 1.0, whoosh(1.0, 600, 200, 50 + i), { gain: .15 }); }
-for (let t = 162.4; t < 164.9; t += .16) P(t, .05, tap(1600, 120, t * 9), { gain: .25 });
-P(161.0, .5, whoosh(.5, 500, 2000, 31), { gain: .6 });                              // Pip and Sir Lint leap
-P(164.9, .5, whoosh(.5, 500, 2000, 32), { gain: .6 });                              // Pumpkin's leap
-P(165.4, .6, sweep(t => 700 - 300 * t, t => env(t, .01, .5) * .1), { gain: .4 });   // the hang-time "uh oh"
+for (const [i, t] of [[0, 161.0], [1, 161.3], [2, 161.6], [3, 161.9], [4, 162.2], [5, 162.5], [9, 162.4], [8, 162.7], [7, 163.0], [6, 164.5]]) { P(t, .3, crunch(40 + i), { gain: .5 }); P(t + .1, 1.0, whoosh(1.0, 600, 200, 50 + i), { gain: .15 }); }
+for (let t = 163.4; t < 164.4; t += .16) P(t, .05, tap(1600, 120, t * 9), { gain: .25 });
+P(161.8, .5, whoosh(.5, 500, 2000, 31), { gain: .6 }); P(162.0, .8, motor(.8, 420), { gain: .6 });   // Pip leaps, Sir Lint just makes it
+P(164.4, .5, whoosh(.5, 500, 2000, 32), { gain: .6 });                              // Pumpkin's leap
+P(165.2, .6, sweep(t => 700 - 300 * t, t => env(t, .01, .5) * .1), { gain: .4 });   // the hang-time "uh oh"
 // 2-7 the long fall (wind rising), SPLASH, bloops, the pop, the bubble
 P(166, 3.5, (() => { const n = noise(35), bp = new Biquad(); return t => { bp.set('bp', 300 + 400 * t, .8); return bp.run(n()) * fade(t, 3.5, .3, .1) * 2; }; })(), { gain: .5 });
 P(169.5, 1.2, splash(36), { gain: 1.2 }); P(169.55, .8, thud(70, .2, 37), { gain: .8 });
 for (let t = 171.0; t < 177; t += .55) P(t, .08, sweep(x => 900 + 1800 * x, x => env(x, .001, .03) * .3), { gain: .3 });   // bloop... bloop...
 P(180.5, 2.0, sweep(t => 300 + 500 * t, t => env(t, .1, .6) * .12), { gain: .5 });  // the bubble swelling
-P(182.5, .2, pop(1400, 38), { gain: .7 });
+P(182.5, .2, pop(1400, 38), { gain: .7 }); for (let i = 0; i < 5; i++) P(182.7 + i * .12, .08, pop(2200 + i * 200, 60 + i), { gain: .25 });
 P(183.2, .8, thud(50, .4, 39), { gain: .5 });
 P(186.0, .4, boing(200, .4), { gain: .4 });
 tr.reverb(.16, .9);
