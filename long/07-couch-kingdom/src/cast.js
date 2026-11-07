@@ -247,19 +247,49 @@ function dustBunny(x, y, u, o = {}) {
 // The sock cape: the troll's twin (same stripes), hanging from the shoulders BEHIND the body; it peeks out at both sides and
 // its green toe shows under him. Same x, y, u, view, flip, rot as pumpkin(). o.wind -1..1 blows it.
 function sockCape(x, y, u, o = {}) {
-  const C = { ...LOST, sock: LOST.sockPink }, sw = clamp(u / 15, .5, 3), view = o.view || 'front', side = view === 'side', q = view === 'q';
-  const wind = o.wind ?? Math.sin(T * 2) * .12, wv = wind * u;
-  push(); translate(x, y + (o.dy || 0) * u); if (o.rot) rotate(o.rot); scale(o.flip ? -1 : 1, 1);
-  let P;
-  if (side) P = [[-.2 * u, -8.2 * u], [-2.0 * u, -7.6 * u], [-6.4 * u - 2 * wv, -.9 * u], [-6.0 * u - 2.4 * wv, .05 * u], [-2.0 * u - wv, .05 * u], [-.4 * u, -6.6 * u]];
-  else { const o2 = q ? .5 * u : 0; P = [[-4.2 * u + o2, -8.0 * u], [4.2 * u + o2, -8.0 * u], [6.6 * u + o2 + wv, -1.2 * u], [6.1 * u + o2 + wv, .05 * u], [-6.1 * u + o2 + wv, .05 * u], [-6.6 * u + o2 + wv, -1.2 * u]]; }
-  paint(P, { wash: C.sock[2], ink: null, curv: .25 });
-  clipPoly(P, () => {
-    bands(-8 * u, 8 * u, -8.1 * u, -1.2 * u, 8, [C.sock[0], C.sock[2], C.sock[1], C.sock[2]]);
-    paint(rectPts(-8 * u, -1.2 * u, 16 * u, 2 * u), { wash: C.sock[0], ink: null });   // the toe end
-  });
-  paint(P, { ink: PAL.ink, sw, curv: .25 });
-  pop();
+  // A pink sock worn as a cape. It is not drawn here: it is queued for the NEXT pumpkin() call, which draws it over his body
+  // (after the vest, before the arms and head) so it really covers his back and shoulders (two panels falling at his sides
+  // in front view; a panel over his back in profile) instead of hanging in the air behind him.
+  window.CAPE_NEXT = { T, draw: (U, sw, view, fat) => capePanels(U, sw, view, fat, o.wind ?? Math.sin(T * 2) * .12) };
+}
+function capePanels(u, sw, view, fat, w) {
+  // A cloak made of the pink sock: it wraps round the neck, covers the shoulders and back, hangs to the ground in a wide
+  // flare with a darker lining along the front edge, diagonal folds and a little gold clasp.
+  const C = { ...LOST, sock: LOST.sockPink, sockDk: LOST.sockPinkDk }, q = view === 'q', side = view === 'side', f = fat * .98, LINING = '#7A4146';
+  const panel = (pts, edge, ang, toe, folds) => {
+    const P = through(pts.map(([a, b]) => [a * u, b * u]), 4);
+    paint(P, { wash: C.sock[2], ink: null, curv: .3 });
+    clipPoly(P, () => {
+      push(); translate(0, -5 * u); rotate(ang); translate(0, 5 * u);
+      bands(-16 * u, 16 * u, -16 * u, 6 * u, 24, [C.sock[0], C.sock[2], C.sock[1], C.sock[2]]);   // the Troll's stripes, set on the diagonal
+      pop();
+      paint(ellPts(toe[0] * u, toe[1] * u, 1.3 * u, .75 * u, 14), { wash: C.sock[0], ink: null });
+      // darker lining along the front edge (the inside of the cloak)
+      const E = through(edge.map(([a, b]) => [a * u, b * u]), 4), nx = edge.nx * u;
+      paint([...E, ...E.slice().reverse().map(([a, b]) => [a + nx, b])], { wash: LINING, ink: null });
+      paint(P.map(([px, py]) => [px * .9, py]), { wash: '#000000', washOp: 0, ink: null, shade: true, shadeK: .35 });
+      for (const fl of folds) inkLine(through(fl.map(([a, b]) => [a * u, b * u]), 3), sw * .6, C.sockDk, 'ink', .3);   // folds
+    });
+    paint(P, { ink: PAL.ink, sw, curv: .3 });
+  };
+  const clasp = (x, y) => { paint(ellPts(x * u, y * u, .42 * u, .42 * u, 12), { wash: '#F2C14E', ink: PAL.ink, sw: sw * .7 }); paint(ellPts((x - .1) * u, (y - .1) * u, .12 * u, .1 * u, 6), { wash: '#FFF2C4', ink: null }); };
+  if (side) {
+    const edge = [[1.3, -6.9], [1.0, -5.2], [.1, -2.6], [-1.0, -.4]]; edge.nx = -.9;
+    panel([[1.3, -7.0], [-.6, -8.0], [-3.2, -6.2], [-4.8 * f, -3.0], [-6.2 + w * .8, -.5], [-5.2 + w * 1.2, .05], [-1.0 + w, -.3], [.1, -2.6], [1.0, -5.2]], edge, -.3, [-5.0 + w, -.6],
+      [[[-2.2, -6.6], [-3.2, -3.8], [-4.4, -1.2]], [[-1.2, -6.2], [-1.8, -3.4], [-2.6, -.8]]]);
+    clasp(1.35, -5.0);
+    return;
+  }
+  const o2 = q ? .45 : 0;
+  for (const s of [-1, 1]) {
+    const x = a => s * a + o2;
+    const edge = [[x(1.8), -7.4], [x(2.3), -5.4], [x(2.6), -2.6], [x(2.6), -.7]]; edge.nx = -s * .9;
+    panel([[x(3.4), -7.4], [x(5.0 * f), -5.4], [x(6.0 * f) + w * .6, -2.6], [x(6.6 * f) + w * 1.2, -.7], [x(5.0 * f) + w * 1.3, -.2], [x(2.6) + w * 1.2, -.7], [x(2.6), -2.6], [x(2.3), -5.4], [x(1.8), -7.4]], edge, s * .28, [x(4.6 * f) + w * 1.1, -.95],
+      [[[x(3.6), -6.4], [x(4.6), -3.6], [x(5.0), -.9]], [[x(3.0), -5.2], [x(3.4), -2.8], [x(3.6), -.8]]]);
+  }
+  // a gold cord with a clasp across his chest
+  inkLine(through([[-2.4 + o2, -5.0], [0 + o2, -4.4], [2.4 + o2, -5.0]].map(([a, b]) => [a * u, b * u]), 3), sw * .8, '#C99A2E', 'ink', .3);
+  clasp(o2, -4.4);
 }
 // Excalifork: Pumpkin's right-paw hook. lit 0..1: a magic glow and sparkles at the tines.
 function excalifork(lit = 0) {

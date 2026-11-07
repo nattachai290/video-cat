@@ -90,4 +90,17 @@
     });
   };
   LOOPS.kitViews.len = 2;
+  // Side view walk cycle: 4 phases each, Pumpkin (with cape + crown) on top, Pip below, plus a side-view talk/arm-up pose.
+  LOOPS.walkSide = t => {
+    bg(); title('side view · walking on two legs');
+    for (let i = 0; i < 5; i++) {
+      const x = 220 + i * 370, w = i < 4 ? i / 4 : null, o = { view: 'side', ...(w != null ? { walk: w } : { aR: 1.3 }) };
+      sockCape(x, 560, 34, o); pumpkin(x, 560, 34, { ...face(w != null ? 'proud' : 'happy'), ...o, crown: true, armR: w == null ? excalifork(0) : undefined, boilKey: 'w' + i });
+      label(w != null ? 'walk ' + w : 'arm up', x, 610, 26);
+      pip(x, 900, 34, { ...face('deadpan'), ...(w != null ? { view: 'side', walk: w } : { view: 'side', aR: 1.2 }), boilKey: 'wp' + i });
+      pipPack(x, 900, 34, { view: 'side' });
+    }
+    floor(560); floor(900);
+  };
+  LOOPS.walkSide.len = 2;
 })();

@@ -47,11 +47,12 @@ function windupCar(x, y, s, t, o = {}) {
   push(); translate(x, y); scale(s * (o.flip ? -1 : 1), s);
   const bob = o.moving ? Math.abs(Math.sin(t * 18)) * 4 : 0;
   translate(0, -bob);
+  if (o.tilt) { translate(-70, 0); rotate(o.tilt); translate(70, 0); }   // a wheel is missing: the front end drops
   paint(rrPts(-120, -110, 240, 80, 30), { wash: '#D2434B', ink: PAL.ink, sw: 1.8, shade: true, shadeK: .45 });   // body
   paint([[-60, -110], [-40, -160], [50, -160], [80, -110]], { wash: '#E2646B', ink: PAL.ink, sw: 1.6 });              // cabin
   paint([[-36, -112], [-24, -148], [20, -148], [20, -112]], { wash: '#BFE4F2', ink: PAL.ink, sw: 1.2 });
   paint(ellPts(110, -75, 14, 12, 10), { wash: '#FFE27A', ink: PAL.ink, sw: 1 });                                   // headlight
-  for (const wx of [-70, 70]) { paint(ellPts(wx, -30, 32, 32, 16), { wash: '#2B2233', ink: PAL.ink, sw: 1.4 }); paint(ellPts(wx, -30, 12, 12, 10), { wash: '#C9CED6', ink: null }); const a = (o.wheel ?? t * 8); inkLine([[wx, -30], [wx + Math.cos(a) * 26, -30 + Math.sin(a) * 26]], 3, '#C9CED6', 'ink', 0); }
+  for (const wx of (o.noFront ? [-70] : [-70, 70])) { paint(ellPts(wx, -30, 32, 32, 16), { wash: '#2B2233', ink: PAL.ink, sw: 1.4 }); paint(ellPts(wx, -30, 12, 12, 10), { wash: '#C9CED6', ink: null }); const a = (o.wheel ?? t * 8); inkLine([[wx, -30], [wx + Math.cos(a) * 26, -30 + Math.sin(a) * 26]], 3, '#C9CED6', 'ink', 0); }
   // the wind-up key on the back
   push(); translate(-130, -80); rotate(o.key || 0);
   paint(rectPts(-30, -6, 30, 12), { wash: '#C9CED6', ink: PAL.ink, sw: 1.2 });
@@ -90,6 +91,7 @@ function crumbBridge(t, o = {}) {
     push(); translate(x + pw / 2, y); rotate(r + (o.shake ? Math.sin(t * 40 + i) * .03 * o.shake : 0));
     paint(rrPts(-pw / 2 + 3, -10, pw - 6, 34, 6), { wash: '#E6B65F', ink: PAL.ink, sw: 1.4 });
     for (const dx of [-pw * .25, pw * .2]) paint(ellPts(dx, 6, 4, 4, 6), { wash: '#B8813A', ink: null });
+    if (o.hair && t > o.hair && (i === 2 || i === 3)) inkLine([[-pw * .2, -6], [pw * .05, 8]], 1.6, PAL.ink, 'ink', .4);   // a hairline crack after the first bite
     if (o.cracks && i % 3 === 1 && t > o.cracks) inkLine([[-pw * .3, -8], [-pw * .05, 6], [-pw * .15, 22]], 2, PAL.ink, 'ink', .4);
     pop();
   }
@@ -98,9 +100,10 @@ function crumbBridge(t, o = {}) {
   const cut = BR.x1 - eaten * (BR.x1 - BR.x0);
   for (let i = 0; i < n; i++) {
     const x = BR.x0 + i * pw; if (gone(i) > 0 || x + pw > cut + pw && x > cut) continue;
-    const y = BR.deck + sag(x + pw / 2) - 130;
-    paint(rrPts(x, y - 10, Math.min(pw, cut - x), 20, 10), { wash: '#C98A3E', ink: PAL.ink, sw: 1.2 });
-    for (let k = 0; k < 3; k++) paint(ellPts(x + pw * (.2 + k * .3), y - 4, 3, 2, 6), { wash: '#FFFFFF', ink: null });   // salt
+    const y = BR.deck + sag(x + pw / 2) - 130, bf = ((o.bites || []).find(([j]) => j === i) || [0, 0])[1], bx = x + pw * bf;   // bites: [[segment, fraction eaten from the left]]
+    if (bf >= .99) continue;
+    paint(rrPts(bx, y - 10, Math.min(pw * (1 - bf), cut - bx), 20, 10), { wash: '#C98A3E', ink: PAL.ink, sw: 1.2 });
+    for (let k = 0; k < 3; k++) if (bf < .2 + k * .3) paint(ellPts(x + pw * (.2 + k * .3), y - 4, 3, 2, 6), { wash: '#FFFFFF', ink: null });   // salt
   }
 }
 // ---------- the soda swamp (the canyon floor) ----------
@@ -122,4 +125,35 @@ function sodaSwamp(t, o = {}) {
 function sodaSplash(x, y, age) {
   if (age < 0 || age > 1) return;
   for (let i = 0; i < 14; i++) { const a = -Math.PI * (.1 + .8 * i / 13), r = 80 + 380 * easeOut(age), g = 600 * age * age; paint(ellPts(x + Math.cos(a) * r, y + Math.sin(a) * r * 1.3 + g, 16 * (1 - age) + 4, 22 * (1 - age) + 4, 10), { wash: SODA_LT, ink: PAL.ink, sw: 1 }); }
+}
+
+// the toothpick sign by the troll: "3 RIDDLES / OR NO BRIDGE"
+function riddleSign(x, y) {
+  paint(rectPts(x - 7, y - 300, 14, 300), { wash: '#E3C38E', ink: PAL.ink, sw: 1.2 });
+  paint(rrPts(x - 170, y - 330, 340, 130, 12), { wash: '#F6EBDA', ink: PAL.ink, sw: 1.6 });
+  letter('3 RIDDLES', x, y - 292, 44, '#C8363F', { font: '800 44px "Baloo 2", sans-serif', ink: false });
+  letter('OR NO BRIDGE', x, y - 238, 34, '#2B2233', { font: '800 34px "Baloo 2", sans-serif', ink: false });
+}
+// Oracle Cookie's tiny rolled map. open 0..1 (rolled -> unrolled), flipY -1..1 (upside down: the arrow still points right),
+// (x, y) = centre. Draws a red arrow.
+function mapScroll(x, y, open = 1, flipY = 1, s = 1) {
+  push(); translate(x, y); scale(s, s * (Math.abs(flipY) < .05 ? .05 : flipY));
+  const h = lerp(26, 210, open), w = 130;
+  paint(rrPts(-w / 2, -h / 2, w, h, 8), { wash: '#F0DDB0', ink: PAL.ink, sw: 1.6, shade: true, shadeK: .3 });
+  for (const sy of [-1, 1]) paint(rrPts(-w / 2 - 8, sy * h / 2 - 11, w + 16, 22, 11), { wash: '#D9B97A', ink: PAL.ink, sw: 1.4 });   // the two rolls
+  if (open > .5) { const k = seg(open, .5, 1); inkLine([[-40, 0], [24, 0]], 9 * k, '#C8363F', 'ink', 0); paint([[22, -26 * k], [56, 0], [22, 26 * k]], { wash: '#C8363F', ink: null }); }
+  pop();
+}
+// a puff of crumbs: age 0..1, (x, y) at the ground
+function crumbCloud(x, y, age, r = 140) {
+  if (age < 0 || age > 1) return;
+  for (let i = 0; i < 12; i++) { const a = -Math.PI * (.05 + .9 * i / 11), d = r * easeOut(age) * (.6 + .5 * hash(i)); paint(ellPts(x + Math.cos(a) * d, y + Math.sin(a) * d * .8, 26 * (1 - age * .5) + 6, 20 * (1 - age * .5) + 5, 10), { wash: i % 3 ? '#EFE3CF' : '#E6B65F', washOp: 255 * (1 - age * .6), ink: null }); }
+}
+// crumbs raining from the sofa above: from t0, n pieces; landed ones stay on the ground
+function crumbRain(t, t0, n = 50, rate = .22, x0 = -100, x1 = 2100) {
+  for (let i = 0; i < n; i++) {
+    const a = t0 + i * rate, k = (t - a) / 1.5; if (k < 0) continue;
+    const x = lerp(x0, x1, hash(i * 3.7 + 1)), land = TFY + 20 + hash(i + 9) * 50, y = k < 1 ? lerp(-60, land, k * k) : land;
+    push(); translate(x, y); rotate(hash(i) * 6 + (k < 1 ? k * 5 : 0)); paint(rrPts(-9, -7, 18, 14, 4), { wash: '#E6B65F', ink: k >= 1 ? null : PAL.ink, sw: .8 }); pop();
+  }
 }
