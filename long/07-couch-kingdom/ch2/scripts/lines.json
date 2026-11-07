@@ -26,6 +26,6 @@
   {"id": "d24", "who": "pumpkin", "shot": "2", "t": 130.5, "text": "I miss my laundry.", "emo": "shivering, sad, cold", "exag": 0.7, "cfg": 0.4},
   {"id": "d25", "who": "pip", "shot": "2", "t": 139.0, "text": "Are you eating the bridge?", "emo": "suspicious", "exag": 0.6, "cfg": 0.4},
   {"id": "d26", "who": "pumpkin", "shot": "2", "t": 141.5, "text": "Just the decorative parts.", "emo": "mouth full, casual", "exag": 0.55, "cfg": 0.45},
-  {"id": "d27", "who": "pip", "shot": "2", "t": 151.0, "text": "Run!", "emo": "alarmed shout", "exag": 0.9, "cfg": 0.3},
+  {"id": "d27", "who": "pip", "shot": "2", "t": 151.0, "text": "Run! Run!", "emo": "alarmed shout", "exag": 0.7, "cfg": 0.4},
   {"id": "d28", "who": "pumpkin", "shot": "2", "t": 177.0, "text": "It's fizzy.", "emo": "stunned, quiet, dripping", "exag": 0.5, "cfg": 0.45}
 ]
